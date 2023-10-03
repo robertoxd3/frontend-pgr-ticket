@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid ">
     <!-- Spinner Inicio -->
     <div *ngIf="loading" class="overlay">
       <p-progressSpinner
@@ -10,18 +10,23 @@
     </div>
     <!-- Spinner Fin -->
     <p-toast></p-toast>
+  <div *ngIf="unidades.length==0">
+    <h3 class="text-center ">¡Error, no se pudo obtener la información!</h3>
+  </div>
   <section class="service-section">
     <div class="container mt-3">
       <div class="row">
         <div
         *ngFor="let item of unidades" class="col-lg-4 col-md-6 col-sm-6 col-6"
         >
-          <div class="single-service Unidad text-center" (click)="mostrarDialog(item.codigoUnidades)">
+          <div class="single-service Unidad text-center" (click)="mostrarDialog(item.codigoUnidades,item.nombreSimple)">
             <div class="wrap-icon icon-1">
-                <i class="pi pi-building"></i>
+                <i class="pi pi-check"></i>
               </div>   
               <h3>{{item.nombreSimple}}</h3>
-          </div>
+          </div> 
+          
+         
         </div>
       </div>
     </div>
@@ -32,16 +37,16 @@
   <p-dialog header="Header" [(visible)]="visible" [style]="{ width: '75vw',height: 'auto'}">
       <ng-template pTemplate="header">
           <span class="text-lg fw-bold">Tipo de Fila</span>
+          <span>Unidad Seleccionada: <span class="text-lg fw-bold">{{selectedNombreSimple}}</span></span>
       </ng-template>
       <form [formGroup]="formGroup">
         <div class="flex flex-column">
           <p-selectButton  [options]="filas" formControlName="idFila" [multiple]="false" optionLabel="nombreFila" optionValue="idFila"></p-selectButton>
-        </div>
-        
+        </div>  
       </form>
       <ng-template pTemplate="footer">
           <p-button icon="pi pi-times" (click)="visible = false" label="Cancelar" styleClass="p-button-text"></p-button>
-          <p-button label="Primary" (click)=" CrearTicketTipoFila()" label="Crear Ticket" styleClass="p-button-raised"></p-button>
+          <p-button label="Primary" (click)="CrearTicketTipoFila()" label="Crear Ticket" styleClass="p-button-raised"></p-button>
       </ng-template>
   </p-dialog>
 </div>
@@ -55,7 +60,8 @@
     <!-- Section: Social media -->
   </div>
   <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
-    © 2023 Copyright
+    © 2023 PGR Copyright 
   </div>
 </footer>
+
 
