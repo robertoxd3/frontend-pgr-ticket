@@ -1,15 +1,17 @@
-<div class="container-fluid ">
-    <!-- Spinner Inicio -->
-    <div *ngIf="loading" class="overlay">
-      <p-progressSpinner
-        styleClass="w-4rem h-4rem"
-        strokeWidth="8"
-        fill="var(--surface-ground)"
-        animationDuration=".5s"
-      ></p-progressSpinner>
-    </div>
-    <!-- Spinner Fin -->
-    <p-toast></p-toast>
+<div class="contenedor-principal">
+   <!-- Spinner Inicio -->
+   <div *ngIf="loading" class="overlay">
+    <p-progressSpinner
+      styleClass="w-4rem h-4rem"
+      strokeWidth="8"
+      fill="var(--surface-ground)"
+      animationDuration=".5s"
+    ></p-progressSpinner>
+  </div>
+  <!-- Spinner Fin -->
+  <p-toast></p-toast>
+
+  <div class="contenido">
   <div *ngIf="unidades.length==0">
     <h3 class="text-center ">¡Error, no se pudo obtener la información!</h3>
   </div>
@@ -21,7 +23,8 @@
         >
           <div class="single-service Unidad text-center" (click)="mostrarDialog(item.codigoUnidades,item.nombreSimple)">
             <div class="wrap-icon icon-1">
-                <i class="pi pi-check"></i>
+               <img src="assets/familia.png">
+                
               </div>   
               <h3>{{item.nombreSimple}}</h3>
           </div> 

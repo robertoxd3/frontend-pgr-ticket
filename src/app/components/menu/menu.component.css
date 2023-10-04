@@ -30,11 +30,12 @@
 }
 
 .Unidad .wrap-icon.icon-1 {
-  background: linear-gradient(-45deg, #121427, #121427);
+  background: linear-gradient(-45deg, #303845, #303845);
 }
 
-.Unidad .wrap-icon i {
-  font-size: 35px;
+.Unidad .wrap-icon img {
+  /*font-size: 35px;*/
+  width: 35px;  
   line-height: 0;
   color: #fff;
 }
@@ -63,3 +64,16 @@
   /* Asegura que el fondo esté por encima de otros elementos */
 }
 
+.contenedor-principal {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.contenido {
+  flex: 1; 
+}
+
+.footer {
+  
+}
