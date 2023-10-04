@@ -23,7 +23,8 @@
         >
           <div class="single-service Unidad text-center" (click)="mostrarDialog(item.codigoUnidades,item.nombreSimple)">
             <div class="wrap-icon icon-1">
-               <img src="assets/familia.png">
+              <img [src]="obtenerUltimaLetra(item.codigoUnidades)" >
+               
                 
               </div>   
               <h3>{{item.nombreSimple}}</h3>
@@ -58,7 +59,7 @@
   <div class="container p-4 pb-0">
     <!-- Section: Social media -->
     <section class="mb-4 ">
-        <p-button *ngFor="let item of Links" [icon]="item.icon"  (onClick)="openLink(item.link)" styleClass="p-button-rounded p-button-secondary me-2"></p-button>
+        <p-button *ngFor="let item of Links" [icon]="item.icon" styleClass="p-button-rounded p-button-secondary me-2"></p-button>
     </section>
     <!-- Section: Social media -->
   </div>

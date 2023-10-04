@@ -29,6 +29,18 @@ export class MenuComponent implements OnInit {
   ngOnInit(): void {
     this.leerJson();
     this.createForm();
+
+  }
+
+  public obtenerUltimaLetra(codigoUnidad: string){
+    const partes: string[] = codigoUnidad.split(".");
+    const ultimoValor: string = partes[partes.length - 1];
+    const ultimoDigito: number = parseInt(ultimoValor.charAt(0));
+    //console.log("UltimoDigito: "+ultimoDigito + "\nUltimo Valor: "+ultimoValor); 
+    if(ultimoDigito==parseInt(ultimoValor))
+      return "assets/"+ultimoValor.trim()+".png";
+     else
+      return "assets/"+ultimoDigito.toString().trim()+".png";
   }
 
   //Obtiene las unidades consumiendo la api y las asigna a la variable unidades que se muestra en pantalla
