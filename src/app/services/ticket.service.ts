@@ -1,6 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -12,24 +14,38 @@ export class TicketService {
   id!: number;
   enlace: string = '';
 
-  constructor(private http: HttpClient) {
-    this.baseUrl = 'http://localhost:5023/api/Ticket/';
+  constructor() {
+    this.baseUrl = environment.apiUrl;
   }
 
-  getUnidades(): Observable<any> {
-    return this.httpClient.get(this.baseUrl + 'getUnidades');
-  }
+  getUnidades(json: any): Observable<any> {
+    var headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Configuracion': JSON.stringify(json) 
+    });
 
-  getJson(): Observable<any> {
-    return this.httpClient.get(this.baseUrl + 'getJson');
+    return this.httpClient.post(this.baseUrl + 'getUnidades', null, { headers });
   }
   
   getTipoFila(): Observable<any> {
     return this.httpClient.get(this.baseUrl + 'getTipoFilas');
   }
 
-  guardarTicket(form: FormData): Observable<any> {
-    return this.httpClient.post(this.baseUrl + 'guardarTicket', form);
+  guardarTicket(form: FormData,json:any): Observable<any> {
+    var headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Configuracion': JSON.stringify(json) 
+    });
+
+    return this.httpClient.post(this.baseUrl + 'guardarTicket', form, { headers });
+  
   }
- 
+
+  printInfo(): Observable<any> {
+    return this.httpClient.get(this.baseUrl + 'printInfo');
+  }
+
+  printInfoDenucias(): Observable<any> {
+    return this.httpClient.get(this.baseUrl + 'printInfo2');
+  }
 }

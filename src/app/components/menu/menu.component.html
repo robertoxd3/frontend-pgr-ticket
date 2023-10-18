@@ -8,13 +8,10 @@
       animationDuration=".5s"
     ></p-progressSpinner>
   </div>
-  <!-- Spinner Fin -->
+  <!-- Alertas -->
   <p-toast></p-toast>
 
   <div class="contenido">
-  <div *ngIf="unidades.length==0">
-    <h3 class="text-center ">¡Error, no se pudo obtener la información!</h3>
-  </div>
   <section class="service-section">
     <div class="container mt-3">
       <div class="row">
@@ -24,15 +21,22 @@
           <div class="single-service Unidad text-center" (click)="mostrarDialog(item.codigoUnidades,item.nombreSimple)">
             <div class="wrap-icon icon-1">
               <img [src]="obtenerUltimaLetra(item.codigoUnidades)" >
-               
-                
               </div>   
               <h3>{{item.nombreSimple}}</h3>
           </div> 
-          
-         
+        </div>
+        <div
+        *ngFor="let item of infoButton; let i=index" class="col-lg-4 col-md-6 col-sm-6 col-6"
+        >
+          <div class="single-service Unidad text-center" (click)="i === 1 ? toggleMenuContacto() : toggleMenuDenuncia()">
+            <div class="wrap-icon icon-2">
+              <i class="pi pi-info" style="font-size: 2rem; color:white;"></i>
+              </div>   
+              <h3>{{item.nombreSimple}}</h3>
+          </div> 
         </div>
       </div>
+    
     </div>
   </section>
 </div>
@@ -54,18 +58,71 @@
       </ng-template>
   </p-dialog>
 </div>
+<app-floating-button></app-floating-button>
 
-<footer class="bg-dark text-center text-white">
+<p-sidebar [(visible)]="sidebarVisible"   position="right">
+  <ng-template pTemplate="header"><h4><img src="assets/logo.png" style="width: 5rem"/></h4></ng-template>
+  <ng-template pTemplate="content" class="text-center">
+    <p>¿Tiene consultas sobre el estado de los expedientes? ¿Desea conocer los requisitos para iniciar proceso legal? ¿Necesita orientación sobre un servicio legal o dar seguimiento a un expediente? ¿Quiere dar seguimiento al pago de cuota alimenticia? El área de Atención Virtual permite realizar estas acciones desde la distancia, contáctanos a través de los diferentes medios. </p>
+
+      <p><i class="pi pi-building" ></i> Centro de llamadas <b>(+503) 2231-9484</b></p>
+      <p><i class="pi pi-whatsapp" ></i> WhatsApp <b>(+503) 7607-9013</b></p>
+      <p><i class="pi pi-ellipsis-h" ></i> Lengua de Señas Salvadoreña, LESSA <b>(+503) 7095-7080</b></p>
+      <p>­<i class="pi pi-envelope" ></i> Correo electrónico <b>atencion.virtual@pgres.gob.sv</b></p>
+      <p>­<i class="pi pi-globe" ></i> Sitio Web PGR: <b>www.pgr.gob.sv</b></p>
+    <p>Para atender casos de violencia contra la Mujer de manera confidencia mediante atención legal y psicológica. <b>(+503) 2231-9595</b></p>
+    <p>Si eres una persona sorda y deseas asesoría legal o consultar sobre un trámite te ofrecemos nuestros servicios a través de la línea con atención en Lengua de Señas Salvadoreña (LESSA).</p>
+    <p>No olvides que en la Procuraduría General de Republica todos nuestros servicios son totalmente gratuitos ¡Estamos para servirte! </p>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <p-button label="Imprimir Ticket" (click)="imprimirInfo()" styleClass="p-button-secondary" icon="pi pi-print" size="small"></p-button>
+  </ng-template>
+</p-sidebar>
+
+<p-sidebar [(visible)]="sidebarVisibleDenuncia"   position="right">
+<ng-template pTemplate="header"><h4><img src="assets/logo.png" style="width: 5rem"/></h4></ng-template>
+<ng-template pTemplate="content">
+  <h4>AREA DE QUEJAS Y DENUNCIAS</h4>
+  <p>¿Tienes quejas o denuncias en la PGR?</p>
+  <p>¿Quieres denunciar un acto de corrupción por parte de una persona trabajadora de la PROCURADURÍA? lo puedes hacer por las siguientes vías:</p>
+    <p><i class="pi pi-phone" style="font-size: 1rem"></i> 2231-9525</p>
+    <p>­<i class="pi pi-phone" style="font-size: 1rem"></i> 7786-2058</p>
+    <p>­	­<i class="pi pi-envelope" style="font-size: 1rem"></i> oficinadequejas@pgres.gob.sv</p>
+    <p>A través de link de quejas que está en el portal de la PGR Luego una persona te va a contactar para atender o dar respuesta a tu caso. </p>
+    <p>Luego una persona te va a contactar para atender o dar respuesta a tu caso. </p>
+</ng-template>
+<ng-template pTemplate="footer">
+  <p-button label="Imprimir Ticket" (click)="imprimirInfoDenuncias()" styleClass="p-button-secondary" icon="pi pi-print" size="small"></p-button>
+</ng-template>
+</p-sidebar>
+
+<footer class="bg-dark text-center text-light">
   <div class="container p-4 pb-0">
-    <!-- Section: Social media -->
-    <section class="mb-4 ">
-        <p-button *ngFor="let item of Links" [icon]="item.icon" styleClass="p-button-rounded p-button-secondary me-2"></p-button>
-    </section>
-    <!-- Section: Social media -->
+    <div class="row">
+      <div class="col-sm-6 col-md-4 col-lg-2">
+        <h5>Centro de llamadas</h5>
+        <p>(+503) 2231-9484</p>
+      </div>
+      <div class="col-sm-6 col-md-4 col-lg-2">
+        <h5>WhatsApp</h5>
+        <p>(+503) 7607-9013</p>
+      </div>
+      <div class="col-sm-6 col-md-4 col-lg-3">
+        <h5>Lengua de Señas Salvadoreña</h5>
+        <p>(+503) 7095-7080</p>
+      </div>
+      <div class="col-sm-6 col-md-4 col-lg-3">
+        <h5>Correo electrónico</h5>
+        <p>atencion.virtual@pgres.gob.sv</p>
+      </div>
+      <div class="col-sm-6 col-md-4 col-lg-2">
+        <h5>Sitio Web PGR</h5>
+        <p>www.pgr.gob.sv</p>
+      </div>
+    </div>
   </div>
-  <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
-    © 2023 PGR Copyright 
-  </div>
+ <app-social-media></app-social-media> 
 </footer>
+
 
 

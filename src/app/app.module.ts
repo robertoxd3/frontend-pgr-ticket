@@ -16,11 +16,18 @@ import { DropdownModule } from 'primeng/dropdown';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ToastModule } from 'primeng/toast';
 import { MessagesModule } from 'primeng/messages';
-
+import { FloatingButtonComponent } from './components/floating-button/floating-button.component';
+import { ToggleButtonModule } from 'primeng/togglebutton';
+import { SidebarModule } from 'primeng/sidebar';
+import { SpeedDialModule } from 'primeng/speeddial';
+import { SocialMediaComponent } from './components/social-media/social-media.component';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
 @NgModule({
   declarations: [
     AppComponent,
-    MenuComponent
+    MenuComponent,
+    FloatingButtonComponent,
+    SocialMediaComponent
   ],
   imports: [
     BrowserModule,
@@ -38,6 +45,10 @@ import { MessagesModule } from 'primeng/messages';
     CheckboxModule,
     ToastModule,
     MessagesModule,
+    ToggleButtonModule,
+    SidebarModule,
+    SpeedDialModule,
+    ConfirmPopupModule
   ],
   providers: [],
   bootstrap: [AppComponent]

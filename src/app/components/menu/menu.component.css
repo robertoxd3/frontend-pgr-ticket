@@ -33,6 +33,10 @@
   background: linear-gradient(-45deg, #303845, #303845);
 }
 
+.Unidad .wrap-icon.icon-2 {
+  background: linear-gradient(-45deg, #C79E25, #C79E25);
+}
+
 .Unidad .wrap-icon img {
   /*font-size: 35px;*/
   width: 35px;  
@@ -74,6 +78,21 @@
   flex: 1; 
 }
 
-.footer {
+
+.footer-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.footer-item {
+  flex: 1;
+  max-width: 30%;
   
+  text-align: center;
+}
+
+.footer-item h5 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
 }

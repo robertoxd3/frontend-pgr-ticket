@@ -1,0 +1,54 @@
+.floating-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1; 
+  }
+
+  .p-button{  
+    background-color: #2F3B59; 
+    color: #C79E25;
+  }
+
+
+  .speed-dial {
+    position: relative;
+  }
+  
+  .main-button {
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    cursor: pointer;
+  }
+  
+  .menu {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    right: 20px;
+    bottom: 60px;
+    visibility: hidden;
+  }
+  
+  .menu.open {
+    visibility: visible;
+  }
+  
+  .menu-card {
+    margin-bottom: 10px;
+  }
+  
+  .card {
+    width: 200px;
+    cursor: pointer;
+  }
+  
+  .card:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }

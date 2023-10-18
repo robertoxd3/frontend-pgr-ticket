@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup,FormControl,Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { TicketService } from 'src/app/services/ticket.service';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-menu',
@@ -20,17 +21,67 @@ export class MenuComponent implements OnInit {
   selectedNombreSimple: any="";
   selectedIdFila:any=0;
   clickCount: any=0;
+  jsonContent: any;
+  miCookie: any;
+  isFinishedLoading:boolean=false;
+  sidebarVisible:boolean=false;
+  sidebarVisibleDenuncia:boolean=false;
 
-  constructor(private _ticketService: TicketService, private fb: FormBuilder, private messageService: MessageService) {
-    this.obtenerUnidades();
-    this.getTipoFilas();
+  constructor(private _ticketService: TicketService, private fb: FormBuilder, private messageService: MessageService,private cookieService: CookieService) {
+    
   }
 
   ngOnInit(): void {
-    this.leerJson();
+    //this.leerJson();
+    this.leerCookieJson();
     this.createForm();
-
+    this.obtenerUnidades();
+    this.getTipoFilas();
+    console.log(this.infoButton);
   }
+
+  leerCookieJson(){
+    const cookieName = 'cookie_tickets';
+    // Verifica si la cookie existe
+    if (this.cookieService.check(cookieName)) {
+      const cookieValue = this.cookieService.get(cookieName);
+      try {
+        this.miCookie = JSON.parse(cookieValue);
+        console.log('Valor de la cookie:', this.miCookie);
+        this.mostrarTipoFila = this.miCookie.config.mostrarTipoFila;
+        //this.loadJsonToBackend(this.miCookie);
+      } catch (error) {
+        console.error('Error al analizar la cookie JSON:', error);
+      }
+    }
+  }
+
+
+  //Obtiene las unidades consumiendo la api y las asigna a la variable unidades que se muestra en pantalla
+   obtenerUnidades() {
+    if(this.miCookie!=null){
+      this.loading=true;
+
+      this._ticketService.getUnidades(this.miCookie).subscribe({
+        next: (res) => {
+          console.log(res);
+          this.unidades = res;
+          /*this.unidades.push({
+            'codigoUnidad': '-1','nombreSimple': "Atención Virtual" ,
+          }, {'nombreSimple': "Denunias y Quejas" });*/
+          this.loading = false;
+        },
+        error: (err) => {
+          //console.log(err);
+          this.showAlert('No se pudo obtener configuración del JSON','Error','error');
+          this.loading = false;
+        }, 
+      });
+    } 
+    
+  }
+
+  
 
   public obtenerUltimaLetra(codigoUnidad: string){
     const partes: string[] = codigoUnidad.split(".");
@@ -43,41 +94,11 @@ export class MenuComponent implements OnInit {
       return "assets/"+ultimoDigito.toString().trim()+".png";
   }
 
-  //Obtiene las unidades consumiendo la api y las asigna a la variable unidades que se muestra en pantalla
-  obtenerUnidades() {
-    this.loading=true;
-    this._ticketService.getUnidades().subscribe({
-      next: (res) => {
-        console.log(res);
-        this.unidades = res;
-        this.loading = false;
-      },
-      error: (err) => {
-        console.log(err);
-        this.loading = false;
-      },
-    });
-  }
-  //Obtiene la configuración del JSON por medio de una API al backend 
-  leerJson() {
-    this._ticketService.getJson().subscribe({
-      next: (res) => {
-        console.log(res);
-        this.mostrarTipoFila = res.config.mostrarTipoFila;
-      },
-      error: (err) => {
-        console.log(err);
-        this.loading = false;
-      },
-    });
-  }
-
   //Obtiene los tipo de fila por medio de la api al backend
   getTipoFilas() {
     this._ticketService.getTipoFila().subscribe({
       next: (res) => {
-        console.log(res);
-        //console.log("IdFila: "+res[0].idFila+" Nombre: "+res[0].nombreFila);
+        //console.log(res);
         this.filas=res;
       },
       error: (err) => {
@@ -114,29 +135,32 @@ export class MenuComponent implements OnInit {
      
     }
   }
-
   
   //Envia al backend el formGroup que Incluye el codigoUnidad + el idFila y en el backend ejecuta el procedimiento almacenado.
   almacenarTicket(){
     this.loading=true;
-    this._ticketService.guardarTicket(this.formGroup.value).subscribe({
-      next: (res) => {
-        console.log(res);
-        setTimeout(() => {
-          this.loading=false;
-          if(res)
-          this.showAlert("Ticket Creado Correctamente","Exito",'success');
-          else
-          this.showAlert("Problema al generar el ticket","Error",'error');
-        }, 2500);
-      },
-      error: (err) => {
-        console.log(err);
-        this.loading = false;
-        this.showAlert("Error al conectar al servidor","Error",'error');
-      },
-    });
+    if(this.miCookie){
+      this._ticketService.guardarTicket(this.formGroup.value,this.miCookie).subscribe({
+        next: (res) => {
+          console.log(res);
+          setTimeout(() => {
+            this.loading=false;
+            if(res)
+            this.showAlert("Ticket Creado Correctamente","Exito",'success');
+            else
+            this.showAlert("Problema al generar el ticket","Error",'error');
+          }, 2500);
+        },
+        error: (err) => {
+          console.log(err);
+          this.loading = false;
+          this.showAlert("Error al conectar al servidor","Error",'error');
+        },
+      });
+    }
   }
+
+ 
 
   createForm() {
     this.formGroup = this.fb.group({
@@ -160,27 +184,67 @@ export class MenuComponent implements OnInit {
     });
   }
 
-   printRequisitos() {
-    var nombre="prueba";
-    var contenidoTicket = "<table style='width: 100%; border-collapse: collapse; border-style: double; height: 605px;' border='1'><tbody><tr style='height: 238px;'><td style='width: 100%; height: 238px;'><h4 style='text-align: center;'><img style='display: block; margin-left: auto; margin-right: auto;' src='http://www.pgr.gob.sv/images/logo-pgr-marzo-2021.png' alt='LOGO' width='133' height='145' /><strong>REQUISITOS MINIMOS PARA EL TIPO DE CASO:</strong></h4><h3 style='text-align: center;'>" + nombre+"</tr></tbody></table>";
-    var newWin = window.open('', 'Print-Window');
-    //window.print();
-    newWin?.document.open();
-    newWin?.document.write('<html><body onload="window.print()">' + contenidoTicket + '</body></html>');
-    newWin?.document.close();
-    setTimeout(function () {
-        newWin?.close();
-    }, 10);
-
-}
-
-
   Links = [
-    {icon: "pi pi-facebook", link: "https://www.facebook.com/pgrelsalvadoroficial"},
-    {icon: "pi pi-twitter", link: "https://twitter.com/PGR_SV"},
-    {icon: "pi pi-whatsapp", link: "https://web.whatsapp.com/send?phone=50376079013&text&app_absent=0"},
-    {icon: "pi pi-instagram", link: "https://www.instagram.com/pgr_sv/"},
-    {icon: "pi pi-youtube", link: "https://www.youtube.com/channel/UCMRLTmvylbsc04T-Dp1Wh-g"},
+    {icon: "pi pi-facebook", title: 'Centro de llamadas', subtitle: "(+503) 2231-9484"},
+    {icon: "pi pi-twitter", title: "WhatsApp", subtitle:"(+503) 7607-9013"},
+    {icon: "pi pi-whatsapp", title: "Lengua de Señas Salvadoreña", subtitle:"(+503) 7095-7080"},
+    {icon: "pi pi-instagram", title: "Correo electrónico", subtitle:"atencion.virtual@pgres.gob.sv"},
+    {icon: "pi pi-youtube", title: "Sitio Web PGR",subtitle:"www.pgr.gob.sv"},
   ];
+
+  infoButton=[
+    {icon: "pi pi-facebook", nombreSimple: "Quejas y Denuncias"},
+    {icon: "pi pi-facebook", nombreSimple: "Atención Virtual"}
+  ];
+
+  toggleMenuContacto() {
+    this.sidebarVisible = !this.sidebarVisible;
+    
+  }
+  toggleMenuDenuncia(){
+    this.sidebarVisibleDenuncia=!this.sidebarVisibleDenuncia;
+    }
+
+    imprimirInfo(){
+      this.loading=true;
+        this._ticketService.printInfo().subscribe({
+          next: (res) => {
+            console.log(res);
+            setTimeout(() => {
+              this.loading=false;
+              if(res)
+              this.showAlert("Ticket Creado Correctamente","Exito",'success');
+              else
+              this.showAlert("Problema al generar el ticket","Error",'error');
+            }, 2500);
+          },
+          error: (err) => {
+            console.log(err);
+            this.loading = false;
+            this.showAlert("Error al conectar al servidor","Error",'error');
+          },
+        });
+    }
+  
+    imprimirInfoDenuncias(){
+      this.loading=true;
+        this._ticketService.printInfoDenucias().subscribe({
+          next: (res) => {
+            console.log(res);
+            setTimeout(() => {
+              this.loading=false;
+              if(res)
+              this.showAlert("Ticket Creado Correctamente","Exito",'success');
+              else
+              this.showAlert("Problema al generar el ticket","Error",'error');
+            }, 2500);
+          },
+          error: (err) => {
+            console.log(err);
+            this.loading = false;
+            this.showAlert("Error al conectar al servidor","Error",'error');
+          },
+        });
+    }
    
 }
