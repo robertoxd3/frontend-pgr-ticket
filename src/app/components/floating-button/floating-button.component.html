@@ -1,80 +1,36 @@
 <div class="floating-button">
-          <!-- <button pButton type="button" class="rounded-pill"
-            label="Atención Virtual" (click)="togglePanel()"> 
-            <img *ngIf="checked" src="assets/logo.png" style="width: 2rem"/>
-        </button>  -->
-        <!-- <div style="height: 350px; position: fixed; bottom: 25px; right: 5rem;" >
-        <p-speedDial [model]="items"  direction="up" type="linear"  buttonClassName="p-button-secondary"></p-speedDial> 
-      </div> -->
       <div class="speed-dial">
          <button pButton type="button" class="rounded-pill"
-            label="Atención Virtual"  (click)="toggleMenu()"> 
+            label="Califícanos"  (click)="toggleMenu()"> 
             <img *ngIf="checked" src="assets/logo.png" style="width: 2rem"/>
         </button> 
         <div class="menu" [class.open]="isMenuOpen">
-           <div class="menu-card" (click)="toggleMenuContacto()">
       <div class="card">
         <div class="card-body">
-          <div class="d-flex justify-content-around">
-              <img src="assets/logo.png" style="width: 2rem"/>
-              <p class="card-text">Contactos</p>
+          <div class="d-flex justify-content-center">
+             <fa-icon [icon]="faFaceFrown" [style]="{color: '#C0392B'}" size="lg"></fa-icon>
           </div>
         </div>
       </div>
-    </div>
-    <div class="menu-card" (click)="toggleMenuDenuncia()">
       <div class="card">
         <div class="card-body">
-          <div class="d-flex justify-content-around">
-            <img src="assets/logo.png" style="width: 2rem"/>
-            <p class="card-text">Denuncias</p>
+          <div class="d-flex justify-content-center">
+           <fa-icon [icon]="faFaceMeh" [style]="{color: '#F4D03F'}" size="lg"></fa-icon>
         </div>
         </div>
       </div>
-    </div>
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-center">
+           <fa-icon [icon]="faFaceLaugh" [style]="{color: '#2ECC71'}" size="lg"></fa-icon>
+        </div>
+        </div>
+      </div>
         </div>
       </div>
   </div>
 
   
-  <p-toast></p-toast>
-  <p-sidebar [(visible)]="sidebarVisible"   position="right">
-    <ng-template pTemplate="header"><h4><img src="assets/logo.png" style="width: 5rem"/></h4></ng-template>
-    <ng-template pTemplate="content" class="text-center">
-      <p>¿Tiene consultas sobre el estado de los expedientes? ¿Desea conocer los requisitos para iniciar proceso legal? ¿Necesita orientación sobre un servicio legal o dar seguimiento a un expediente? ¿Quiere dar seguimiento al pago de cuota alimenticia? El área de Atención Virtual permite realizar estas acciones desde la distancia, contáctanos a través de los diferentes medios. </p>
- 
-        <p><i class="pi pi-building" ></i> Centro de llamadas <b>(+503) 2231-9484</b></p>
-        <p><i class="pi pi-whatsapp" ></i> WhatsApp <b>(+503) 7607-9013</b></p>
-        <p><i class="pi pi-ellipsis-h" ></i> Lengua de Señas Salvadoreña, LESSA <b>(+503) 7095-7080</b></p>
-        <p>­<i class="pi pi-envelope" ></i> Correo electrónico <b>atencion.virtual@pgres.gob.sv</b></p>
-        <p>­<i class="pi pi-globe" ></i> Sitio Web PGR: <b>www.pgr.gob.sv</b></p>
-      <p>Para atender casos de violencia contra la Mujer de manera confidencia mediante atención legal y psicológica. <b>(+503) 2231-9595</b></p>
-      <p>Si eres una persona sorda y deseas asesoría legal o consultar sobre un trámite te ofrecemos nuestros servicios a través de la línea con atención en Lengua de Señas Salvadoreña (LESSA).</p>
-      <p>No olvides que en la Procuraduría General de Republica todos nuestros servicios son totalmente gratuitos ¡Estamos para servirte! </p>
-    </ng-template>
-    <ng-template pTemplate="footer">
-      <p-button label="Imprimir Ticket" (click)="imprimirInfo()" styleClass="p-button-secondary" icon="pi pi-print" size="small"></p-button>
-      
-    </ng-template>
-</p-sidebar>
-
-<p-sidebar [(visible)]="sidebarVisibleDenuncia"   position="right">
-  <ng-template pTemplate="header"><h4><img src="assets/logo.png" style="width: 5rem"/></h4></ng-template>
-  <ng-template pTemplate="content">
-    <h4>AREA DE QUEJAS Y DENUNCIAS</h4>
-    <p>¿Tienes quejas o denuncias en la PGR?</p>
-    <p>¿Quieres denunciar un acto de corrupción por parte de una persona trabajadora de la PROCURADURÍA? lo puedes hacer por las siguientes vías:</p>
-      <p><i class="pi pi-phone" style="font-size: 1rem"></i> 2231-9525</p>
-      <p>­<i class="pi pi-phone" style="font-size: 1rem"></i> 7786-2058</p>
-      <p>­	­<i class="pi pi-envelope" style="font-size: 1rem"></i> oficinadequejas@pgres.gob.sv</p>
-      <p>A través de link de quejas que está en el portal de la PGR Luego una persona te va a contactar para atender o dar respuesta a tu caso. </p>
-      <p>Luego una persona te va a contactar para atender o dar respuesta a tu caso. </p>
-  </ng-template>
-  <ng-template pTemplate="footer">
-    <p-button label="Imprimir Ticket" (click)="imprimirInfoDenuncias()" styleClass="p-button-secondary" icon="pi pi-print" size="small"></p-button>
-  </ng-template>
-</p-sidebar>
-
 
 
   

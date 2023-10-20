@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ConfirmationService } from 'primeng/api';
 
 @Component({
@@ -12,7 +12,8 @@ export class SocialMediaComponent implements OnInit{
   sidebarVisible:boolean=false;
   sidebarVisibleDenuncia: boolean=false;
   isMenuOpen = false;
-  
+  @ViewChild('imgS') imgS!: ElementRef;
+  @ViewChild('button') button!: ElementRef;
   constructor(private confirmationService:ConfirmationService){
     
   }
@@ -25,32 +26,26 @@ export class SocialMediaComponent implements OnInit{
 
   }
 
-  preview(event: Event,nombre: string){
+  preview(event: Event,element:any,nombre: string){
     switch(nombre) { 
       case "facebook": {
-          this.confirmationService.confirm({
-              target: event.target as EventTarget,
-              message: 'Are you sure that you want to proceed?',
-              icon: 'pi pi-exclamation-triangle',
-              accept: () => {
-                  //this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted' });
-              },
-              reject: () => {
-                  //this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
-              }
-          });
+          this.imgS.nativeElement.src="assets/facebook.jpeg";
+          element.toggle(event);
          break; 
       } 
       case "twitter": { 
-        console.log(2)
+        this.imgS.nativeElement.src="assets/twitter.jpeg";
+        element.toggle(event);
          break; 
       } 
       case "youtube": { 
-       console.log(3)
+      this.imgS.nativeElement.src="assets/youtube.jpeg";
+       element.toggle(event);
         break; 
      } 
      case "instagram": { 
-     console.log(4)
+     this.imgS.nativeElement.src="assets/instagram.jpeg";
+     element.toggle(event);
       break; 
    } 
       default: { 

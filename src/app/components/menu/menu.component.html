@@ -15,9 +15,8 @@
   <section class="service-section">
     <div class="container mt-3">
       <div class="row">
-        <div
-        *ngFor="let item of unidades" class="col-lg-4 col-md-6 col-sm-6 col-6"
-        >
+        <!-- Unidades -->
+        <div *ngFor="let item of unidades" class="col-lg-3 col-md-4 col-sm-6 col-6">
           <div class="single-service Unidad text-center" (click)="mostrarDialog(item.codigoUnidades,item.nombreSimple)">
             <div class="wrap-icon icon-1">
               <img [src]="obtenerUltimaLetra(item.codigoUnidades)" >
@@ -25,9 +24,8 @@
               <h3>{{item.nombreSimple}}</h3>
           </div> 
         </div>
-        <div
-        *ngFor="let item of infoButton; let i=index" class="col-lg-4 col-md-6 col-sm-6 col-6"
-        >
+        <!-- Virtual -->
+        <div *ngFor="let item of infoButton; let i=index" class="col-lg-3 col-md-4 col-sm-6 col-6">
           <div class="single-service Unidad text-center" (click)="i === 1 ? toggleMenuContacto() : toggleMenuDenuncia()">
             <div class="wrap-icon icon-2">
               <i class="pi pi-info" style="font-size: 2rem; color:white;"></i>
@@ -36,11 +34,11 @@
           </div> 
         </div>
       </div>
-    
     </div>
   </section>
 </div>
 
+<!-- Modal Filas -->
 <div class="card flex justify-content-center">
   <p-dialog header="Header" [(visible)]="visible" [style]="{ width: '75vw',height: 'auto'}">
       <ng-template pTemplate="header">
@@ -58,8 +56,10 @@
       </ng-template>
   </p-dialog>
 </div>
+<!-- Boton Flotante de virtual -->
 <app-floating-button></app-floating-button>
 
+<!-- Side Bar Virtual -->
 <p-sidebar [(visible)]="sidebarVisible"   position="right">
   <ng-template pTemplate="header"><h4><img src="assets/logo.png" style="width: 5rem"/></h4></ng-template>
   <ng-template pTemplate="content" class="text-center">
@@ -95,13 +95,14 @@
   <p-button label="Imprimir Ticket" (click)="imprimirInfoDenuncias()" styleClass="p-button-secondary" icon="pi pi-print" size="small"></p-button>
 </ng-template>
 </p-sidebar>
+<!-- Side Bar Virtual -->
 
 <footer class="bg-dark text-center text-light">
-  <div class="container p-4 pb-0">
+  <div class="container p-2 pb-0">
     <div class="row">
       <div class="col-sm-6 col-md-4 col-lg-2">
         <h5>Centro de llamadas</h5>
-        <p>(+503) 2231-9484</p>
+        (+503) 2231-9484 opción 1
       </div>
       <div class="col-sm-6 col-md-4 col-lg-2">
         <h5>WhatsApp</h5>

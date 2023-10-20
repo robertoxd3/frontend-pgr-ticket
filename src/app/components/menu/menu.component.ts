@@ -56,7 +56,6 @@ export class MenuComponent implements OnInit {
     }
   }
 
-
   //Obtiene las unidades consumiendo la api y las asigna a la variable unidades que se muestra en pantalla
    obtenerUnidades() {
     if(this.miCookie!=null){
@@ -66,9 +65,6 @@ export class MenuComponent implements OnInit {
         next: (res) => {
           console.log(res);
           this.unidades = res;
-          /*this.unidades.push({
-            'codigoUnidad': '-1','nombreSimple': "Atención Virtual" ,
-          }, {'nombreSimple': "Denunias y Quejas" });*/
           this.loading = false;
         },
         error: (err) => {
@@ -80,8 +76,6 @@ export class MenuComponent implements OnInit {
     } 
     
   }
-
-  
 
   public obtenerUltimaLetra(codigoUnidad: string){
     const partes: string[] = codigoUnidad.split(".");
@@ -184,17 +178,9 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  Links = [
-    {icon: "pi pi-facebook", title: 'Centro de llamadas', subtitle: "(+503) 2231-9484"},
-    {icon: "pi pi-twitter", title: "WhatsApp", subtitle:"(+503) 7607-9013"},
-    {icon: "pi pi-whatsapp", title: "Lengua de Señas Salvadoreña", subtitle:"(+503) 7095-7080"},
-    {icon: "pi pi-instagram", title: "Correo electrónico", subtitle:"atencion.virtual@pgres.gob.sv"},
-    {icon: "pi pi-youtube", title: "Sitio Web PGR",subtitle:"www.pgr.gob.sv"},
-  ];
-
   infoButton=[
-    {icon: "pi pi-facebook", nombreSimple: "Quejas y Denuncias"},
-    {icon: "pi pi-facebook", nombreSimple: "Atención Virtual"}
+    {icon: "pi pi-facebook", nombreSimple: "QUEJAS Y DENUNCIAS"},
+    {icon: "pi pi-facebook", nombreSimple: "ATENCIÓN VIRTUAL"}
   ];
 
   toggleMenuContacto() {

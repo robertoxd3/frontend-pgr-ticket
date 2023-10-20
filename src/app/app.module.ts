@@ -22,6 +22,8 @@ import { SidebarModule } from 'primeng/sidebar';
 import { SpeedDialModule } from 'primeng/speeddial';
 import { SocialMediaComponent } from './components/social-media/social-media.component';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 @NgModule({
   declarations: [
     AppComponent,
@@ -48,7 +50,9 @@ import { ConfirmPopupModule } from 'primeng/confirmpopup';
     ToggleButtonModule,
     SidebarModule,
     SpeedDialModule,
-    ConfirmPopupModule
+    ConfirmPopupModule,
+    OverlayPanelModule,
+    FontAwesomeModule
   ],
   providers: [],
   bootstrap: [AppComponent]

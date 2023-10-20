@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 import { TicketService } from 'src/app/services/ticket.service';
+import { faFaceFrown,faFaceLaugh,faFaceMeh } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-floating-button',
@@ -10,65 +11,20 @@ import { TicketService } from 'src/app/services/ticket.service';
 export class FloatingButtonComponent implements OnInit {
   checked: boolean = true;
   loading: boolean = false;
-  sidebarVisible:boolean=false;
-  items!: MenuItem[] ;
-  sidebarVisibleDenuncia: boolean=false;
+
+  faFaceFrown=faFaceFrown;
+  faFaceLaugh=faFaceLaugh;
+  faFaceMeh=faFaceMeh;
+  isMenuOpen = false;
   constructor(private _ticketService: TicketService, private messageService: MessageService){
 
   }
-
-  isMenuOpen = false;
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
-
-  ngOnInit() {
-    
-}
-
-imprimirInfo(){
-  this.loading=true;
-    this._ticketService.printInfo().subscribe({
-      next: (res) => {
-        console.log(res);
-        setTimeout(() => {
-          this.loading=false;
-          if(res)
-          this.showAlert("Ticket Creado Correctamente","Exito",'success');
-          else
-          this.showAlert("Problema al generar el ticket","Error",'error');
-        }, 2500);
-      },
-      error: (err) => {
-        console.log(err);
-        this.loading = false;
-        this.showAlert("Error al conectar al servidor","Error",'error');
-      },
-    });
-}
-
-imprimirInfoDenuncias(){
-  this.loading=true;
-    this._ticketService.printInfoDenucias().subscribe({
-      next: (res) => {
-        console.log(res);
-        setTimeout(() => {
-          this.loading=false;
-          if(res)
-          this.showAlert("Ticket Creado Correctamente","Exito",'success');
-          else
-          this.showAlert("Problema al generar el ticket","Error",'error');
-        }, 2500);
-      },
-      error: (err) => {
-        console.log(err);
-        this.loading = false;
-        this.showAlert("Error al conectar al servidor","Error",'error');
-      },
-    });
-}
+  ngOnInit() {}
 
 showAlert(mensaje: string, titulo:string, tipo: string) {
   this.messageService.add({
@@ -78,12 +34,4 @@ showAlert(mensaje: string, titulo:string, tipo: string) {
   });
 }
 
-  toggleMenuContacto() {
-    this.sidebarVisible = !this.sidebarVisible;
-    this.isMenuOpen = !this.isMenuOpen;
-  }
-  toggleMenuDenuncia(){
-    this.sidebarVisibleDenuncia=!this.sidebarVisibleDenuncia;
-    this.isMenuOpen = !this.isMenuOpen;
-    }
 }

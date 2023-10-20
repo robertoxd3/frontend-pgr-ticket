@@ -1,44 +1,14 @@
-<div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
-  <!-- Section: Social media -->
-  <section class="">
+<div class="text-center p-2" style="background-color: rgba(0, 0, 0, 0.2)">
+  <!-- Social media -->
+    <p-overlayPanel #panel>
+      <img #imgS  src="" width="300px" height="300px" alt="product" />
+  </p-overlayPanel>
     <p-button
       *ngFor="let item of SocialMedia; let i = index"
       [icon]="item.icon"
-      (click)="preview($event, item.nombreSimple)"
+      (click)="preview($event,panel,item.nombreSimple)"
       styleClass="p-button-rounded p-button-secondary me-2"
     ></p-button>
-  </section>
-  <!-- Section: Social media -->
+  <!-- Social media -->
 </div>
 
-<!-- <div class="speed-dial">
-  <button
-    pButton
-    type="button"
-    class="rounded-pill"
-    label="Atención Virtual"
-    (click)="toggleMenu()"
-  ></button>
-  <div class="menu" [class.open]="isMenuOpen">
-    <div class="menu-card" (click)="toggleMenuContacto()">
-      <div class="card">
-        <div class="card-body">
-          <div class="d-flex justify-content-around">
-            <img src="assets/logo.png" style="width: 2rem" />
-            <p class="card-text">Contactos</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="menu-card" (click)="toggleMenuDenuncia()">
-      <div class="card">
-        <div class="card-body">
-          <div class="d-flex justify-content-around">
-            <img src="assets/logo.png" style="width: 2rem" />
-            <p class="card-text">Denuncias</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div> 
-</div>-->
