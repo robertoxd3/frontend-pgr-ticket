@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
+import { CardModule } from 'primeng/card';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MenuComponent } from './components/menu/menu.component';
@@ -24,12 +24,15 @@ import { SocialMediaComponent } from './components/social-media/social-media.com
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { LlamadoComponent } from './components/llamado/llamado.component';
+import { TableModule } from 'primeng/table';
 @NgModule({
   declarations: [
     AppComponent,
     MenuComponent,
     FloatingButtonComponent,
-    SocialMediaComponent
+    SocialMediaComponent,
+    LlamadoComponent
   ],
   imports: [
     BrowserModule,
@@ -52,7 +55,9 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     SpeedDialModule,
     ConfirmPopupModule,
     OverlayPanelModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    CardModule,
+    TableModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

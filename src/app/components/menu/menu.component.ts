@@ -3,7 +3,13 @@ import { FormBuilder, FormGroup,FormControl,Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { TicketService } from 'src/app/services/ticket.service';
 import { CookieService } from 'ngx-cookie-service';
+import { ColaService } from 'src/app/services/cola.service';
+import { Subscription } from 'rxjs';
 
+declare var PrintReceipt:any;
+declare var PrintInfoDenucia:any;
+declare var PrintInfoContacto:any;
+declare var verificarConexion:any;
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
@@ -26,8 +32,9 @@ export class MenuComponent implements OnInit {
   isFinishedLoading:boolean=false;
   sidebarVisible:boolean=false;
   sidebarVisibleDenuncia:boolean=false;
-
-  constructor(private _ticketService: TicketService, private fb: FormBuilder, private messageService: MessageService,private cookieService: CookieService) {
+  localConexion:any;
+  private dataSubscription: Subscription | undefined;
+  constructor(private _ticketService: TicketService,private signalRService: ColaService, private fb: FormBuilder, private messageService: MessageService,private cookieService: CookieService) {
     
   }
 
@@ -43,6 +50,7 @@ export class MenuComponent implements OnInit {
   leerCookieJson(){
     const cookieName = 'cookie_tickets';
     // Verifica si la cookie existe
+    
     if (this.cookieService.check(cookieName)) {
       const cookieValue = this.cookieService.get(cookieName);
       try {
@@ -134,13 +142,19 @@ export class MenuComponent implements OnInit {
   almacenarTicket(){
     this.loading=true;
     if(this.miCookie){
+      /*verificarConexion();
+      this.localConexion = localStorage.getItem('conexion');
+      console.log("menu: "+ this.localConexion)*/
       this._ticketService.guardarTicket(this.formGroup.value,this.miCookie).subscribe({
         next: (res) => {
           console.log(res);
+          PrintReceipt(res.numeroTicket,res.fechaTicket,res.nombreSimple,res.departamento);
           setTimeout(() => {
             this.loading=false;
-            if(res)
-            this.showAlert("Ticket Creado Correctamente","Exito",'success');
+            if(res){
+              this.showAlert("Ticket Creado Correctamente","Exito",'success');
+              this.actualizarHub();
+            }
             else
             this.showAlert("Problema al generar el ticket","Error",'error');
           }, 2500);
@@ -154,7 +168,12 @@ export class MenuComponent implements OnInit {
     }
   }
 
- 
+  actualizarHub(){
+    this.dataSubscription = this.signalRService.UpdateLLamada().subscribe(data => {
+      console.log(data);
+      // Realiza cualquier actualización de la interfaz de usuario necesaria aquí
+    });
+  }
 
   createForm() {
     this.formGroup = this.fb.group({
@@ -192,45 +211,28 @@ export class MenuComponent implements OnInit {
     }
 
     imprimirInfo(){
-      this.loading=true;
-        this._ticketService.printInfo().subscribe({
-          next: (res) => {
-            console.log(res);
-            setTimeout(() => {
-              this.loading=false;
-              if(res)
-              this.showAlert("Ticket Creado Correctamente","Exito",'success');
-              else
-              this.showAlert("Problema al generar el ticket","Error",'error');
-            }, 2500);
-          },
-          error: (err) => {
-            console.log(err);
-            this.loading = false;
-            this.showAlert("Error al conectar al servidor","Error",'error');
-          },
-        });
+    try {
+      if(PrintInfoContacto())
+      this.showAlert("Ticket Creado Correctamente","Exito",'success');
+      else
+      this.showAlert("Problema al generar el ticket","Error",'error');
+    } catch (error) {
+      this.showAlert("Problema al conectar con Impresora","Error",'error');
+      console.log(error);
+    }   
     }
+
   
     imprimirInfoDenuncias(){
-      this.loading=true;
-        this._ticketService.printInfoDenucias().subscribe({
-          next: (res) => {
-            console.log(res);
-            setTimeout(() => {
-              this.loading=false;
-              if(res)
-              this.showAlert("Ticket Creado Correctamente","Exito",'success');
-              else
-              this.showAlert("Problema al generar el ticket","Error",'error');
-            }, 2500);
-          },
-          error: (err) => {
-            console.log(err);
-            this.loading = false;
-            this.showAlert("Error al conectar al servidor","Error",'error');
-          },
-        });
+      try {
+        if(PrintInfoDenucia())
+        this.showAlert("Ticket Creado Correctamente","Exito",'success');
+        else
+        this.showAlert("Problema al generar el ticket","Error",'error');
+      } catch (error) {
+        this.showAlert("Problema al conectar con Impresora","Error",'error');
+        console.log(error);
+      }   
     }
    
 }

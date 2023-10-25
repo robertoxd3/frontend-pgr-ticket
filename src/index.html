@@ -10,4 +10,112 @@
 <body>
   <app-root></app-root>
 </body>
+<script src="assets/js/bxlcommon.js"></script>
+<script src="assets/js/bxllabel.js"></script>
+<script src="assets/js/bxlpos.js"></script>
+
+<script>
+  var issueID = 1;
+  function viewResult(result) {
+    localStorage.setItem("conexion", result);
+		console.log(result);
+    return result;
+	}
+
+  function PrintReceipt(numTicket,fecha,unidad,deparmento) {
+		setPosId(issueID);
+		checkPrinterStatus();
+    setCharacterset(1252);
+		//printText(text,horizontal,vertical,bold,invert,underline,fonttype,alignment)
+			printText("PGR\n", 2, 1, true, false, true, 0, 1);
+      printText("PROCURADURÍA "+deparmento+"\n", 0, 0, false, false, false, 0, 1);
+      printText(fecha+"\n", 0, 0, false, false, false, 0, 1);
+      printText(unidad+"\n", 0, 0, false, false, false, 0, 1);
+      printText("\nNo. Ticket:\n\n", 0, 0, false, false, false, 0, 1);
+      printText(numTicket+"\n", 2, 1, true, false, false, 0, 1);
+      printText("\nContactanos\n", 0, 0, true, false, true, 0, 1);
+      printText("Centro de llamadas\n(+503) 2231-9484 opción 1\n", 0, 0, false, false, false, 0, 1);
+      printText("WhatsApp (+503) 7607-9013\n", 0, 0, false, false, false, 0, 1);
+      printText("LESSA (+503) 7095-7080\n", 0, 0, false, false, false, 0, 1);
+      printText("Atención a Mujeres Victimas de\n Violencia 'Estamos Contigo'\n(+503) 2231-9595\n", 0, 0, false, false, false, 0, 1);
+      printText("Correo electrónico\n atencion.virtual@pgres.gob.sv\n", 0, 0, false, false, false, 0, 1);
+      printText("Sitio Web PGR: www.pgr.gob.sv\n", 0, 0, false, false, false, 0, 1);
+		  printText("\n\n\n\n", 0, 0, false, false, false, 0, 0);
+		cutPaper(1);
+		var strSubmit = getPosData();
+		console.log(strSubmit);
+		issueID++;
+		requestPrint("Printer1", strSubmit, viewResult);
+		return true;
+	}
+
+
+  function PrintInfoContacto(){
+    setPosId(issueID);
+		checkPrinterStatus();
+    setCharacterset(1252);
+		//printText(text,horizontal,vertical,bold,invert,underline,fonttype,alignment)
+			printText("PGR\n", 2, 1, true, false, true, 0, 1);
+      printText("¿Tiene consultas sobre el\nestado de los expedientes? \n\n", 0, 0, false, false, false, 0, 1);
+      printText("¿Desea conocer los requisitos\npara iniciar proceso legal?\n\n", 0, 0, false, false, false, 0, 1);
+      printText("¿Necesita orientación sobre un\nservicio legal o dar\nseguimiento a un expediente?\n\n", 0, 0, false, false, false, 0, 1);
+
+      printText("¿Quiere dar seguimiento al pago\n de cuota alimenticia?\n\n", 0, 0, false, false, false, 0, 1);
+      printText("El área de Atención Virtual\npermite realizar estas acciones\ndesde la distancia,contáctanos a través de los diferentes medios\n\n", 0, 0, false, false, false, 0, 1);
+      printText("Centro de llamadas\n2231-9484 opción 1\n", 0, 0, false, false, false, 0, 1);
+      printText("WhatsApp 7607-9013\n", 0, 0, false, false, false, 0, 1);
+      printText("Lengua de Señas Salvadoreña\nLESSA (+503) 7095-7080\n", 0, 0, false, false, false, 0, 1);
+      printText("Correo electronico\natencion.virtual@pgres.gob.sv\n", 0, 0, false, false, false, 0, 1);
+      printText("Sitio Web PGR: www.pgr.gob.sv\n\n", 0, 0, false, false, false, 0, 1);
+      printText("Para atender casos de violencia\ncontra la Mujer de manera\nconfidencial mediante atención\nlegal y psicológica. (2231-9595)" + "\n\n", 0, 0, false, false, false, 0, 1);
+      printText("Si eres una persona sorda y\ndeseas asesoría legal o consulta\nsobre un trámite te ofrecemos\nnuestros servicios en\nlínea con atención en Lengua de\nSeñas Salvadoreña (LESSA). \n\n", 0, 0, false, false, false, 0, 1);
+      printText("No olvides que en la\nProcuraduría General de la\nRepublica todos nuestros\nservicios son totalmente gratuitos\n¡Estamos para servirte!", 0, 0, false, false, false, 0, 1);
+		  printText("\n\n\n\n", 0, 0, false, false, false, 0, 0);
+		cutPaper(1);
+		var strSubmit = getPosData();
+		console.log(strSubmit);
+		issueID++;
+		requestPrint("Printer1", strSubmit, viewResult);
+		return true;
+  }
+
+  function PrintInfoDenucia(){
+    setPosId(issueID);
+		checkPrinterStatus();
+    setCharacterset(1252);
+		//printText(text,horizontal,vertical,bold,invert,underline,fonttype,alignment)
+			printText("PGR\n", 2, 1, true, false, true, 0, 1);
+      printText("¿Tienes quejas o denuncias en la PGR? \n", 0, 0, false, false, false, 0, 1);
+      printText("¿Quieres denunciar un acto de\n corrupción por parte de una\npersona trabajadora de la\nPROCURADURÍA? lo puedes hacer\npor las siguientes vías:\n\n", 0, 0, false, false, false, 0, 1);
+      
+      printText("2231-9525\n", 0, 0, false, false, false, 0, 1);
+      printText("7786-2058\n", 0, 0, false, false, false, 0, 1);
+      printText("oficinadequejas@pgres.gob.sv\n", 0, 0, false, false, false, 0, 1);
+      printText("A través de link de quejas que\n está en el portal de la PGR \n\n", 0, 0, false, false, false, 0, 1);
+      printText("Luego una persona te va a\ncontactar para atender o dar\n respuesta a tu caso.", 0, 0, false, false, false, 0, 1);
+
+		  printText("\n\n\n\n", 0, 0, false, false, false, 0, 0);
+		cutPaper(1);
+		var strSubmit = getPosData();
+		console.log(strSubmit);
+		issueID++;
+		requestPrint("Printer1", strSubmit, viewResult);
+		return true;
+  }
+
+  function verificarConexion(){
+    try{
+      var strSubmit = getPosData();
+      var res;
+      requestPrint("Printer1",strSubmit, viewResult);
+    
+    }catch(e){
+      console.log("error: "+e)
+    }
+   
+    //console.log("prueba: "+checkLabelStatus());
+  }
+
+
+</script>
 </html>
