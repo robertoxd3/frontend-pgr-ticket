@@ -43,6 +43,7 @@ export class LlamadoComponent implements OnInit, OnDestroy{
   public realTimeData: any;
   miCookie:any;
   groupId:any;
+  displayModal:boolean=false;
    dataSubscription: Subscription | undefined;
 
   constructor(private signalRService: ColaService,private cookieService: CookieService) {
@@ -81,6 +82,10 @@ export class LlamadoComponent implements OnInit, OnDestroy{
     {turno: "X-952", escritorio: "3"},
     {turno: "X-952", escritorio: "3"},
   ];
+
+  showDialog() {
+    this.displayModal = true;
+  }
 
   
   leerCookieJson(){
