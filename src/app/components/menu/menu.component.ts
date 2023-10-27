@@ -45,7 +45,27 @@ export class MenuComponent implements OnInit {
     this.obtenerUnidades();
     this.getTipoFilas();
     console.log(this.infoButton);
+    this.signalRService.ngOnInit(this.miCookie.config.codigoPad);
+
+  
+    
   }
+ActualizarTicketPantallas(){
+if (this.signalRService.isConnectionEstablished()) {
+  this.signalRService.UpdateCola(this.miCookie.config.codigoPad);
+} else {
+  console.error('La conexión SignalR no está establecida.');
+}
+}
+actualizarTicketEjecutivo(){
+ if (this.signalRService.isConnectionEstablished()) {
+  this.signalRService.UpdateTickets(this.miCookie.config.codigoPad);
+} else {
+  console.error('La conexión SignalR no está establecida.');
+}
+}
+
+  
 
   leerCookieJson(){
     const cookieName = 'cookie_tickets';
@@ -84,12 +104,11 @@ export class MenuComponent implements OnInit {
     } 
     
   }
-
+//Obtiene la ultima letra de un string
   public obtenerUltimaLetra(codigoUnidad: string){
     const partes: string[] = codigoUnidad.split(".");
     const ultimoValor: string = partes[partes.length - 1];
     const ultimoDigito: number = parseInt(ultimoValor.charAt(0));
-    //console.log("UltimoDigito: "+ultimoDigito + "\nUltimo Valor: "+ultimoValor); 
     if(ultimoDigito==parseInt(ultimoValor))
       return "assets/"+ultimoValor.trim()+".png";
      else
@@ -149,11 +168,13 @@ export class MenuComponent implements OnInit {
         next: (res) => {
           console.log(res);
           PrintReceipt(res.numeroTicket,res.fechaTicket,res.nombreSimple,res.departamento);
+          this.actualizarTicketEjecutivo();
+          this.ActualizarTicketPantallas();
           setTimeout(() => {
             this.loading=false;
             if(res){
               this.showAlert("Ticket Creado Correctamente","Exito",'success');
-              this.actualizarHub();
+              this.signalRService.UpdateCola(this.miCookie.config.codigoPad);
             }
             else
             this.showAlert("Problema al generar el ticket","Error",'error');
@@ -166,13 +187,6 @@ export class MenuComponent implements OnInit {
         },
       });
     }
-  }
-
-  actualizarHub(){
-    this.dataSubscription = this.signalRService.UpdateLLamada().subscribe(data => {
-      console.log(data);
-      // Realiza cualquier actualización de la interfaz de usuario necesaria aquí
-    });
   }
 
   createForm() {

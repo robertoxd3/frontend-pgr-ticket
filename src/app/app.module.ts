@@ -26,13 +26,16 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { LlamadoComponent } from './components/llamado/llamado.component';
 import { TableModule } from 'primeng/table';
+import { EjecutivoComponent } from './components/ejecutivo/ejecutivo.component';
+import { TabViewModule } from 'primeng/tabview';
 @NgModule({
   declarations: [
     AppComponent,
     MenuComponent,
     FloatingButtonComponent,
     SocialMediaComponent,
-    LlamadoComponent
+    LlamadoComponent,
+    EjecutivoComponent
   ],
   imports: [
     BrowserModule,
@@ -58,6 +61,7 @@ import { TableModule } from 'primeng/table';
     FontAwesomeModule,
     CardModule,
     TableModule,
+    TabViewModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

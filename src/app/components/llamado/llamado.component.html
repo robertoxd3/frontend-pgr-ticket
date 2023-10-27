@@ -3,13 +3,13 @@
       <div class="col-8 " >
         <div class="d-flex justify-content-between align-items-center">
             <img src="/assets/logo.png" width="100px">
-            <button pButton type="button" (click)="showDialog()" label="Llamado"></button>
+            <button pButton type="button" (click)="showDialog()" icon="pi pi-ticket"></button>
         </div>
         <video [muted]="true" #video  autoplay preload playsinline loop width="100%" height="auto" >
             <source src="assets/video/1.mp4" type="video/mp4" />
          </video>
       </div>
-      <div class="col-4 " >
+      <div class="col-4">
         <div style="height: 100vh; ">
                 <div class="card flex justify-content-center">
                     <div class="card">
@@ -34,18 +34,17 @@
     </div>
      <div class="row bg-dark" style="height: 5vh;">
       <h5 class="text-center text-white">PGR 2023</h5>
-<p-dialog header="" [(visible)]="displayModal">
-    <div class="row">
-        <div class="col-6 text-center">
-            <h4 class="display-3">Turno:</h4>
-            <h2 class="display-1"><b>X-951</b></h2>
-        </div>
-        <div class="col-6 text-center">
-            <h4 class="display-3">Escritorio:</h4>
-            <h2 class="display-1"><b>1</b></h2>
-        </div>
-    </div>
-</p-dialog>
-
     </div> 
+    <p-dialog header="" [(visible)]="displayModal">
+        <div class="row">
+            <div class="col-6 text-center">
+                <h4 class="display-3">Turno:</h4>
+                <h2 class="display-1"><b>X-951</b></h2>
+            </div>
+            <div class="col-6 text-center">
+                <h4 class="display-3">Escritorio:</h4>
+                <h2 class="display-1"><b>1</b></h2>
+            </div>
+        </div>
+    </p-dialog>
 </div>

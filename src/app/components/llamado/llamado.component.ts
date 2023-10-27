@@ -8,40 +8,14 @@ import { ColaService } from 'src/app/services/cola.service';
   templateUrl: './llamado.component.html',
   styleUrls: ['./llamado.component.css']
 })
-export class LlamadoComponent implements OnInit, OnDestroy{
+export class LlamadoComponent implements OnInit{
   @ViewChild("video", { static: true, read: ElementRef })
   //private hubConnection: signalR.HubConnection;
-
-
   cola:any;
-  // constructor(){
-  //   this.hubConnection = new signalR.HubConnectionBuilder()
-  //   .configureLogging(signalR.LogLevel.Debug)
-  //   .withUrl("https://localhost:7076/Cola", {
-  //     skipNegotiation: true,
-  //     transport: signalR.HttpTransportType.WebSockets
-  //   })
-  //   .build();
-  // this.startConnection();
-  // }
-
-  // startConnection() {
-  //   this.hubConnection.start().then(() => {
-  //     console.log('Connection started');
-  //   }).catch(err => console.log('Error while starting connection: ' + err));
-  // }
-
-  // addDataUpdateListener(callback: (data: any) => void) {
-  //   this.hubConnection.on("ReceiveDataUpdate", data => {
-  //     callback(data);
-  //     console.log(data);
-  //   });
-  // }
-
-  
-  //private dataSubscription: Subscription;
+  message:any;
   public realTimeData: any;
   miCookie:any;
+  messages: string[] = [];
   groupId:any;
   displayModal:boolean=false;
    dataSubscription: Subscription | undefined;
@@ -51,25 +25,27 @@ export class LlamadoComponent implements OnInit, OnDestroy{
   }
 
   ngOnInit() {
-    this.dataSubscription = this.signalRService.getDataUpdates().subscribe(data => {
-      this.realTimeData = data;
-      console.log(data);
+    this.signalRService.ngOnInit(this.miCookie.config.codigoPad);
+    
+    this.signalRService.getDataUpdates().subscribe(data => {
+          this.realTimeData = data;
+          console.log(data);
     });
-    this.actualizarHub();
-  }
 
+ 
 
-  ngOnDestroy() {
-    if (this.dataSubscription) {
-      this.dataSubscription.unsubscribe();
-    }
-  }
+   
+}
 
-  actualizarHub(){
-    this.signalRService.UpdateLLamada().subscribe(data => {
-      console.log("primer refresh");
-    });
+sendData() {
+    this.signalRService.sendMessage("PA12","PRUEBA");
+       if (this.signalRService.isConnectionEstablished()) {
+      this.signalRService.UpdateTickets(this.miCookie.config.codigoPad);
+  } else {
+      console.error('La conexión SignalR no está establecida.');
   }
+    //this.signalRService.UpdateCola("PA12");
+}
 
   colas=[
     {turno: "X-951", escritorio: "5"},
@@ -85,21 +61,17 @@ export class LlamadoComponent implements OnInit, OnDestroy{
 
   showDialog() {
     this.displayModal = true;
+    this.sendData();
   }
 
   
   leerCookieJson(){
     const cookieName = 'cookie_tickets';
-    // Verifica si la cookie existe
-    
     if (this.cookieService.check(cookieName)) {
       const cookieValue = this.cookieService.get(cookieName);
       try {
         this.miCookie = JSON.parse(cookieValue);
-        this.groupId=this.miCookie.config.codigoPad;
-       // console.log('Valor de la cookie:', this.miCookie);
-        //this.mostrarTipoFila = this.miCookie.config.mostrarTipoFila;
-        //this.loadJsonToBackend(this.miCookie);
+        console.log('Valor de la cookie:aa ', this.miCookie.config.codigoPad);
       } catch (error) {
         console.error('Error al analizar la cookie JSON:', error);
       }

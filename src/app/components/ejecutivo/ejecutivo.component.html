@@ -1,0 +1,71 @@
+<div class="container-fluid">
+  <div class="card">
+    <div class="d-flex justify-content-between align-items-center">
+      <img src="/assets/logo.png" width="100px" />
+      <div class="mb-3">
+        
+        <div class="d-flex justify-content-between align-items-center">
+          <p-button type="button" icon="pi pi-refresh" class="me-2" (click)="reset()" styleClass="p-button-text"></p-button>
+          <p-button type="button" severity="sucess" class="me-2" label="Llamar"></p-button>
+          <p-button type="button"  class="me-2" styleClass="p-button-danger"  label="Finalizar Turno"></p-button>
+        </div>
+    </div>
+    </div>
+    <p-tabView styleClass="tabview-custom">
+      <p-tabPanel>
+        <ng-template pTemplate="header">
+          <i class="pi pi-ticket me-2"></i>
+          <span>En Cola</span>
+        </ng-template>
+        <!-- Tab En COLA -->
+        <p-table
+          [value]="realTimeData"
+          selectionMode="single"
+          [rows]="10"
+          [loading]="isloading"
+        [paginator]="true"
+          [(selection)]="selectedProduct"
+          dataKey="idTicket"
+          (onRowSelect)="onRowSelect($event)"
+          [tableStyle]="{ 'min-width': '50rem' }"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th>ID Ticket</th>
+              <th>DUI</th>
+              <th>Numero Ticket</th>
+              <th>Fecha</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-data>
+            <tr [pSelectableRow]="data">
+              <td>{{ data.idControlTicket }}</td>
+              <td>{{ data.dui }}</td>
+              <td>{{ data.numeroTicket }}</td>
+              <td>{{ datePipe.transform(data.fechaTicket, 'dd/MM/yyyy HH:mm') }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+        <!-- Tab En COLA -->
+      </p-tabPanel>
+      <p-tabPanel header="Header II">
+        <ng-template pTemplate="header">
+          <i class="pi pi-check-circle me-2"></i>
+          <span>Finalizado</span>
+        </ng-template>
+        <p>
+          Tabla finalizada
+        </p>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+</div>
+
+<p-dialog header="Seleccionado" [dismissableMask]="true" [(visible)]="displayModal">
+  <p>Numero Ticket: {{ selectedData?.numeroTicket }}</p>
+  <p>Fecha de emisión: {{ datePipe.transform(selectedData?.fechaTicket, 'dd/MM/yyyy HH:mm')}}</p>
+  <div class="d-flex justify-content-between align-items-center">
+    <p-button type="button" severity="sucess" class="me-2" label="Llamar"></p-button>
+    <p-button type="button"  class="me-2" styleClass="p-button-danger"  label="Finalizar Turno"></p-button>
+  </div>
+</p-dialog>
