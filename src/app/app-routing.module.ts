@@ -3,9 +3,11 @@ import { RouterModule, Routes } from '@angular/router';
 import { MenuComponent } from './components/menu/menu.component';
 import { LlamadoComponent } from './components/llamado/llamado.component';
 import { EjecutivoComponent } from './components/ejecutivo/ejecutivo.component';
+import { LoginComponent } from './components/login/login.component';
 
 const routes: Routes = [
   { path: '', component: MenuComponent },
+  { path: 'login', component: LoginComponent },
   { path: 'llamado', component: LlamadoComponent },
   { path: 'ejecutivo', component: EjecutivoComponent },
 ];

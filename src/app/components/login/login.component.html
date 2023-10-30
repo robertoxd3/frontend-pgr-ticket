@@ -1,0 +1,70 @@
+<div class="content">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <img
+          src="assets/pgr.png"
+          alt="Image"
+          class="img-fluid vh-100 d-none d-sm-block"
+        />
+      </div>
+      <div class="col-md-6 d-flex align-items-center" style="height: 100vh">
+        <div class="row justify-content-center vw-100">
+          <div class="col-md-8">
+            <div class="mb-4 text-center">
+              <h5>Bienvenida/o</h5>
+              <h4 class="mb-4">SISTEMA DE GESTIÓN DE TICKETS</h4>
+            </div>
+            <hr />
+           
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="CodigoUsuario"
+                  id="usuario"
+                  placeholder="name@example.com"
+                />
+                <label for="usuario">Usuario</label>
+              </div>
+              <div
+                *ngIf="
+                  loginForm.controls['CodigoUsuario'].invalid &&
+                  (loginForm.controls['CodigoUsuario'].dirty ||
+                    loginForm.controls['CodigoUsuario'].touched)
+                "
+                class="text-danger mt-3"
+              >
+                <div *ngIf="loginForm.controls['CodigoUsuario'].errors">
+                  Este Campo es obligatorio
+                </div>
+              </div>
+
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="ClaveUsuario"
+                  id="clave"
+                  placeholder="name@example.com"
+                />
+                <label for="clave">Contraseña</label>
+              </div>
+              <span class="d-block text-left my-4 text-muted text-center"
+                >&mdash; PGR 2023 &mdash;</span
+              >
+              <p-button
+                label="Ingresar"
+                styleClass="w-100"
+                [disabled]="loginForm.invalid"
+                [loading]="loading"
+                type="submit"
+              ></p-button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

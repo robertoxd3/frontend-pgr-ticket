@@ -28,6 +28,7 @@ import { LlamadoComponent } from './components/llamado/llamado.component';
 import { TableModule } from 'primeng/table';
 import { EjecutivoComponent } from './components/ejecutivo/ejecutivo.component';
 import { TabViewModule } from 'primeng/tabview';
+import { LoginComponent } from './components/login/login.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,7 +36,8 @@ import { TabViewModule } from 'primeng/tabview';
     FloatingButtonComponent,
     SocialMediaComponent,
     LlamadoComponent,
-    EjecutivoComponent
+    EjecutivoComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,

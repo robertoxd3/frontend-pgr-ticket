@@ -5,9 +5,10 @@
             <img src="/assets/logo.png" width="100px">
             <button pButton type="button" (click)="showDialog()" icon="pi pi-ticket"></button>
         </div>
-        <video [muted]="true" #video  autoplay preload playsinline loop width="100%" height="auto" >
-            <source src="assets/video/1.mp4" type="video/mp4" />
-         </video>
+         <video [muted]="true" #video  autoplay preload playsinline [src]="currentVideo" (ended)="onVideoEnded()" (error)="onVideoError()"   width="100%" id="myVideo" height="auto" >
+
+         </video> 
+         <!-- <video #video autoplay preload playsinline [src]="currentVideo" (ended)="onVideoEnded()" (error)="onVideoError()" width="100%" height="auto" id="myVideo"></video> -->
       </div>
       <div class="col-4">
         <div style="height: 100vh; ">

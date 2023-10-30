@@ -62,6 +62,10 @@ export class ColaService {
       });
   }
 
+  // public closeConnection(){
+  //   this.connection.onclose()
+  // }
+
   public join(groupName:string) {
     this.connection.invoke('JoinGroup', groupName)
       .then(_ => {
