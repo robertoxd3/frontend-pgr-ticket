@@ -1,6 +1,6 @@
-<div class="container-fluid">
+<div class="container-fluid" style="background-color: #3C4557;">
     <div class="row" style="height: 95vh; ">
-      <div class="col-8 " >
+      <div class="col-7" >
         <div class="d-flex justify-content-between align-items-center">
             <img src="/assets/logo.png" width="100px">
             <button pButton type="button" (click)="showDialog()" icon="pi pi-ticket"></button>
@@ -10,25 +10,40 @@
          </video> 
          <!-- <video #video autoplay preload playsinline [src]="currentVideo" (ended)="onVideoEnded()" (error)="onVideoError()" width="100%" height="auto" id="myVideo"></video> -->
       </div>
-      <div class="col-4">
+      <div class="col-5">
         <div style="height: 100vh; ">
                 <div class="card flex justify-content-center">
                     <div class="card">
                         <p-table [value]="realTimeData" >
                             <ng-template pTemplate="header" >
                                 <tr>
-                                    <th style="font-size: 2rem;" class="text-center">Turno</th>
-                                    <th style="font-size: 2rem;" class="text-center">Escritorio</th>
+                                    <th style="font-size: 4rem;" class="text-center">Turno</th>
+                                    <th style="font-size: 4rem;" class="text-center">Escritorio</th>
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="body" let-realTimeData>
                                 <tr>
-                                    <td style="font-size: 2rem;"  class="text-center">{{ realTimeData.numeroTicket }}</td>
-                                    <td style="font-size: 2rem;"  class="text-center">{{ realTimeData.idEscritorio }}</td>
+                                    <td style="font-size: 4rem;"  class="text-center">{{ realTimeData.numeroTicket }}</td>
+                                    <td style="font-size: 4rem;"  class="text-center">{{ realTimeData.idEscritorio }}</td>
                                 </tr>
                             </ng-template>
                         </p-table>
                     </div>
+                    <!-- <table class="">
+                        <thead>
+                        <tr>
+                                    <th style="font-size: 4rem;" class="text-center">Turno</th>
+                                        <th style="font-size: 4rem;" class="text-center">Escritorio</th>
+                        </tr>
+                        </thead>
+                        <tbody *ngFor="let realTimeData of realTimeData; index as i;" class="table-hover">
+                            <tr>
+                                <td style="font-size: 4rem;"  class="text-center">{{ realTimeData.numeroTicket }}</td>
+                                <td style="font-size: 4rem;"  class="text-center">{{ realTimeData.idEscritorio }}</td>
+                            </tr>
+                        
+                        </tbody>
+                        </table> -->
                 </div>
         </div>
       </div>

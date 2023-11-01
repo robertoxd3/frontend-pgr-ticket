@@ -30,7 +30,7 @@ export class LlamadoComponent implements OnInit,OnDestroy,AfterViewInit{
   }
 
   ngOnInit() {
-   // this.signalRService.ngOnInit(this.miCookie.config.codigoPad);
+    this.signalRService.ngOnInit(this.miCookie.config.codigoPad);
     this.signalRService.getDataUpdates().subscribe(data => {
           this.realTimeData = data;
           console.log(data);
