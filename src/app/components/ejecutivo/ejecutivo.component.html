@@ -30,18 +30,22 @@
         >
           <ng-template pTemplate="header">
             <tr>
-              <th>ID Ticket</th>
-              <th>DUI</th>
+              <th>ID</th>
               <th>Numero Ticket</th>
-              <th>Fecha</th>
+              <th>Orden</th>
+              <th>En Espera</th>
+              <th>Unidad</th>
+              <!-- <th>Fecha</th> -->
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-data>
             <tr [pSelectableRow]="data">
-              <td>{{ data.idControlTicket }}</td>
-              <td>{{ data.dui }}</td>
+              <td>{{ data.idOrden }}</td>
               <td>{{ data.numeroTicket }}</td>
-              <td>{{ datePipe.transform(data.fechaTicket, 'dd/MM/yyyy HH:mm') }}</td>
+              <td>{{ data.orden }}</td>
+              <td>{{data.espera}}</td>
+              <td>{{data.codigoUnidades}}</td>
+              <!-- <td>{{ datePipe.transform(data.fechaTicket, 'dd/MM/yyyy HH:mm') }}</td> -->
             </tr>
           </ng-template>
         </p-table>

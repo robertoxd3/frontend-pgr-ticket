@@ -1,35 +1,78 @@
-<div class="container-fluid" style="background-color: #3C4557;">
-    <div class="row" style="height: 95vh; ">
-      <div class="col-7" >
-        <div class="d-flex justify-content-between align-items-center">
-            <img src="/assets/logo.png" width="100px">
-            <button pButton type="button" (click)="showDialog()" icon="pi pi-ticket"></button>
+<div class="container-fluid" style="background-color: #fff">
+  <div class="row d-flex align-items-center" style="height: 90vh">
+    <div class="col-12 col-xl-8 mt-2 ">
+        <div class="videoWrapper">
+          
+          <video
+            [muted]="true"
+            #video
+            autoplay
+            
+            playsinline
+            [src]="currentVideo"
+            (ended)="onVideoEnded()"
+            (error)="onVideoError()"
+            id="myVideo"
+          ></video>
         </div>
-         <video [muted]="true" #video  autoplay preload playsinline [src]="currentVideo" (ended)="onVideoEnded()" (error)="onVideoError()"   width="100%" id="myVideo" height="auto" >
 
-         </video> 
-         <!-- <video #video autoplay preload playsinline [src]="currentVideo" (ended)="onVideoEnded()" (error)="onVideoError()" width="100%" height="auto" id="myVideo"></video> -->
+      <!-- <div class="d-flex justify-content-between align-items-center">
+        <img src="/assets/logo.png" width="100px" />
+        <button
+          pButton
+          type="button"
+          (click)="showDialog()"
+          icon="pi pi-ticket"
+        ></button>
       </div>
-      <div class="col-5">
-        <div style="height: 100vh; ">
-                <div class="card flex justify-content-center">
-                    <div class="card">
-                        <p-table [value]="realTimeData" >
-                            <ng-template pTemplate="header" >
-                                <tr>
-                                    <th style="font-size: 4rem;" class="text-center">Turno</th>
-                                    <th style="font-size: 4rem;" class="text-center">Escritorio</th>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="body" let-realTimeData>
-                                <tr>
-                                    <td style="font-size: 4rem;"  class="text-center">{{ realTimeData.numeroTicket }}</td>
-                                    <td style="font-size: 4rem;"  class="text-center">{{ realTimeData.idEscritorio }}</td>
-                                </tr>
-                            </ng-template>
-                        </p-table>
-                    </div>
-                    <!-- <table class="">
+      -->
+    </div>
+
+    <div class="col-12 col-xl-4">
+      <div>
+        <div class="">
+          <div class="ticket w-100">
+            <div class="stub">
+              <div class="title top mt-2">Atendiendo</div>
+              <div *ngIf="turnoActual" class="number">
+                {{ turnoActual.idEscritorio }}
+              </div>
+              <div class="title text-center">Escritorio</div>
+            </div>
+            <div class="check w-100 align-items-center">
+              <div class="title mb-2">Turno</div>
+              <div *ngIf="turnoActual" class="big">
+                {{ turnoActual.numeroTicket }}
+              </div>
+              <div class="info">
+                <section>
+                  <div class="title">Date</div>
+                  <div>4/27/2023</div>
+                </section>
+              </div>
+            </div>
+          </div>
+          <div>
+            <p-table [value]="realTimeData">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th style="font-size: 2rem" class="text-center">Mesa</th>
+                  <th style="font-size: 2rem" class="text-center">Turno</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-realTimeData>
+                <tr>
+                  <td style="font-size: 2rem" class="text-center">
+                    {{ realTimeData.idEscritorio }}
+                  </td>
+                  <td style="font-size: 2rem" class="text-center">
+                    {{ realTimeData.numeroTicket }}
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+          <!-- <table class="">
                         <thead>
                         <tr>
                                     <th style="font-size: 4rem;" class="text-center">Turno</th>
@@ -44,23 +87,26 @@
                         
                         </tbody>
                         </table> -->
-                </div>
         </div>
       </div>
     </div>
-     <div class="row bg-dark" style="height: 5vh;">
-      <h5 class="text-center text-white">PGR 2023</h5>
-    </div> 
-    <p-dialog header="" [(visible)]="displayModal">
-        <div class="row">
-            <div class="col-6 text-center">
-                <h4 class="display-3">Turno:</h4>
-                <h2 class="display-1"><b>X-951</b></h2>
-            </div>
-            <div class="col-6 text-center">
-                <h4 class="display-3">Escritorio:</h4>
-                <h2 class="display-1"><b>1</b></h2>
-            </div>
-        </div>
-    </p-dialog>
+  </div>
+  <div class="row" style="height: 10vh">
+    <div class="text-center d-flex align-items-center justify-content-between">
+        <img src="/assets/logo.png" width="80px"/>
+      <span>12:10</span>
+    </div>
+  </div>
+  <p-dialog header="" [(visible)]="displayModal">
+    <div class="row">
+      <div class="col-6 text-center">
+        <h4 class="display-3">Turno:</h4>
+        <h2 class="display-1"><b>X-951</b></h2>
+      </div>
+      <div class="col-6 text-center">
+        <h4 class="display-3">Escritorio:</h4>
+        <h2 class="display-1"><b>1</b></h2>
+      </div>
+    </div>
+  </p-dialog>
 </div>

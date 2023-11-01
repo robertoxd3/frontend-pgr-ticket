@@ -1,4 +1,5 @@
 <div class="content">
+  <p-toast></p-toast>
   <div class="container">
     <div class="row">
       <div class="col-md-6">
@@ -51,16 +52,29 @@
                 />
                 <label for="clave">Contraseña</label>
               </div>
+              <div
+                *ngIf="
+                  loginForm.controls['ClaveUsuario'].invalid &&
+                  (loginForm.controls['ClaveUsuario'].dirty ||
+                    loginForm.controls['ClaveUsuario'].touched)
+                "
+                class="text-danger mt-3"
+              >
+                <div *ngIf="loginForm.controls['ClaveUsuario'].errors">
+                  Este Campo es obligatorio
+                </div>
+              </div>
               <span class="d-block text-left my-4 text-muted text-center"
                 >&mdash; PGR 2023 &mdash;</span
               >
-              <p-button
+              <button
+                pButton
                 label="Ingresar"
-                styleClass="w-100"
+                class="w-100 btn btn-primary"
                 [disabled]="loginForm.invalid"
                 [loading]="loading"
                 type="submit"
-              ></p-button>
+              ></button>
             </form>
           </div>
         </div>

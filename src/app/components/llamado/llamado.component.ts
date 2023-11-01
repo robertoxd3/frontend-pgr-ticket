@@ -23,6 +23,7 @@ export class LlamadoComponent implements OnInit,OnDestroy,AfterViewInit{
   messages: string[] = [];
   groupId:any;
   displayModal:boolean=false;
+  turnoActual: any;
    dataSubscription: Subscription | undefined;
 
   constructor(private signalRService: ColaService,private cookieService: CookieService, private rd: Renderer2) {
@@ -33,10 +34,12 @@ export class LlamadoComponent implements OnInit,OnDestroy,AfterViewInit{
     this.signalRService.ngOnInit(this.miCookie.config.codigoPad);
     this.signalRService.getDataUpdates().subscribe(data => {
           this.realTimeData = data;
+          this.turnoActual=data[0];
           console.log(data);
     });
 }
-//como puedo cambiar el src del video en angular de una lista de videos en una carpeta en asset/ cada video se llama 1.mp4 y estan enumerados hasta 10 quiero que el video se cambie sin actualizar la página
+// Usando boostrap y angular y css quiero crear un video que se estire a todo lo que da un contenido div sin dejar espacio ni margenes 
+
 ngAfterViewInit() {
 //   let player = this.video.nativeElement;
 //   let mp4Vid = this.source.nativeElement;
