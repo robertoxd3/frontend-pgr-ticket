@@ -37,8 +37,9 @@ export class LlamadoComponent implements OnInit,OnDestroy,AfterViewInit{
           this.turnoActual=data[0];
           console.log(data);
     });
+    
 }
-// Usando boostrap y angular y css quiero crear un video que se estire a todo lo que da un contenido div sin dejar espacio ni margenes 
+
 
 ngAfterViewInit() {
 //   let player = this.video.nativeElement;
@@ -93,7 +94,7 @@ videosLista: string[] = [
 
 
 ngOnDestroy(): void {
-  this.signalRService.leave
+  this.signalRService.disconnect();
 }
 
 sendData() {

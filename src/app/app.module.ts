@@ -29,6 +29,11 @@ import { TableModule } from 'primeng/table';
 import { EjecutivoComponent } from './components/ejecutivo/ejecutivo.component';
 import { TabViewModule } from 'primeng/tabview';
 import { LoginComponent } from './components/login/login.component';
+import { DataViewModule } from 'primeng/dataview';
+import { TagModule } from 'primeng/tag';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { AvatarModule } from 'primeng/avatar';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -64,6 +69,10 @@ import { LoginComponent } from './components/login/login.component';
     CardModule,
     TableModule,
     TabViewModule,
+    DataViewModule,
+    TagModule,
+    SplitButtonModule,
+    AvatarModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

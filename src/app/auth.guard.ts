@@ -9,7 +9,9 @@ export class AuthGuard implements CanActivate {
   constructor(private router: Router) { }
 
   canActivate(): boolean {
-    if (localStorage.getItem('user')) {
+    var usuario= localStorage.getItem('user');
+
+    if (usuario!=null && usuario!="null") {
       return true;
     } else {
       this.router.navigate(['/login']); // Redirige al usuario a la página de inicio de sesión si no está autenticado.

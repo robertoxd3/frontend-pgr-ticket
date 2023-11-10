@@ -1,20 +1,111 @@
+<nav class="navbar navbar-expand-lg bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">
+      <img src="/assets/logo.png" width="75"  />
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+      </ul>
+      <form class="d-flex"  role="search">
+          <div style="z-index: 9999;">
+            <!-- <p-avatar label="P" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> -->
+            <p-splitButton  icon="pi pi-user"  [model]="itemsAvatar" styleClass="p-button-raised mr-2 mb-2"></p-splitButton>
+        </div>
+      </form>
+    </div>
+  </div>
+</nav>
 <div class="container-fluid">
+     <!-- Spinner Inicio -->
+     <div *ngIf="loading" class="overlay">
+      <p-progressSpinner
+        styleClass="w-4rem h-4rem"
+        strokeWidth="8"
+        fill="var(--surface-ground)"
+        animationDuration=".5s"
+      ></p-progressSpinner>
+    </div>
+    <p-toast></p-toast>
   <div class="card">
     <div class="d-flex justify-content-between align-items-center">
-      <img src="/assets/logo.png" width="100px" />
-      <div class="mb-3">
-        <div class="d-flex justify-content-between align-items-center">
+      
+      <div class="py-3 w-100">
+        <div class="d-flex justify-content-end align-items-end">
           <p-button type="button" icon="pi pi-refresh" class="me-2" (click)="reset()" styleClass="p-button-text"></p-button>
-          <p-button type="button" severity="sucess" class="me-2" label="Llamar"></p-button>
-          <p-button type="button"  class="me-2" styleClass="p-button-danger"  label="Finalizar Turno"></p-button>
+          <p-button type="button" icon="pi pi-megaphone" severity="sucess" class="me-2" label="Llamar" (click)="Llamada(1)"></p-button>
+          <p-button type="button" icon="pi pi-check"  class="me-2" styleClass="p-button-danger"  label="Finalizar Turno" (click)="Llamada(2)"></p-button>
         </div>
     </div>
     </div>
     <p-tabView styleClass="tabview-custom">
+      <p-tabPanel header="Header III">
+        <ng-template pTemplate="header">
+          <i class="pi pi-check-circle me-2"></i>
+          <span>Turno Actual</span>
+        </ng-template>
+         <div class="row">
+          <div class="col-12 col-md-4">
+            <p-card header="Atendiendo"  class="w-100">
+              <div *ngIf="realTimeData">
+                <h5>
+                   {{realTimeData[0].numeroTicket}}
+                </h5>
+                <p>{{realTimeData[0].nombreFila}}</p>
+                {{ datePipe.transform(realTimeData[0].fechaTicket, 'dd/MM/yyyy HH:mm') }}
+                <br>
+                <p-button icon="pi pi-megaphone" class="me-2"  rounded="true" severity="secondary" (click)="Llamada(3)"></p-button>
+                <p-button icon="pi pi-times" rounded="true" severity="info"></p-button>
+  
+              </div>
+          </p-card>
+          
+          </div>
+          <div class="col-12 col-md-8">
+            <h4>En Cola</h4>
+            <p-dataView #dv [value]="realTimeData" selectionMode="single" [rows]="5" [paginator]="true">
+              <ng-template let-data pTemplate="listItem">
+                <div class="container">
+                  <div class="row">
+                      <div class="col-12">
+                          <div class="d-flex flex-column flex-xl-row align-items-start p-4 gap-4 custom-hover-effect">
+                              <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center align-items-xl-start flex-grow-1 gap-4">
+                                  <div class="d-flex flex-column align-items-center align-items-sm-start gap-3">
+                                      <div class="h2 font-weight-bold text-900">{{ data.numeroTicket }}</div>
+                                      <div class="d-flex align-items-center gap-3">
+                                          <span class="d-flex align-items-center gap-2">
+                                              <i class="pi pi-tag"></i>
+                                              <span class="font-weight-bold">{{ data.nombreSimple }}</span>
+                                          </span>
+                                          <span class="badge badge-danger">{{ data.estado }}</span>
+                                      </div>
+                                  </div>
+                                  <div class="d-flex flex-sm-column align-items-center align-items-sm-end gap-3 gap-sm-2">
+                                      <span class="h2 font-weight-bold">{{ datePipe.transform(data.fechaTicket, 'dd/MM/yyyy HH:mm') }}</span>
+                                      <button class="btn btn-primary ms-auto mb-2 rounded-circle">
+                                          <i class="pi pi-megaphone"></i>
+                                      </button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              </ng-template>
+          </p-dataView>
+          </div>
+         </div>
+      </p-tabPanel>
+
       <p-tabPanel>
         <ng-template pTemplate="header">
           <i class="pi pi-ticket me-2"></i>
-          <span>En Cola</span>
+          <span>Historial</span>
         </ng-template>
         <!-- Tab En COLA -->
         <p-table
@@ -24,7 +115,7 @@
           [loading]="isloading"
         [paginator]="true"
           [(selection)]="selectedProduct"
-          dataKey="idTicket"
+          dataKey="idOrden"
           (onRowSelect)="onRowSelect($event)"
           [tableStyle]="{ 'min-width': '50rem' }"
         >
@@ -35,7 +126,7 @@
               <th>Orden</th>
               <th>En Espera</th>
               <th>Unidad</th>
-              <!-- <th>Fecha</th> -->
+              <th>Fecha</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-data>
@@ -44,22 +135,23 @@
               <td>{{ data.numeroTicket }}</td>
               <td>{{ data.orden }}</td>
               <td>{{data.espera}}</td>
-              <td>{{data.codigoUnidades}}</td>
-              <!-- <td>{{ datePipe.transform(data.fechaTicket, 'dd/MM/yyyy HH:mm') }}</td> -->
+              <td>{{data.nombreSimple}}</td>
+               <td>{{ datePipe.transform(data.fechaTicket, 'dd/MM/yyyy HH:mm') }}</td> 
             </tr>
           </ng-template>
         </p-table>
         <!-- Tab En COLA -->
       </p-tabPanel>
-      <p-tabPanel header="Header II">
+      <!-- <p-tabPanel header="Header II">
         <ng-template pTemplate="header">
           <i class="pi pi-check-circle me-2"></i>
-          <span>Finalizado</span>
+          <span>Historial</span>
         </ng-template>
         <p>
           Tabla finalizada
         </p>
-      </p-tabPanel>
+      </p-tabPanel> -->
+      
     </p-tabView>
   </div>
 </div>

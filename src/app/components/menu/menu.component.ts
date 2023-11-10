@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup,FormControl,Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { TicketService } from 'src/app/services/ticket.service';
@@ -16,7 +16,7 @@ declare var verificarConexion:any;
   styleUrls: ['./menu.component.css'],
   providers: [MessageService]
 })
-export class MenuComponent implements OnInit {
+export class MenuComponent implements OnInit,OnDestroy {
   loading: boolean = false;
   unidades: any = [];
   visible: boolean = false;
@@ -46,9 +46,10 @@ export class MenuComponent implements OnInit {
     this.getTipoFilas();
     console.log(this.infoButton);
     this.signalRService.ngOnInit(this.miCookie.config.codigoPad);
-
-  
     
+  }
+  ngOnDestroy(): void {
+    this.signalRService.disconnect();
   }
 ActualizarTicketPantallas(){
 if (this.signalRService.isConnectionEstablished()) {

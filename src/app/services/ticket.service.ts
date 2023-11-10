@@ -10,12 +10,14 @@ import { environment } from 'src/environments/environment';
 export class TicketService {
 
   baseUrl: string;
+  colaUrl: string;
   private httpClient = inject(HttpClient);
   id!: number;
   enlace: string = '';
 
   constructor() {
     this.baseUrl = environment.apiUrl;
+    this.colaUrl= environment.colaUrl;
   }
 
   getUnidades(json: any): Observable<any> {
@@ -47,5 +49,9 @@ export class TicketService {
 
   printInfoDenucias(): Observable<any> {
     return this.httpClient.get(this.baseUrl + 'printInfo2');
+  }
+
+  procedimientoAlmacenado(form: FormData): Observable<any> {
+    return this.httpClient.post(this.colaUrl + 'ProcedimientoTicket',form);
   }
 }

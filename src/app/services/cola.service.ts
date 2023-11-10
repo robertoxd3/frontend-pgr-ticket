@@ -50,22 +50,25 @@ export class ColaService {
 
 
   ngOnInit(groupName:string){
-    this.connection.start()
-      .then(_ => {
-        console.log('Connection Started');
-        //this.subscribeToDataUpdates();
-        this.receiveInitialData();
-        this.receiveTicket();
-        this.join(groupName);
-      }).catch(error => {
-        return console.error(error);
-      });
+    this.startConnection(groupName);
   }
 
-  // public closeConnection(){
-  //   this.connection.onclose()
-  // }
+  startConnection(groupName:string){
+    //this.connection.serverTimeoutInMilliseconds = 300000;
+   // this.connection.keepAliveIntervalInMilliseconds = 300000;
+    this.connection.start()
+    .then(_ => {
+      console.log('Connection Started');
+      //this.subscribeToDataUpdates();
+      this.receiveInitialData();
+      this.receiveTicket();
+     this.join(groupName);
+    }).catch(error => {
+      return console.error(error);
+    });
+  }
 
+  
   public join(groupName:string) {
     this.connection.invoke('JoinGroup', groupName)
       .then(_ => {
@@ -78,6 +81,25 @@ export class ColaService {
     .then(_ => this.messageToSend = '');
   }
   
+  public addColaListner = () => {
+    this.connection.on('Notification', (notification: Notification) => {
+      this.showNotification(notification);
+      
+    });
+  }
+
+  public subscribeToNotification(notification:any)
+  {
+    this.connection.invoke("Notification",notification)
+  }
+
+  
+
+
+  showNotification(notification: any) {
+    //this.toastr.warning( notification.message,notification.productID+" "+notification.productName);
+    console.log(notification);
+  }
     getDataUpdates(): Observable<any> {
       return this.dataSubject.asObservable();
     }
@@ -101,8 +123,11 @@ export class ColaService {
           this.connection.invoke('ObtenerTicketEnCola', groupName)
           .then(_ => console.log("Data Actualizada"));
         }
-    
+        public disconnect() {
+          this.connection.stop();
+        }
 
+     
   receiveTicket() {
           this.connection.on('Ticket',(data)=>{
                 this.dataSubjectTicket.next(data);
