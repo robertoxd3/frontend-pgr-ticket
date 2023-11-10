@@ -142,8 +142,6 @@ Llamada(id:any){
   this.signalRService.subscribeToNotification(notification);
 }
 
-
-  
   showAlert(mensaje: string, titulo:string, tipo: string) {
     this.messageService.add({
       severity: tipo,
