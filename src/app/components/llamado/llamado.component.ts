@@ -1,13 +1,14 @@
 import { AfterContentInit, AfterViewInit, Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import * as signalR from "@microsoft/signalr";
 import { CookieService } from 'ngx-cookie-service';
+import { DialogService } from 'primeng/dynamicdialog';
 import { Subscription,of,takeUntil } from 'rxjs';
 import { ColaService } from 'src/app/services/cola.service';
 
 @Component({
   selector: 'app-llamado',
   templateUrl: './llamado.component.html',
-  styleUrls: ['./llamado.component.css']
+  styleUrls: ['./llamado.component.css'],
 })
 export class LlamadoComponent implements OnInit,OnDestroy,AfterViewInit{
   count = 1;
@@ -37,7 +38,8 @@ export class LlamadoComponent implements OnInit,OnDestroy,AfterViewInit{
           this.turnoActual=data[0];
           console.log(data);
     });
-    
+    this.signalRService.NotificationListener(); 
+
 }
 
 
@@ -80,16 +82,16 @@ ngAfterViewInit() {
  }
 
 videosLista: string[] = [
-  'assets/video/1.mp4',
-  'assets/video/2.mp4',
-  'assets/video/3.mp4',
-  'assets/video/4.mp4',
-  'assets/video/5.mp4',
-  'assets/video/6.mp4',
-  'assets/video/7.mp4',
-  'assets/video/8.mp4',
-  'assets/video/9.mp4',
-  'assets/video/10.mp4',
+  'http://192.168.30.21/Resources/VideoSIAPP/1.mp4',
+  'http://192.168.30.21/Resources/VideoSIAPP/2.mp4',
+  'http://192.168.30.21/Resources/VideoSIAPP/3.mp4',
+  'http://192.168.30.21/Resources/VideoSIAPP/4.mp4',
+  'http://192.168.30.21/Resources/VideoSIAPP/5.mp4',
+  'http://192.168.30.21/Resources/VideoSIAPP/6.mp4',
+  'http://192.168.30.21/Resources/VideoSIAPP/7.mp4',
+  'http://192.168.30.21/Resources/VideoSIAPP/8.mp4',
+  'http://192.168.30.21/Resources/VideoSIAPP/9.mp4',
+  'http://192.168.30.21/Resources/VideoSIAPP/10.mp4',
 ];
 
 

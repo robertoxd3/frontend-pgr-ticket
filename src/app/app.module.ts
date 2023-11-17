@@ -33,6 +33,8 @@ import { DataViewModule } from 'primeng/dataview';
 import { TagModule } from 'primeng/tag';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { AvatarModule } from 'primeng/avatar';
+import { NotificacionModalComponent } from './components/notificacion-modal/notificacion-modal.component';
+import { DialogService } from 'primeng/dynamicdialog';
 
 @NgModule({
   declarations: [
@@ -42,7 +44,8 @@ import { AvatarModule } from 'primeng/avatar';
     SocialMediaComponent,
     LlamadoComponent,
     EjecutivoComponent,
-    LoginComponent
+    LoginComponent,
+    NotificacionModalComponent
   ],
   imports: [
     BrowserModule,
@@ -74,7 +77,7 @@ import { AvatarModule } from 'primeng/avatar';
     SplitButtonModule,
     AvatarModule,
   ],
-  providers: [],
+  providers: [DialogService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

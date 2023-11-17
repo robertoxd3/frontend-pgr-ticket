@@ -28,6 +28,10 @@ rows = 10;
 formProcedimiento!: FormGroup;
 loading:Boolean=false;
 itemsAvatar!: MenuItem[];
+notificacion = {
+  numeroTicket: 'X-198',
+  escritorio: '1'
+}
 
 constructor(private auth:AuthGuard, private fb:FormBuilder, private signalRService: ColaService,private ticketService:TicketService,private cookieService:CookieService,public datePipe: DatePipe,public messageService:MessageService) {
   this.leerCookieJson();
@@ -44,6 +48,7 @@ constructor(private auth:AuthGuard, private fb:FormBuilder, private signalRServi
 ];
 }
 
+
 showModal(data: any) {
   console.log("Prueba")
     this.selectedData = data;
@@ -51,7 +56,8 @@ showModal(data: any) {
 }
 
 Logout(){
-  this.auth.logout()
+  this.auth.logout();
+
 }
 
 closeModal() {
@@ -72,8 +78,11 @@ ngOnInit() {
     this.realTimeData = data;
     console.log(data);
     this.isloading=false;
-    
 });
+
+ this.signalRService.NotificationListener(); 
+
+
 this.isloading=false;
  
 }
@@ -109,12 +118,14 @@ createForm() {
 // Como mostrar un modal con datos en tiempo real enviado a otro componente angular que estan conectado en el mismo web socket de singal r en .net web api 
 Llamada(id:any){
   this.loading=true;
+  console.log(id);
   this.formProcedimiento.value.idTipo=id;
   //console.log("idTipo: "+ this.formProcedimiento.value.idTipo);
  if (this.usuarioLogueado) {
       this.ticketService.procedimientoAlmacenado(this.formProcedimiento.value).subscribe({
         next: (res) => {
           console.log(res);
+          //this.signalRService.executeNotification(this.miCookie.config.codigoPad,this.notificacion);
           if(id==1)
           {
             this.showAlert("Se llamo al usuario con exito","Exito","success");
@@ -137,10 +148,10 @@ Llamada(id:any){
       console.error('La conexión SignalR no está establecida.');
   } 
 
-  sendNotification(notification:any)
-{
-  this.signalRService.subscribeToNotification(notification);
-}
+//   sendNotification(notification:any)
+// {
+//   this.signalRService.subscribeToNotification(notification);
+// }
 
   showAlert(mensaje: string, titulo:string, tipo: string) {
     this.messageService.add({
@@ -148,6 +159,11 @@ Llamada(id:any){
       summary: titulo,
       detail: mensaje,
     });
+  }
+
+  call(){
+    this.signalRService.executeNotification(this.miCookie.config.codigoPad,this.notificacion);
+    console.log("call");
   }
 
   leerCookieJson(){

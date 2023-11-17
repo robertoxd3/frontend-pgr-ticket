@@ -4,6 +4,8 @@ import { HttpClient,HttpHeaders } from '@angular/common/http';
 import * as signalR from "@microsoft/signalr";
 import { environment } from 'src/environments/environment';
 import { CookieService } from 'ngx-cookie-service';
+import { DialogService } from 'primeng/dynamicdialog';
+import { NotificacionModalComponent } from '../components/notificacion-modal/notificacion-modal.component';
 
 interface NewMessage {
   message: string;
@@ -21,18 +23,20 @@ export class ColaService {
   colaUrl?: string;
   colaWebSocket?: string;
   miCookie:any;
-  
+  public data:any;
   //isConnectionEstablished = false;
-  
-
+  public selectedVoice?: any;
+  voz:any=[];
   public messageToSend = '';
   public joined = false;
+  public recommendedVoices?: any;
+
   public conversation: NewMessage[] = [{
     message: 'Bienvenido',
   }];
   private connection: signalR.HubConnection;
 
-  constructor(private cookieService:CookieService) {
+  constructor(private cookieService:CookieService, private modalService:DialogService) {
     this.colaUrl=environment.colaUrl;
     this.colaWebSocket=environment.colaWebSocket;
     this.connection = new signalR.HubConnectionBuilder()
@@ -45,12 +49,18 @@ export class ColaService {
      this.connection.on("NewUser", message => this.newUser(message));
      this.connection.on("NewMessage", message => this.newMessage(message));
      this.connection.on("LeftUser", message => this.leftUser(message));
+     const synth = window.speechSynthesis;
+     this.recommendedVoices = synth.getVoices();
   }
 
 
 
   ngOnInit(groupName:string){
     this.startConnection(groupName);
+    setTimeout(() => {
+      const synth = window.speechSynthesis;
+        this.recommendedVoices = synth.getVoices();
+    }, 500);
   }
 
   startConnection(groupName:string){
@@ -81,25 +91,63 @@ export class ColaService {
     .then(_ => this.messageToSend = '');
   }
   
-  public addColaListner = () => {
-    this.connection.on('Notification', (notification: Notification) => {
-      this.showNotification(notification);
+  // public addColaListner = (groupname:any) => {
+  //   this.connection.on('Notification',(notification: Notification) => {
+  //     this.showNotification(notification);
       
+  //   });
+  // }
+
+  // public subscribeToNotification(groupname:any,notification:any)
+  // {
+  //   this.connection.invoke("Notification",groupname,notification).then(mensaje=>this.showNotificationModal(mensaje))
+  // }
+
+  public NotificationListener = (): void => {
+    this.connection.on('Notification', (data): void => {
+      console.log(data);
+      this.showNotificationModal(data);
     });
   }
 
-  public subscribeToNotification(notification:any)
-  {
-    this.connection.invoke("Notification",notification)
-  }
+  public executeNotification = (groupname: string | null, notification: any): void => {
+    this.connection.invoke('Notification', groupname,notification).catch(
+        err => console.log('Error de invocación:' + err)
+    );
+}
 
-  
+private showNotificationModal(datos: any): void {
+  console.log(datos)
+  const ref = this.modalService.open(NotificacionModalComponent, { 
+    data: {notificacion: datos},
+    width: '50%', 
+    // height:'350px',
+    header: 'Llamada'
+});
+
+this.synthesizeSpeechFromText(datos);
+
+setInterval(() => {
+  ref.close();
+}, 6000);
+
+  ref.onClose.subscribe((result: any) => {
+      console.log('Modal cerrado', result);
+  });
+}
 
 
-  showNotification(notification: any) {
-    //this.toastr.warning( notification.message,notification.productID+" "+notification.productName);
-    console.log(notification);
-  }
+
+private synthesizeSpeechFromText(data:any){
+      const synth = window.speechSynthesis;
+      //console.log(this.recommendedVoices)
+      const utterThis = new SpeechSynthesisUtterance('Numero de ticket '+data.numeroTicket+"en el escritorio "+data.escritorio);
+      utterThis.lang = 'es-ES';
+      utterThis.voice=this.recommendedVoices[7];
+      synth.speak(utterThis);
+	}
+
+
     getDataUpdates(): Observable<any> {
       return this.dataSubject.asObservable();
     }
