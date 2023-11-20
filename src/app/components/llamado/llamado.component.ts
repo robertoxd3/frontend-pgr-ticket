@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { AfterContentInit, AfterViewInit, Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import * as signalR from "@microsoft/signalr";
 import { CookieService } from 'ngx-cookie-service';
@@ -9,6 +10,7 @@ import { ColaService } from 'src/app/services/cola.service';
   selector: 'app-llamado',
   templateUrl: './llamado.component.html',
   styleUrls: ['./llamado.component.css'],
+  providers:[DatePipe]
 })
 export class LlamadoComponent implements OnInit,OnDestroy,AfterViewInit{
   count = 1;
@@ -26,8 +28,9 @@ export class LlamadoComponent implements OnInit,OnDestroy,AfterViewInit{
   displayModal:boolean=false;
   turnoActual: any;
    dataSubscription: Subscription | undefined;
+   currentDateTime!: any;
 
-  constructor(private signalRService: ColaService,private cookieService: CookieService, private rd: Renderer2) {
+  constructor(private signalRService: ColaService,private cookieService: CookieService, private rd: Renderer2,public datePipe: DatePipe) {
     this.leerCookieJson();
   }
 
@@ -40,6 +43,10 @@ export class LlamadoComponent implements OnInit,OnDestroy,AfterViewInit{
     });
     this.signalRService.NotificationListener(); 
 
+    this.updateDateTime();
+    setInterval(() => {
+      this.updateDateTime();
+    }, 60000); 
 }
 
 
@@ -102,7 +109,7 @@ ngOnDestroy(): void {
 sendData() {
     this.signalRService.sendMessage("PA12","PRUEBA");
        if (this.signalRService.isConnectionEstablished()) {
-      this.signalRService.UpdateTickets(this.miCookie.config.codigoPad);
+      this.signalRService.UpdateColaEjecutivo(this.miCookie.config.codigoPad);
   } else {
       console.error('La conexión SignalR no está establecida.');
   }
@@ -124,6 +131,11 @@ sendData() {
   showDialog() {
     this.displayModal = true;
     this.sendData();
+  }
+
+  updateDateTime() {
+    //this.currentDateTime = this.datePipe.transform(Date.now(), 'dd/MM/yyyy HH:mm');
+    this.currentDateTime = new Date();
   }
 
   

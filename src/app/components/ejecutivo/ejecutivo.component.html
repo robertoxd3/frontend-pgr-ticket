@@ -9,7 +9,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
+          <a class="nav-link active" aria-current="page"  target="_blank" href="/#/llamado">Llamada</a>
         </li>
       </ul>
       <form class="d-flex"  role="search">
@@ -53,12 +53,14 @@
          <div class="row">
           <div class="col-12 col-md-4">
             <p-card header="Atendiendo"  class="w-100">
-              <div *ngIf="realTimeData">
+              <div *ngIf="realTimeDataTurno?.length >0">
                 <h5>
-                   {{realTimeData[0].numeroTicket}}
+                   {{realTimeDataTurno[0].numeroTicket}}
                 </h5>
-                <p>{{realTimeData[0].nombreFila}}</p>
-                {{ datePipe.transform(realTimeData[0].fechaTicket, 'dd/MM/yyyy HH:mm') }}
+                <p *ngIf="realTimeDataTurno[0].estado==='I';else elseBlock">Iniciado</p>
+                <ng-template #elseBlock>No asignado</ng-template>
+
+                {{ datePipe.transform(realTimeDataTurno[0].fechaTicket, 'dd/MM/yyyy HH:mm') }}
                 <br>
                 <p-button icon="pi pi-megaphone" class="me-2"  rounded="true" severity="secondary" (click)="Llamada(3)"></p-button>
                 <p-button icon="pi pi-times" rounded="true" severity="info"></p-button>
@@ -77,7 +79,7 @@
                           <div class="d-flex flex-column flex-xl-row align-items-start p-4 gap-4 custom-hover-effect">
                               <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center align-items-xl-start flex-grow-1 gap-4">
                                   <div class="d-flex flex-column align-items-center align-items-sm-start gap-3">
-                                      <div class="h2 font-weight-bold text-900">{{ data.numeroTicket }}</div>
+                                      <div class="h2 font-weight-bold text-900">{{ data.ticket.numeroTicket }}</div>
                                       <div class="d-flex align-items-center gap-3">
                                           <span class="d-flex align-items-center gap-2">
                                               <i class="pi pi-tag"></i>
@@ -87,7 +89,7 @@
                                       </div>
                                   </div>
                                   <div class="d-flex flex-sm-column align-items-center align-items-sm-end gap-3 gap-sm-2">
-                                      <span class="h2 font-weight-bold">{{ datePipe.transform(data.fechaTicket, 'dd/MM/yyyy HH:mm') }}</span>
+                                      <span class="h2 font-weight-bold">{{ datePipe.transform(data.ticket.fechaTicket, 'dd/MM/yyyy HH:mm') }}</span>
                                       <button class="btn btn-primary ms-auto mb-2 rounded-circle">
                                           <i class="pi pi-megaphone"></i>
                                       </button>

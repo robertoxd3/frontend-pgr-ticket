@@ -7,7 +7,6 @@
             [muted]="true"
             #video
             autoplay
-            
             playsinline
             [src]="currentVideo"
             (ended)="onVideoEnded()"
@@ -15,17 +14,6 @@
             id="myVideo"
           ></video>
         </div>
-
-      <!-- <div class="d-flex justify-content-between align-items-center">
-        <img src="/assets/logo.png" width="100px" />
-        <button
-          pButton
-          type="button"
-          (click)="showDialog()"
-          icon="pi pi-ticket"
-        ></button>
-      </div>
-      -->
     </div>
 
     <div class="col-12 col-xl-4">
@@ -46,8 +34,8 @@
               </div>
               <div class="info">
                 <section>
-                  <div class="title">Date</div>
-                  <div>4/27/2023</div>
+                  <div class="title">Fecha</div>
+                  <div>{{ datePipe.transform(currentDateTime, 'dd/MM/yyyy')}}</div>
                 </section>
               </div>
             </div>
@@ -72,21 +60,6 @@
               </ng-template>
             </p-table>
           </div>
-          <!-- <table class="">
-                        <thead>
-                        <tr>
-                                    <th style="font-size: 4rem;" class="text-center">Turno</th>
-                                        <th style="font-size: 4rem;" class="text-center">Escritorio</th>
-                        </tr>
-                        </thead>
-                        <tbody *ngFor="let realTimeData of realTimeData; index as i;" class="table-hover">
-                            <tr>
-                                <td style="font-size: 4rem;"  class="text-center">{{ realTimeData.numeroTicket }}</td>
-                                <td style="font-size: 4rem;"  class="text-center">{{ realTimeData.idEscritorio }}</td>
-                            </tr>
-                        
-                        </tbody>
-                        </table> -->
         </div>
       </div>
     </div>
@@ -94,7 +67,7 @@
   <div class="row" style="height: 10vh">
     <div class="text-center d-flex align-items-center justify-content-between">
         <img src="/assets/logo.png" width="80px"/>
-      <span>12:10</span>
+      <span class="h6">{{ datePipe.transform(currentDateTime, 'dd/MM/yyyy HH:mm')}}</span>
     </div>
   </div>
   <p-dialog header="" [(visible)]="displayModal">

@@ -21,7 +21,7 @@ isloading:boolean=false;
 selectedProduct!: any;
 miCookie:any;
 realTimeData: any;
-realTimeData2:any;
+realTimeDataTurno:any;
 first = 0;
 usuarioLogueado:any;
 rows = 10;
@@ -35,7 +35,8 @@ notificacion = {
 
 constructor(private auth:AuthGuard, private fb:FormBuilder, private signalRService: ColaService,private ticketService:TicketService,private cookieService:CookieService,public datePipe: DatePipe,public messageService:MessageService) {
   this.leerCookieJson();
-  this.usuarioLogueado={codigoUsuario: "JIRIVASG",idEscritorio:"1", tipo:"1"};
+  this.usuarioLogueado = JSON.parse(localStorage.getItem('user') || '{}');
+  console.log(this.usuarioLogueado);
   this.createForm();
   this.itemsAvatar = [
     {
@@ -68,26 +69,20 @@ closeModal() {
 ngOnInit() {
   this.signalRService.ngOnInit(this.miCookie.config.codigoPad);
   this.isloading=true;
-  // this.signalRService.getDataUpdates().subscribe(data => {
-  //       //this.realTimeData = data;
-  //       //console.log(data);
-  //      // this.isloading=false;
-  // });
+  this.signalRService.getDataUpdates().subscribe(data => {
+        this.realTimeDataTurno = data;
+        console.log(data);
+  });
   this.signalRService.getTicketUpdates().subscribe(data => {
-    
     this.realTimeData = data;
     console.log(data);
-    this.isloading=false;
-});
-
+  });
+  this.signalRService.UpdateColaEjecutivo(this.miCookie.config.codigoPad);
+  this.signalRService.addTicketListener();
  this.signalRService.NotificationListener(); 
-
-
 this.isloading=false;
  
 }
-
-
 
 ngOnDestroy(): void {
   this.signalRService.disconnect();
@@ -102,7 +97,8 @@ onRowSelect(event: any) {
 
 reset(){
        if (this.signalRService.isConnectionEstablished()) {
-      this.signalRService.UpdateTickets(this.miCookie.config.codigoPad);
+      this.signalRService.UpdateColaEjecutivo(this.miCookie.config.codigoPad);
+      this.signalRService.UpdateCola(this.miCookie.config.codigoPad);
   } else {
       console.error('La conexión SignalR no está establecida.');
   }
@@ -110,9 +106,9 @@ reset(){
 
 createForm() {
   this.formProcedimiento = this.fb.group({
-    codigoUsuario: "JIRIVASG",
-    idEscritorio:"1", 
-    idTipo:"3"
+    codigoUsuario: this.usuarioLogueado.codigoUsuario,
+    idEscritorio: this.usuarioLogueado.idEscritorio, 
+    idTipo:"3",
   });
 }
 // Como mostrar un modal con datos en tiempo real enviado a otro componente angular que estan conectado en el mismo web socket de singal r en .net web api 
@@ -127,19 +123,18 @@ Llamada(id:any){
           console.log(res);
           //this.signalRService.executeNotification(this.miCookie.config.codigoPad,this.notificacion);
           if(id==1)
-          {
             this.showAlert("Se llamo al usuario con exito","Exito","success");
-            
-          }
           else if(id==2)
           this.showAlert("Se Finalizo turno con exito","Exito","success");
           else if(id==3)
           this.showAlert("Se volvio a llamar al usuario con exito","Exito","success");
+
+          this.loading = false;
         },
         error: (err) => {
           console.log(err.error);
           this.showAlert(err.error,"Error","error");
-          //this.showAlert('No se pudo obtener configuración del JSON','Error','error');
+          
           this.loading = false;
         }, 
       });

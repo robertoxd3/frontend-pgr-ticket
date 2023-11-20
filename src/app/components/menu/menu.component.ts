@@ -60,7 +60,7 @@ if (this.signalRService.isConnectionEstablished()) {
 }
 actualizarTicketEjecutivo(){
  if (this.signalRService.isConnectionEstablished()) {
-  this.signalRService.UpdateTickets(this.miCookie.config.codigoPad);
+  this.signalRService.UpdateColaEjecutivo(this.miCookie.config.codigoPad);
 } else {
   console.error('La conexión SignalR no está establecida.');
 }

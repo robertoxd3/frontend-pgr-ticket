@@ -19,6 +19,7 @@ interface NewMessage {
 export class ColaService {
   public dataSubject: Subject<any> = new Subject<any>();
   public dataSubjectTicket: Subject<any> = new Subject<any>();
+  public dataUltimoTicket: Subject<any> = new Subject<any>();
   public httpClient = inject(HttpClient);
   colaUrl?: string;
   colaWebSocket?: string;
@@ -30,8 +31,8 @@ export class ColaService {
   public messageToSend = '';
   public joined = false;
   public recommendedVoices?: any;
-
-  public conversation: NewMessage[] = [{
+  private usuario:any='{}';
+   public conversation: NewMessage[] = [{
     message: 'Bienvenido',
   }];
   private connection: signalR.HubConnection;
@@ -61,18 +62,23 @@ export class ColaService {
       const synth = window.speechSynthesis;
         this.recommendedVoices = synth.getVoices();
     }, 500);
+    this.usuario = JSON.parse(localStorage.getItem('user')|| '{}');
   }
 
   startConnection(groupName:string){
     //this.connection.serverTimeoutInMilliseconds = 300000;
    // this.connection.keepAliveIntervalInMilliseconds = 300000;
+   
+
     this.connection.start()
     .then(_ => {
       console.log('Connection Started');
+      
       //this.subscribeToDataUpdates();
       this.receiveInitialData();
       this.receiveTicket();
-     this.join(groupName);
+      this.executeData(groupName);
+      this.join(groupName);
     }).catch(error => {
       return console.error(error);
     });
@@ -80,7 +86,7 @@ export class ColaService {
 
   
   public join(groupName:string) {
-    this.connection.invoke('JoinGroup', groupName)
+    this.connection.invoke('JoinGroup',groupName,this.usuario)
       .then(_ => {
         this.joined = true;
       });
@@ -152,6 +158,10 @@ private synthesizeSpeechFromText(data:any){
       return this.dataSubject.asObservable();
     }
 
+    getLastTicket(): Observable<any> {
+      return this.dataUltimoTicket.asObservable();
+    }
+
     getTicketUpdates(): Observable<any> {
       return this.dataSubjectTicket.asObservable();
     }
@@ -165,23 +175,45 @@ private synthesizeSpeechFromText(data:any){
         this.connection.on('InitialData',(data)=>{
               this.dataSubject.next(data);
             });
-        }
+    }
 
-       UpdateTickets(groupName:string) {
-          this.connection.invoke('ObtenerTicketEnCola', groupName)
-          .then(_ => console.log("Data Actualizada"));
-        }
+    receiveTicket() {
+      this.connection.on('Ticket',(data)=>{
+            this.dataSubjectTicket.next(data);
+          });
+      }
+
+      public UpdateColaEjecutivo = (groupName:string): void => {
+        this.connection.invoke('ObtenerTicketEnCola', groupName, this.usuario).catch(
+          err => console.log('Error de invocación:' + err)
+        );
+      }
+
+      public addTicketListener = () => {
+        this.connection.on('obtenerUltimoTicket', (data) => {
+          this.data = data;
+          console.log(data);
+          setInterval(() => {
+            this.data = data;
+            console.log(data);
+          }, 60000);
+        });
+      }
+
+      public executeData = (groupname:string): void => {
+        this.connection.invoke('obtenerUltimoTicket',groupname, this.usuario).catch(
+          err => console.log('Error de invocación:' + err)
+        );
+      }
+
         public disconnect() {
           this.connection.stop();
         }
 
      
-  receiveTicket() {
-          this.connection.on('Ticket',(data)=>{
-                this.dataSubjectTicket.next(data);
-              });
-          }
-          isConnectionEstablished() {
+
+
+    isConnectionEstablished() {
             return this.connection.state === signalR.HubConnectionState.Connected;
         }
 
