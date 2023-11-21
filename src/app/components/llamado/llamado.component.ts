@@ -5,6 +5,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Subscription,of,takeUntil } from 'rxjs';
 import { ColaService } from 'src/app/services/cola.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-llamado',
@@ -89,16 +90,16 @@ ngAfterViewInit() {
  }
 
 videosLista: string[] = [
-  'http://192.168.30.21/Resources/VideoSIAPP/1.mp4',
-  'http://192.168.30.21/Resources/VideoSIAPP/2.mp4',
-  'http://192.168.30.21/Resources/VideoSIAPP/3.mp4',
-  'http://192.168.30.21/Resources/VideoSIAPP/4.mp4',
-  'http://192.168.30.21/Resources/VideoSIAPP/5.mp4',
-  'http://192.168.30.21/Resources/VideoSIAPP/6.mp4',
-  'http://192.168.30.21/Resources/VideoSIAPP/7.mp4',
-  'http://192.168.30.21/Resources/VideoSIAPP/8.mp4',
-  'http://192.168.30.21/Resources/VideoSIAPP/9.mp4',
-  'http://192.168.30.21/Resources/VideoSIAPP/10.mp4',
+  environment.rutaVideos+'/Resources/VideoSIAPP/1.mp4',
+  environment.rutaVideos+'/Resources/VideoSIAPP/2.mp4',
+  environment.rutaVideos+'/Resources/VideoSIAPP/3.mp4',
+  environment.rutaVideos+'/Resources/VideoSIAPP/4.mp4',
+  environment.rutaVideos+'/Resources/VideoSIAPP/5.mp4',
+  environment.rutaVideos+'/Resources/VideoSIAPP/6.mp4',
+  environment.rutaVideos+'/Resources/VideoSIAPP/7.mp4',
+  environment.rutaVideos+'/Resources/VideoSIAPP/8.mp4',
+  environment.rutaVideos+'/Resources/VideoSIAPP/9.mp4',
+  environment.rutaVideos+'/Resources/VideoSIAPP/10.mp4',
 ];
 
 

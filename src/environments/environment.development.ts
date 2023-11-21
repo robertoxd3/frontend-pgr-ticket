@@ -3,5 +3,6 @@ export const environment = {
     apiUrl: 'http://localhost:5023/api/Ticket/',
     colaWebSocket: 'https://localhost:7076/Cola',
     colaUrl: 'https://localhost:7076/api/Cola/',
-    loginUrl: 'http://localhost:5023/api/Authenticate'
+    loginUrl: 'http://localhost:5023/api/Authenticate',
+    rutaVideos: 'http://192.168.30.21'
 };
