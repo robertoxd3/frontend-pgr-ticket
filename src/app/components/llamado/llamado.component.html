@@ -21,10 +21,11 @@
         <div class="">
           <div class="ticket w-100">
             <div class="stub">
-              <div class="title top mt-2">Atendiendo</div>
-              <div *ngIf="turnoActual" class="number">
+              <div class="title top mt-2 text-center">Último</div>
+              <div *ngIf="turnoActual; else elseBlock" class="number">
                 {{ turnoActual.idEscritorio }}
               </div>
+              <ng-template  #elseBlock><span class="number">NA</span></ng-template>
               <div class="title text-center">Escritorio</div>
             </div>
             <div class="check w-100 align-items-center">

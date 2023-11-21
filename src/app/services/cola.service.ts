@@ -128,7 +128,7 @@ private showNotificationModal(datos: any): void {
     data: {notificacion: datos},
     width: '50%', 
     // height:'350px',
-    header: 'Llamada'
+    // header: 'Llamada'
 });
 
 this.synthesizeSpeechFromText(datos);
@@ -194,7 +194,7 @@ private synthesizeSpeechFromText(data:any){
           this.data = data;
           console.log(data);
           setInterval(() => {
-            this.data = data;
+           
             console.log(data);
           }, 60000);
         });

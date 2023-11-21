@@ -9,14 +9,21 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page"  target="_blank" href="/#/llamado">Llamada</a>
+          <!-- <a class="nav-link active" aria-current="page"  target="_blank" href="/#/llamado">Llamada</a> -->
         </li>
       </ul>
       <form class="d-flex"  role="search">
-          <div style="z-index: 9999;">
-            <!-- <p-avatar label="P" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> -->
+          <!-- <div style="z-index: 9999;">
+            <p-avatar label="P" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> 
             <p-splitButton  icon="pi pi-user"  [model]="itemsAvatar" styleClass="p-button-raised mr-2 mb-2"></p-splitButton>
+        </div> -->
+        <div class="btn-group">
+          <span mat-button [matMenuTriggerFor]="menu" class="me-3"><i class="pi pi-user me-2" style="font-size: 1rem"></i>{{usuarioLogueado.codigoUsuario}}</span>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="Logout()">Cerrar Sesión</button>
+          </mat-menu>
         </div>
+
       </form>
     </div>
   </div>
@@ -38,7 +45,7 @@
       <div class="py-3 w-100">
         <div class="d-flex justify-content-end align-items-end">
           <p-button type="button" icon="pi pi-refresh" class="me-2" (click)="reset()" styleClass="p-button-text"></p-button>
-          <p-button type="button" icon="pi pi-megaphone" severity="sucess" class="me-2" label="Llamara" (click)="call()"></p-button>
+          <!-- <p-button type="button" icon="pi pi-megaphone" severity="sucess" class="me-2" label="Llamara" (click)="call()"></p-button> -->
           <p-button type="button" icon="pi pi-megaphone" severity="sucess" class="me-2" label="Llamar" (click)="Llamada(1)"></p-button>
           <p-button type="button" icon="pi pi-check"  class="me-2" styleClass="p-button-danger"  label="Finalizar Turno" (click)="Llamada(2)"></p-button>
         </div>
@@ -52,19 +59,23 @@
         </ng-template>
          <div class="row">
           <div class="col-12 col-md-4">
-            <p-card header="Atendiendo"  class="w-100">
+            <p-card header="Actual"  class="w-100">
               <div *ngIf="realTimeDataTurno?.length >0">
-                <h5>
+                <span class="h2 font-weight-bold text-900">
                    {{realTimeDataTurno[0].numeroTicket}}
-                </h5>
-                <p *ngIf="realTimeDataTurno[0].estado==='I';else elseBlock">Iniciado</p>
+                </span>
+                <p class="h5 font-weight-bold text-900" *ngIf="realTimeDataTurno[0].estado==='I';else elseBlock">Atendiendo..</p>
                 <ng-template #elseBlock>No asignado</ng-template>
-
-                {{ datePipe.transform(realTimeDataTurno[0].fechaTicket, 'dd/MM/yyyy HH:mm') }}
+                <span class="d-flex justify-content-end ">
+                  {{ datePipe.transform(realTimeDataTurno[0].fechaLlamada, 'dd/MM/yyyy HH:mm') }}
+                </span>
+             
                 <br>
-                <p-button icon="pi pi-megaphone" class="me-2"  rounded="true" severity="secondary" (click)="Llamada(3)"></p-button>
-                <p-button icon="pi pi-times" rounded="true" severity="info"></p-button>
-  
+                <div class="d-flex justify-content-end ">
+                  <p-button icon="pi pi-megaphone" class="me-2"  rounded="true" severity="secondary" (click)="Llamada(3)"></p-button>
+                </div>
+                
+                <!-- <p-button icon="pi pi-times" rounded="true" severity="info"></p-button> -->
               </div>
           </p-card>
           
@@ -82,7 +93,7 @@
                                       <div class="h2 font-weight-bold text-900">{{ data.ticket.numeroTicket }}</div>
                                       <div class="d-flex align-items-center gap-3">
                                           <span class="d-flex align-items-center gap-2">
-                                              <i class="pi pi-tag"></i>
+                                              <i class="pi pi-building"></i>
                                               <span class="font-weight-bold">{{ data.nombreSimple }}</span>
                                           </span>
                                           <span class="badge badge-danger">{{ data.estado }}</span>
@@ -112,34 +123,30 @@
         </ng-template>
         <!-- Tab En COLA -->
         <p-table
-          [value]="realTimeData"
+          [value]="TicketFinalizados"
           selectionMode="single"
           [rows]="10"
           [loading]="isloading"
         [paginator]="true"
           [(selection)]="selectedProduct"
-          dataKey="idOrden"
+          dataKey="idLlamadaTicket"
           (onRowSelect)="onRowSelect($event)"
           [tableStyle]="{ 'min-width': '50rem' }"
         >
           <ng-template pTemplate="header">
             <tr>
-              <th>ID</th>
               <th>Numero Ticket</th>
-              <th>Orden</th>
-              <th>En Espera</th>
-              <th>Unidad</th>
-              <th>Fecha</th>
+              <th>Estado</th>
+              <th>Inicio</th>
+              <th>Finalización</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-data>
             <tr [pSelectableRow]="data">
-              <td>{{ data.idOrden }}</td>
               <td>{{ data.numeroTicket }}</td>
-              <td>{{ data.orden }}</td>
-              <td>{{data.espera}}</td>
-              <td>{{data.nombreSimple}}</td>
-               <td>{{ datePipe.transform(data.fechaTicket, 'dd/MM/yyyy HH:mm') }}</td> 
+              <td>{{ data.estado }}</td>
+               <td>{{ datePipe.transform(data.fechaLlamada, 'dd/MM/yyyy HH:mm') }}</td> 
+               <td>{{ datePipe.transform(data.fechaFinalizacion, 'dd/MM/yyyy HH:mm') }}</td> 
             </tr>
           </ng-template>
         </p-table>

@@ -35,6 +35,7 @@ import { SplitButtonModule } from 'primeng/splitbutton';
 import { AvatarModule } from 'primeng/avatar';
 import { NotificacionModalComponent } from './components/notificacion-modal/notificacion-modal.component';
 import { DialogService } from 'primeng/dynamicdialog';
+import {MatMenuModule} from '@angular/material/menu';
 
 @NgModule({
   declarations: [
@@ -76,6 +77,7 @@ import { DialogService } from 'primeng/dynamicdialog';
     TagModule,
     SplitButtonModule,
     AvatarModule,
+    MatMenuModule
   ],
   providers: [DialogService],
   bootstrap: [AppComponent]

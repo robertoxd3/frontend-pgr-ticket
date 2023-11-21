@@ -22,6 +22,7 @@ selectedProduct!: any;
 miCookie:any;
 realTimeData: any;
 realTimeDataTurno:any;
+TicketFinalizados:any;
 first = 0;
 usuarioLogueado:any;
 rows = 10;
@@ -29,8 +30,8 @@ formProcedimiento!: FormGroup;
 loading:Boolean=false;
 itemsAvatar!: MenuItem[];
 notificacion = {
-  numeroTicket: 'X-198',
-  escritorio: '1'
+  numeroTicket: "",
+  escritorio: ""
 }
 
 constructor(private auth:AuthGuard, private fb:FormBuilder, private signalRService: ColaService,private ticketService:TicketService,private cookieService:CookieService,public datePipe: DatePipe,public messageService:MessageService) {
@@ -38,33 +39,12 @@ constructor(private auth:AuthGuard, private fb:FormBuilder, private signalRServi
   this.usuarioLogueado = JSON.parse(localStorage.getItem('user') || '{}');
   console.log(this.usuarioLogueado);
   this.createForm();
-  this.itemsAvatar = [
-    {
-        label: 'Cerrar Sesión',
-        icon: 'pi pi-refresh',
-        command: () => {
-            this.Logout();
-        }
-    },
-];
-}
-
-
-showModal(data: any) {
-  console.log("Prueba")
-    this.selectedData = data;
-    this.displayModal = true;
-}
-
-Logout(){
-  this.auth.logout();
+  this.notificacion = {
+    numeroTicket: "",
+    escritorio: ""
+  }
 
 }
-
-closeModal() {
-    this.displayModal = false;
-}
-
 
 ngOnInit() {
   this.signalRService.ngOnInit(this.miCookie.config.codigoPad);
@@ -75,30 +55,47 @@ ngOnInit() {
   });
   this.signalRService.getTicketUpdates().subscribe(data => {
     this.realTimeData = data;
-    console.log(data);
+    //console.log(data);
+  });
+  this.ticketService.ObtenerTicketFinalizados(this.formProcedimiento.value).subscribe(data => {
+    this.TicketFinalizados = data;
+    //console.log(data);
   });
   this.signalRService.UpdateColaEjecutivo(this.miCookie.config.codigoPad);
   this.signalRService.addTicketListener();
  this.signalRService.NotificationListener(); 
 this.isloading=false;
- 
+
+
 }
 
 ngOnDestroy(): void {
   this.signalRService.disconnect();
 }
 
+Logout(){
+  this.auth.logout();
+}
+
 onRowSelect(event: any) {
    //console.log("Seleccionado: "+ event.data.name);
    this.selectedData=event.data;
    this.displayModal = true;
-  
 }
 
 reset(){
        if (this.signalRService.isConnectionEstablished()) {
+        this.signalRService.getDataUpdates().subscribe(data => {
+          this.realTimeDataTurno = data;
+          console.log(data);
+    });
       this.signalRService.UpdateColaEjecutivo(this.miCookie.config.codigoPad);
       this.signalRService.UpdateCola(this.miCookie.config.codigoPad);
+
+      this.ticketService.ObtenerTicketFinalizados(this.formProcedimiento.value).subscribe(data => {
+        this.TicketFinalizados = data;
+        //console.log(data);
+      });
   } else {
       console.error('La conexión SignalR no está establecida.');
   }
@@ -121,20 +118,25 @@ Llamada(id:any){
       this.ticketService.procedimientoAlmacenado(this.formProcedimiento.value).subscribe({
         next: (res) => {
           console.log(res);
+          this.reset();
           //this.signalRService.executeNotification(this.miCookie.config.codigoPad,this.notificacion);
-          if(id==1)
+          if(id==1){
             this.showAlert("Se llamo al usuario con exito","Exito","success");
+            this.call(res[0].numeroTicket);
+          }
           else if(id==2)
           this.showAlert("Se Finalizo turno con exito","Exito","success");
-          else if(id==3)
-          this.showAlert("Se volvio a llamar al usuario con exito","Exito","success");
+          else if(id==3){
+            this.showAlert("Se volvio a llamar al usuario con exito","Exito","success");
+            this.call(res[0].numeroTicket);
+          }
 
           this.loading = false;
         },
         error: (err) => {
           console.log(err.error);
           this.showAlert(err.error,"Error","error");
-          
+          this.reset();
           this.loading = false;
         }, 
       });
@@ -142,11 +144,6 @@ Llamada(id:any){
     else 
       console.error('La conexión SignalR no está establecida.');
   } 
-
-//   sendNotification(notification:any)
-// {
-//   this.signalRService.subscribeToNotification(notification);
-// }
 
   showAlert(mensaje: string, titulo:string, tipo: string) {
     this.messageService.add({
@@ -156,9 +153,19 @@ Llamada(id:any){
     });
   }
 
-  call(){
-    this.signalRService.executeNotification(this.miCookie.config.codigoPad,this.notificacion);
-    console.log("call");
+  call(numeroTicket:any){
+    try {
+      // this.notificacion.numeroTicket=this.realTimeDataTurno[0].numeroTicket;
+      // this.notificacion.escritorio=this.usuarioLogueado.idEscritorio;
+      this.notificacion.numeroTicket=numeroTicket;
+      this.notificacion.escritorio=""+this.usuarioLogueado.idEscritorio;
+      this.signalRService.executeNotification(this.miCookie.config.codigoPad,this.notificacion);
+    } catch (error) {
+      //console.log(error);
+      this.showAlert("No hay ticket atendiendo para llamar","Error","error");
+
+    }
+   
   }
 
   leerCookieJson(){

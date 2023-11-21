@@ -5,3 +5,6 @@
 
 @import '~animate.css/animate.min.css';
 @import "primeicons/primeicons.css";
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

@@ -54,4 +54,8 @@ export class TicketService {
   procedimientoAlmacenado(form: FormData): Observable<any> {
     return this.httpClient.post(this.colaUrl + 'ProcedimientoTicket',form);
   }
+
+  ObtenerTicketFinalizados(form: FormData): Observable<any> {
+    return this.httpClient.post(this.colaUrl + 'ObtenerTicketFinalizados',form);
+  }
 }
