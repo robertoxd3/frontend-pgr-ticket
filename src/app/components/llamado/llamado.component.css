@@ -326,4 +326,14 @@ td.text-right {
   height: 100%;
 }
 
+
+.esquina-inferior-derecha {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px; 
+}
+
+
+
   

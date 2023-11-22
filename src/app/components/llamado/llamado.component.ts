@@ -135,7 +135,6 @@ sendData() {
   }
 
   updateDateTime() {
-    //this.currentDateTime = this.datePipe.transform(Date.now(), 'dd/MM/yyyy HH:mm');
     this.currentDateTime = new Date();
   }
 

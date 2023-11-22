@@ -1,8 +1,8 @@
 export const environment = {
     production: false,
-    apiUrl: 'http://192.168.17.125:4505/api/Ticket/',
-    colaWebSocket: 'http://192.168.17.125:4505/Cola',
-    colaUrl: 'http://192.168.17.125:4505/api/Cola/',
-    loginUrl: 'http://192.168.17.125:4505/api/Authenticate',
-    rutaVideos: 'http://192.168.17.125'
+    apiUrl: 'http://192.168.19.37:4503/be/api/Ticket/',
+    colaWebSocket: 'http://192.168.19.37:4503/be/Cola',
+    colaUrl: 'http://192.168.19.37:4503/be/api/Cola/',
+    loginUrl: 'http://192.168.19.37:4503/be/api/Authenticate',
+    rutaVideos: 'http://192.168.30.21'
 };
