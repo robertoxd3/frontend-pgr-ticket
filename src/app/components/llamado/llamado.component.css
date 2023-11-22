@@ -326,7 +326,6 @@ td.text-right {
   height: 100%;
 }
 
-
 .esquina-inferior-derecha {
   position: absolute;
   top: 0;
@@ -334,6 +333,9 @@ td.text-right {
   padding: 10px; 
 }
 
+.pointer:hover{
+    cursor: pointer;
+}
 
 
   
