@@ -167,7 +167,7 @@ private synthesizeSpeechFromText(data:any){
     }
 
     public UpdateCola(groupName:string) {
-      this.connection.invoke('Conectando', groupName)
+      this.connection.invoke('Conectando', groupName,this.usuario.codigoUsuario)
       .then(_ => console.log("Data Actualizada"));
     }
 

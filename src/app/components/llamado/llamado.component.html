@@ -45,7 +45,7 @@
             <p-table [value]="realTimeData" [rows]="4" [paginator]="true">
               <ng-template pTemplate="header">
                 <tr>
-                  <th style="font-size: 2rem" class="text-center">Mesa</th>
+                  <th style="font-size: 2rem" class="text-center">Escritorio</th>
                   <th style="font-size: 2rem" class="text-center">Turno</th>
                 </tr>
               </ng-template>
@@ -68,7 +68,8 @@
       </div>
     </div>
   </div>
-  <!-- <div class="row" style="height: 10vh">
+  <!-- Quiero crear un grupo que recibira llamados desde otros usuarios que estaran en grupos distintos en singalR y angular para el frontend. 
+    <div class="row" style="height: 10vh">
     <div class="text-center d-flex align-items-end justify-content-end">
         <img src="/assets/logo.png" width="80px"/>
       <span class="h6">{{ datePipe.transform(currentDateTime, 'dd/MM/yyyy HH:mm')}}</span>

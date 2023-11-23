@@ -103,6 +103,20 @@ videosLista: string[] = [
 ];
 
 
+// videosLista: string[] = [
+//   'assets/VideoSIAPP/1.mp4',
+//   'assets/VideoSIAPP/2.mp4',
+//   'assets/VideoSIAPP/3.mp4',
+//   'assets/VideoSIAPP/4.mp4',
+//   'assets/VideoSIAPP/5.mp4',
+//   'assets/VideoSIAPP/6.mp4',
+//   'assets/VideoSIAPP/7.mp4',
+//   'assets/VideoSIAPP/8.mp4',
+//   'assets/VideoSIAPP/9.mp4',
+//   'assets/VideoSIAPP/10.mp4',
+// ];
+
+
 ngOnDestroy(): void {
   this.signalRService.disconnect();
 }
