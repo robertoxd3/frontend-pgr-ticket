@@ -77,7 +77,7 @@ export class ColaService {
       //this.subscribeToDataUpdates();
       this.receiveInitialData();
       this.receiveTicket();
-      this.executeData(groupName);
+      this.receiveLastTicket();
       this.join(groupName);
     }).catch(error => {
       return console.error(error);
@@ -183,24 +183,27 @@ private synthesizeSpeechFromText(data:any){
           });
       }
 
+    receiveLastTicket(){
+        this.connection.on('obtenerUltimoTicket', (data) => {
+          this.dataUltimoTicket.next(data);
+          //console.log(data);
+          // setInterval(() => {
+          // this.dataUltimoTicket.next(data);
+           
+          //   //console.log(data);
+          // }, 1000);
+        });
+      }
+
       public UpdateColaEjecutivo = (groupName:string): void => {
         this.connection.invoke('ObtenerTicketEnCola', groupName, this.usuario).catch(
           err => console.log('Error de invocación:' + err)
         );
       }
 
-      public addTicketListener = () => {
-        this.connection.on('obtenerUltimoTicket', (data) => {
-          this.data = data;
-          console.log(data);
-          setInterval(() => {
-           
-            console.log(data);
-          }, 60000);
-        });
-      }
+  
 
-      public executeData = (groupname:string): void => {
+      public UpdateUltimoTicket(groupname:string){
         this.connection.invoke('obtenerUltimoTicket',groupname, this.usuario).catch(
           err => console.log('Error de invocación:' + err)
         );

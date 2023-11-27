@@ -6,6 +6,7 @@ import { TicketService } from 'src/app/services/ticket.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MenuItem, MessageService } from 'primeng/api';
 import { AuthGuard } from 'src/app/auth.guard';
+import { SrColaService } from 'src/app/services/sr-cola.service';
 
 @Component({
   selector: 'app-ejecutivo',
@@ -34,7 +35,7 @@ notificacion = {
   escritorio: ""
 }
 
-constructor(private auth:AuthGuard, private fb:FormBuilder, private signalRService: ColaService,private ticketService:TicketService,private cookieService:CookieService,public datePipe: DatePipe,public messageService:MessageService) {
+constructor(private auth:AuthGuard,private srCola:SrColaService, private fb:FormBuilder, private signalRService: ColaService,private ticketService:TicketService,private cookieService:CookieService,public datePipe: DatePipe,public messageService:MessageService) {
   this.leerCookieJson();
   this.usuarioLogueado = JSON.parse(localStorage.getItem('user') || '{}');
   console.log(this.usuarioLogueado);
@@ -49,9 +50,13 @@ constructor(private auth:AuthGuard, private fb:FormBuilder, private signalRServi
 ngOnInit() {
   this.signalRService.ngOnInit(this.miCookie.config.codigoPad);
   this.isloading=true;
-  this.signalRService.getDataUpdates().subscribe(data => {
-        this.realTimeDataTurno = data;
-        console.log(data);
+  // this.signalRService.getDataUpdates().subscribe(data => {
+  //       this.realTimeDataTurno = data;
+  //       console.log(data);
+  // });
+  this.signalRService.getLastTicket().subscribe(data => {
+    this.realTimeDataTurno = data;
+   // console.log("HOLA: "+data);
   });
   this.signalRService.getTicketUpdates().subscribe(data => {
     this.realTimeData = data;
@@ -61,12 +66,18 @@ ngOnInit() {
     this.TicketFinalizados = data;
     //console.log(data);
   });
-  this.signalRService.UpdateColaEjecutivo(this.miCookie.config.codigoPad);
-  this.signalRService.addTicketListener();
+  this.signalRService.receiveLastTicket();
  this.signalRService.NotificationListener(); 
-this.isloading=false;
 
-
+ setTimeout(() => {
+  this.signalRService.UpdateColaEjecutivo(this.miCookie.config.codigoPad);
+  this.signalRService.UpdateCola(this.miCookie.config.codigoPad);
+  this.signalRService.UpdateUltimoTicket(this.miCookie.config.codigoPad);
+ }, 600);
+  this.isloading=false;
+  // this.srCola.startConnection();
+  // this.srCola.dataListener();
+  // this.srCola.executeData('PA12',this.usuarioLogueado);
 }
 
 ngOnDestroy(): void {
@@ -78,20 +89,19 @@ Logout(){
 }
 
 onRowSelect(event: any) {
-   //console.log("Seleccionado: "+ event.data.name);
    this.selectedData=event.data;
    this.displayModal = true;
 }
 
-reset(){
+update(){
        if (this.signalRService.isConnectionEstablished()) {
-        this.signalRService.getDataUpdates().subscribe(data => {
-          this.realTimeDataTurno = data;
-          console.log(data);
-    });
+        // this.ticketService.ObtenerTicketFinalizados(this.formProcedimiento.value).subscribe(data => {
+        //   this.TicketFinalizados = data;
+        //   //console.log(data);
+        // });
       this.signalRService.UpdateColaEjecutivo(this.miCookie.config.codigoPad);
       this.signalRService.UpdateCola(this.miCookie.config.codigoPad);
-
+      this.signalRService.UpdateUltimoTicket(this.miCookie.config.codigoPad);
       this.ticketService.ObtenerTicketFinalizados(this.formProcedimiento.value).subscribe(data => {
         this.TicketFinalizados = data;
         //console.log(data);
@@ -108,18 +118,17 @@ createForm() {
     idTipo:"3",
   });
 }
-// Como mostrar un modal con datos en tiempo real enviado a otro componente angular que estan conectado en el mismo web socket de singal r en .net web api 
+
 Llamada(id:any){
   this.loading=true;
   console.log(id);
   this.formProcedimiento.value.idTipo=id;
-  //console.log("idTipo: "+ this.formProcedimiento.value.idTipo);
+
  if (this.usuarioLogueado) {
       this.ticketService.procedimientoAlmacenado(this.formProcedimiento.value).subscribe({
         next: (res) => {
           console.log(res);
-          this.reset();
-          //this.signalRService.executeNotification(this.miCookie.config.codigoPad,this.notificacion);
+          this.update();
           if(id==1){
             this.showAlert("Se llamo al usuario con exito","Exito","success");
             this.call(res[0].numeroTicket);
@@ -136,7 +145,7 @@ Llamada(id:any){
         error: (err) => {
           console.log(err.error);
           this.showAlert(err.error,"Error","error");
-          this.reset();
+          this.update();
           this.loading = false;
         }, 
       });
@@ -155,8 +164,6 @@ Llamada(id:any){
 
   call(numeroTicket:any){
     try {
-      // this.notificacion.numeroTicket=this.realTimeDataTurno[0].numeroTicket;
-      // this.notificacion.escritorio=this.usuarioLogueado.idEscritorio;
       this.notificacion.numeroTicket=numeroTicket;
       this.notificacion.escritorio=""+this.usuarioLogueado.idEscritorio;
       this.signalRService.executeNotification(this.miCookie.config.codigoPad,this.notificacion);
