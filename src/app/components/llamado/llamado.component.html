@@ -45,16 +45,16 @@
             <p-table [value]="realTimeData" [rows]="4" [paginator]="true">
               <ng-template pTemplate="header">
                 <tr>
-                  <th style="font-size: 2rem" class="text-center">Escritorio</th>
-                  <th style="font-size: 2rem" class="text-center">Turno</th>
+                  <th  class="titulo-tabla text-center">Escritorio</th>
+                  <th  class="titulo-tabla text-center">Turno</th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-realTimeData>
                 <tr>
-                  <td style="font-size: 2rem" class="text-center">
+                  <td  class="titulo-tabla text-center">
                     {{ realTimeData.idEscritorio }}
                   </td>
-                  <td style="font-size: 2rem" class="text-center">
+                  <td  class="titulo-tabla text-center">
                     {{ realTimeData.numeroTicket }}
                   </td>
                 </tr>
@@ -62,13 +62,13 @@
             </p-table>
           </div>
         </div>
-            <div class="esquina-inferior-derecha mt-2">
-              <span class="h5 font-weight-bold text-900">{{ datePipe.transform(currentDateTime, 'dd/MM/yyyy HH:mm')}}</span>
+            <div class="esquina-inferior-derecha  mt-2">
+              <span class="h5 font-weight-bold text-900 title-fecha">{{ datePipe.transform(currentDateTime, 'dd/MM/yyyy HH:mm')}}</span>
             </div>
       </div>
     </div>
   </div>
-  <!-- Quiero crear un grupo que recibira llamados desde otros usuarios que estaran en grupos distintos en singalR y angular para el frontend. 
+  <!--
     <div class="row" style="height: 10vh">
     <div class="text-center d-flex align-items-end justify-content-end">
         <img src="/assets/logo.png" width="80px"/>

@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { AfterContentInit, AfterViewInit, Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import * as signalR from "@microsoft/signalr";
 import { CookieService } from 'ngx-cookie-service';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -13,7 +13,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./llamado.component.css'],
   providers:[DatePipe]
 })
-export class LlamadoComponent implements OnInit,OnDestroy,AfterViewInit{
+export class LlamadoComponent implements OnInit,OnDestroy{
   count = 1;
 
   @ViewChild('video') video!: ElementRef;
@@ -43,28 +43,16 @@ export class LlamadoComponent implements OnInit,OnDestroy,AfterViewInit{
           console.log(data);
     });
     this.signalRService.NotificationListener(); 
-
+    setTimeout(() => {
+      this.signalRService.UpdateCola(this.miCookie.config.codigoPad);
+    }, 600);
+    
     this.updateDateTime();
     setInterval(() => {
       this.updateDateTime();
+      this.signalRService.UpdateCola(this.miCookie.config.codigoPad);
     }, 60000); 
 }
-
-
-ngAfterViewInit() {
-//   let player = this.video.nativeElement;
-//   let mp4Vid = this.source.nativeElement;
-//   this.rd.listen(player, 'ended', (event) => {
-//    if(!event) {
-//      event = window.event;
-//    }
-//   console.log("Count: ",this.count);
-//   this.count++;
-//   this.rd.setAttribute(mp4Vid, 'src', `${this.count}.mp4`)
-//   player.load();
-//   player.play();
-//    })
- }
 
  currentVideoIndex = 0;
 
@@ -128,20 +116,7 @@ sendData() {
   } else {
       console.error('La conexión SignalR no está establecida.');
   }
-    //this.signalRService.UpdateCola("PA12");
 }
-
-  colas=[
-    {turno: "X-951", escritorio: "5"},
-    {turno: "X-952", escritorio: "3"},
-    {turno: "X-952", escritorio: "3"},
-    {turno: "X-952", escritorio: "3"},
-    {turno: "X-952", escritorio: "3"},
-    {turno: "X-952", escritorio: "3"},
-    {turno: "X-952", escritorio: "3"},
-    {turno: "X-952", escritorio: "3"},
-    {turno: "X-952", escritorio: "3"},
-  ];
 
   showDialog() {
     this.displayModal = true;

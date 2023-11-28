@@ -165,4 +165,13 @@
     font-size: 10px;
     text-transform: uppercase;
   }
+
+  
+:host ::ng-deep .p-highlight.p-togglebutton, 
+:host ::ng-deep .p-highlight.p-togglebutton:hover { 
+    background: #2ECC71; 
+    border: none; 
+    color: white; 
+} 
+  
   

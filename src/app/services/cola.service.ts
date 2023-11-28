@@ -66,9 +66,6 @@ export class ColaService {
   }
 
   startConnection(groupName:string){
-    //this.connection.serverTimeoutInMilliseconds = 300000;
-   // this.connection.keepAliveIntervalInMilliseconds = 300000;
-   
 
     this.connection.start()
     .then(_ => {
@@ -96,18 +93,7 @@ export class ColaService {
     this.connection.invoke('SendToGroup', groupName,message)
     .then(_ => this.messageToSend = '');
   }
-  
-  // public addColaListner = (groupname:any) => {
-  //   this.connection.on('Notification',(notification: Notification) => {
-  //     this.showNotification(notification);
-      
-  //   });
-  // }
 
-  // public subscribeToNotification(groupname:any,notification:any)
-  // {
-  //   this.connection.invoke("Notification",groupname,notification).then(mensaje=>this.showNotificationModal(mensaje))
-  // }
 
   public NotificationListener = (): void => {
     this.connection.on('Notification', (data): void => {
@@ -170,6 +156,7 @@ private synthesizeSpeechFromText(data:any){
       this.connection.invoke('Conectando', groupName,this.usuario.codigoUsuario)
       .then(_ => console.log("Data Actualizada"));
     }
+    
 
     receiveInitialData() {
         this.connection.on('InitialData',(data)=>{
@@ -186,12 +173,6 @@ private synthesizeSpeechFromText(data:any){
     receiveLastTicket(){
         this.connection.on('obtenerUltimoTicket', (data) => {
           this.dataUltimoTicket.next(data);
-          //console.log(data);
-          // setInterval(() => {
-          // this.dataUltimoTicket.next(data);
-           
-          //   //console.log(data);
-          // }, 1000);
         });
       }
 
@@ -200,8 +181,6 @@ private synthesizeSpeechFromText(data:any){
           err => console.log('Error de invocación:' + err)
         );
       }
-
-  
 
       public UpdateUltimoTicket(groupname:string){
         this.connection.invoke('obtenerUltimoTicket',groupname, this.usuario).catch(

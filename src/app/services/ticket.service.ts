@@ -43,6 +43,13 @@ export class TicketService {
   
   }
 
+  obtenerEstadoEjecutivo(data: FormData): Observable<any> {
+    return this.httpClient.post(this.baseUrl + 'obtenerEstadoEjecutivo',data);
+  }
+  cambiarEstadoEjecutivo(data: FormData): Observable<any> {
+    return this.httpClient.post(this.baseUrl + 'cambiarEstadoEjecutivo',data);
+  }
+
   printInfo(): Observable<any> {
     return this.httpClient.get(this.baseUrl + 'printInfo');
   }

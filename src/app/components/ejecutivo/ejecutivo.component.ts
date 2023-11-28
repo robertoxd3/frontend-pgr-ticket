@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { ColaService } from 'src/app/services/cola.service';
 import { DatePipe } from '@angular/common';
@@ -28,18 +28,23 @@ first = 0;
 usuarioLogueado:any;
 rows = 10;
 formProcedimiento!: FormGroup;
+formCambiarEstado!: FormGroup;
 loading:Boolean=false;
 itemsAvatar!: MenuItem[];
 notificacion = {
   numeroTicket: "",
   escritorio: ""
 }
+checked:boolean=false;
 
 constructor(private auth:AuthGuard,private srCola:SrColaService, private fb:FormBuilder, private signalRService: ColaService,private ticketService:TicketService,private cookieService:CookieService,public datePipe: DatePipe,public messageService:MessageService) {
   this.leerCookieJson();
   this.usuarioLogueado = JSON.parse(localStorage.getItem('user') || '{}');
   console.log(this.usuarioLogueado);
-  this.createForm();
+  this.createForms();
+  this.ticketService.obtenerEstadoEjecutivo(this.formProcedimiento.value).subscribe(res=>{
+    this.checked=res
+  });
   this.notificacion = {
     numeroTicket: "",
     escritorio: ""
@@ -50,24 +55,18 @@ constructor(private auth:AuthGuard,private srCola:SrColaService, private fb:Form
 ngOnInit() {
   this.signalRService.ngOnInit(this.miCookie.config.codigoPad);
   this.isloading=true;
-  // this.signalRService.getDataUpdates().subscribe(data => {
-  //       this.realTimeDataTurno = data;
-  //       console.log(data);
-  // });
   this.signalRService.getLastTicket().subscribe(data => {
     this.realTimeDataTurno = data;
-   // console.log("HOLA: "+data);
   });
   this.signalRService.getTicketUpdates().subscribe(data => {
     this.realTimeData = data;
-    //console.log(data);
+    console.log(data);
   });
   this.ticketService.ObtenerTicketFinalizados(this.formProcedimiento.value).subscribe(data => {
     this.TicketFinalizados = data;
-    //console.log(data);
   });
   this.signalRService.receiveLastTicket();
- this.signalRService.NotificationListener(); 
+//  this.signalRService.NotificationListener(); 
 
  setTimeout(() => {
   this.signalRService.UpdateColaEjecutivo(this.miCookie.config.codigoPad);
@@ -77,7 +76,7 @@ ngOnInit() {
   this.isloading=false;
   // this.srCola.startConnection();
   // this.srCola.dataListener();
-  // this.srCola.executeData('PA12',this.usuarioLogueado);
+
 }
 
 ngOnDestroy(): void {
@@ -93,29 +92,48 @@ onRowSelect(event: any) {
    this.displayModal = true;
 }
 
+cambiarEstado(){
+  console.log(this.checked);
+  // if(this.checked==true && this.realTimeDataTurno[0]){
+  this.formCambiarEstado.value.estado=this.checked;
+    this.ticketService.cambiarEstadoEjecutivo(this.formCambiarEstado.value).subscribe({
+      next: (res) => {
+        console.log(res);
+        this.update();
+      },
+      error: (err) => {
+        console.log(err);
+      }, 
+    })
+  // }else{
+  //   console.log('Paso');
+  //   this.checked=!this.checked;
+  //   this.showAlert('Debe de finalizar el turno actual','Error','error');
+  // }
+}
+
 update(){
        if (this.signalRService.isConnectionEstablished()) {
-        // this.ticketService.ObtenerTicketFinalizados(this.formProcedimiento.value).subscribe(data => {
-        //   this.TicketFinalizados = data;
-        //   //console.log(data);
-        // });
       this.signalRService.UpdateColaEjecutivo(this.miCookie.config.codigoPad);
       this.signalRService.UpdateCola(this.miCookie.config.codigoPad);
       this.signalRService.UpdateUltimoTicket(this.miCookie.config.codigoPad);
       this.ticketService.ObtenerTicketFinalizados(this.formProcedimiento.value).subscribe(data => {
         this.TicketFinalizados = data;
-        //console.log(data);
       });
   } else {
       console.error('La conexión SignalR no está establecida.');
   }
 }
 
-createForm() {
+createForms() {
   this.formProcedimiento = this.fb.group({
     codigoUsuario: this.usuarioLogueado.codigoUsuario,
     idEscritorio: this.usuarioLogueado.idEscritorio, 
     idTipo:"3",
+  });
+  this.formCambiarEstado = this.fb.group({
+    codigoUsuario: this.usuarioLogueado.codigoUsuario,
+    estado: false,
   });
 }
 
