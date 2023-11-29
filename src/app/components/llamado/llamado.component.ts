@@ -5,6 +5,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Subscription,of,takeUntil } from 'rxjs';
 import { ColaService } from 'src/app/services/cola.service';
+import { SrColaService } from 'src/app/services/sr-cola.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -31,26 +32,42 @@ export class LlamadoComponent implements OnInit,OnDestroy{
    dataSubscription: Subscription | undefined;
    currentDateTime!: any;
 
-  constructor(private signalRService: ColaService,private cookieService: CookieService, private rd: Renderer2,public datePipe: DatePipe) {
+  constructor(private signalRService: ColaService,private signalRColaService: SrColaService,private cookieService: CookieService, private rd: Renderer2,public datePipe: DatePipe) {
     this.leerCookieJson();
   }
 
   ngOnInit() {
-    this.signalRService.ngOnInit(this.miCookie.config.codigoPad);
-    this.signalRService.getDataUpdates().subscribe(data => {
-          this.realTimeData = data;
-          this.turnoActual=data[0];
-          console.log(data);
+    // this.signalRService.ngOnInit(this.miCookie.config.codigoPad);
+    // this.signalRService.getDataUpdates().subscribe(data => {
+    //       this.realTimeData = data;
+    //       this.turnoActual=data[0];
+    //       console.log(data);
+    // });
+    // this.signalRService.NotificationListener(); 
+    // setTimeout(() => {
+    //   this.signalRService.UpdateCola(this.miCookie.config.codigoPad);
+    // }, 600);
+    
+    // this.updateDateTime();
+    // setInterval(() => {
+    //   this.updateDateTime();
+    //   this.signalRService.UpdateCola(this.miCookie.config.codigoPad);
+    // }, 60000); 
+    this.signalRColaService.startConnection();
+    this.signalRColaService.getDataUpdates().subscribe(data => {
+          this.realTimeData = data.response;
+          this.turnoActual=data.response[0];
+          //console.log(data.response);
     });
-    this.signalRService.NotificationListener(); 
+    this.signalRColaService.NotificationListener(); 
     setTimeout(() => {
-      this.signalRService.UpdateCola(this.miCookie.config.codigoPad);
+      this.signalRColaService.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
     }, 600);
     
     this.updateDateTime();
     setInterval(() => {
       this.updateDateTime();
-      this.signalRService.UpdateCola(this.miCookie.config.codigoPad);
+      this.signalRColaService.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
     }, 60000); 
 }
 
@@ -109,19 +126,19 @@ ngOnDestroy(): void {
   this.signalRService.disconnect();
 }
 
-sendData() {
-    this.signalRService.sendMessage("PA12","PRUEBA");
-       if (this.signalRService.isConnectionEstablished()) {
-      this.signalRService.UpdateColaEjecutivo(this.miCookie.config.codigoPad);
-  } else {
-      console.error('La conexión SignalR no está establecida.');
-  }
-}
+// sendData() {
+//     this.signalRService.sendMessage("PA12","PRUEBA");
+//        if (this.signalRService.isConnectionEstablished()) {
+//       this.signalRService.UpdateColaEjecutivo(this.miCookie.config.codigoPad);
+//   } else {
+//       console.error('La conexión SignalR no está establecida.');
+//   }
+// }
 
-  showDialog() {
-    this.displayModal = true;
-    this.sendData();
-  }
+  // showDialog() {
+  //   this.displayModal = true;
+  //   this.sendData();
+  // }
 
   updateDateTime() {
     this.currentDateTime = new Date();

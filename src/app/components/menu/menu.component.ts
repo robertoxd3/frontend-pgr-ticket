@@ -5,6 +5,7 @@ import { TicketService } from 'src/app/services/ticket.service';
 import { CookieService } from 'ngx-cookie-service';
 import { ColaService } from 'src/app/services/cola.service';
 import { Subscription } from 'rxjs';
+import { SrColaService } from 'src/app/services/sr-cola.service';
 
 declare var PrintReceipt:any;
 declare var PrintInfoDenucia:any;
@@ -34,7 +35,7 @@ export class MenuComponent implements OnInit,OnDestroy {
   sidebarVisibleDenuncia:boolean=false;
   localConexion:any;
   private dataSubscription: Subscription | undefined;
-  constructor(private _ticketService: TicketService,private signalRService: ColaService, private fb: FormBuilder, private messageService: MessageService,private cookieService: CookieService) {
+  constructor(private _ticketService: TicketService,private srCola:SrColaService,private signalRService: ColaService, private fb: FormBuilder, private messageService: MessageService,private cookieService: CookieService) {
     
   }
 
@@ -45,27 +46,16 @@ export class MenuComponent implements OnInit,OnDestroy {
     this.obtenerUnidades();
     this.getTipoFilas();
     console.log(this.infoButton);
-    this.signalRService.ngOnInit(this.miCookie.config.codigoPad);
+    this.srCola.startConnection();
+  
     
   }
   ngOnDestroy(): void {
     this.signalRService.disconnect();
   }
 ActualizarTicketPantallas(){
-if (this.signalRService.isConnectionEstablished()) {
-  this.signalRService.UpdateCola(this.miCookie.config.codigoPad);
-} else {
-  console.error('La conexión SignalR no está establecida.');
+  this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
 }
-}
-actualizarTicketEjecutivo(){
- if (this.signalRService.isConnectionEstablished()) {
-  this.signalRService.UpdateColaEjecutivo(this.miCookie.config.codigoPad);
-} else {
-  console.error('La conexión SignalR no está establecida.');
-}
-}
-
   
 
   leerCookieJson(){
@@ -169,13 +159,13 @@ actualizarTicketEjecutivo(){
         next: (res) => {
           console.log(res);
           PrintReceipt(res.numeroTicket,res.fechaTicket,res.nombreSimple,res.departamento);
-          this.actualizarTicketEjecutivo();
+          //this.actualizarTicketEjecutivo();
           this.ActualizarTicketPantallas();
           setTimeout(() => {
             this.loading=false;
             if(res){
               this.showAlert("Ticket Creado Correctamente","Exito",'success');
-              this.signalRService.UpdateCola(this.miCookie.config.codigoPad);
+              this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
             }
             else
             this.showAlert("Problema al generar el ticket","Error",'error');

@@ -53,7 +53,7 @@ constructor(private auth:AuthGuard,private srCola:SrColaService, private fb:Form
 }
 
 ngOnInit() {
-  this.signalRService.ngOnInit(this.miCookie.config.codigoPad);
+  this.signalRService.ngOnInit(this.usuarioLogueado.codigoUsuario);
   this.isloading=true;
   this.signalRService.getLastTicket().subscribe(data => {
     this.realTimeDataTurno = data;
@@ -66,16 +66,24 @@ ngOnInit() {
     this.TicketFinalizados = data;
   });
   this.signalRService.receiveLastTicket();
-//  this.signalRService.NotificationListener(); 
+
+  this.srCola.getDataUpdates().subscribe(data => {
+    console.log("SE CREO TICKET: "+data);
+    this.signalRService.UpdateColaEjecutivo(this.usuarioLogueado.codigoUsuario);
+    this.signalRService.UpdateUltimoTicket(this.usuarioLogueado.codigoUsuario);
+  });
+
 
  setTimeout(() => {
-  this.signalRService.UpdateColaEjecutivo(this.miCookie.config.codigoPad);
-  this.signalRService.UpdateCola(this.miCookie.config.codigoPad);
-  this.signalRService.UpdateUltimoTicket(this.miCookie.config.codigoPad);
+  this.signalRService.UpdateColaEjecutivo(this.usuarioLogueado.codigoUsuario);
+  this.signalRService.UpdateCola(this.usuarioLogueado.codigoUsuario);
+  this.signalRService.UpdateUltimoTicket(this.usuarioLogueado.codigoUsuario);
+
  }, 600);
   this.isloading=false;
-  // this.srCola.startConnection();
-  // this.srCola.dataListener();
+  this.srCola.startConnection();
+ 
+  //this.srCola.NotificationListener();
 
 }
 
@@ -114,12 +122,13 @@ cambiarEstado(){
 
 update(){
        if (this.signalRService.isConnectionEstablished()) {
-      this.signalRService.UpdateColaEjecutivo(this.miCookie.config.codigoPad);
-      this.signalRService.UpdateCola(this.miCookie.config.codigoPad);
-      this.signalRService.UpdateUltimoTicket(this.miCookie.config.codigoPad);
+      this.signalRService.UpdateColaEjecutivo(this.usuarioLogueado.codigoUsuario);
+      this.signalRService.UpdateCola(this.usuarioLogueado.codigoUsuario);
+      this.signalRService.UpdateUltimoTicket(this.usuarioLogueado.codigoUsuario);
       this.ticketService.ObtenerTicketFinalizados(this.formProcedimiento.value).subscribe(data => {
         this.TicketFinalizados = data;
       });
+      this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
   } else {
       console.error('La conexión SignalR no está establecida.');
   }
@@ -184,7 +193,7 @@ Llamada(id:any){
     try {
       this.notificacion.numeroTicket=numeroTicket;
       this.notificacion.escritorio=""+this.usuarioLogueado.idEscritorio;
-      this.signalRService.executeNotification(this.miCookie.config.codigoPad,this.notificacion);
+      this.srCola.executeNotification(this.miCookie.config.codigoPad,this.notificacion);
     } catch (error) {
       //console.log(error);
       this.showAlert("No hay ticket atendiendo para llamar","Error","error");

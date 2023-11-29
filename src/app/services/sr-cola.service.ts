@@ -4,14 +4,23 @@ import { ICredencial } from '../model/credencial.interface';
 import { environment } from 'src/environments/environment';
 import { SignalrClass } from './Functions/SingalRclass';
 import { CookieService } from 'ngx-cookie-service';
+import { DialogService } from 'primeng/dynamicdialog';
+import { NotificacionModalComponent } from '../components/notificacion-modal/notificacion-modal.component';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SrColaService {
+export class SrColaService  {
+  public recommendedVoices?: any;
+  public dataSubject: Subject<any> = new Subject<any>();
 
-  constructor(private cookieService:CookieService) {
+  constructor(private cookieService:CookieService, private modalService:DialogService) {
     this.leerCookieJson();
+    setTimeout(() => {
+      const synth = window.speechSynthesis;
+        this.recommendedVoices = synth.getVoices();
+    }, 500);
    }
   private miCookie:any;
   private data:any;
@@ -20,6 +29,7 @@ export class SrColaService {
   public startConnection = (): void => {
     const usuario: ICredencial = JSON.parse(localStorage.getItem('user')|| '{}');
     const url: string =  environment.colaWebSocket2;
+    
     this.hubConnection = SignalrClass.buildConnection(url, usuario);
 
     this.hubConnection.start().then((): void => {
@@ -29,14 +39,72 @@ export class SrColaService {
         err => console.log('Error de conexión:' + err)
       );
 
-      this.executeData(group,usuario);
-        this.dataListener();
+      this.receiveInitialData();
+      
     }).catch(
       err => console.log('Error de conexión al hub' + err)
     );
   }
 
-  public dataListener = () => {
+  getDataUpdates(): Observable<any> {
+    return this.dataSubject.asObservable();
+  }
+
+  receiveInitialData() {
+    this.hubConnection.on('getTicketLlamada',(data)=>{
+          this.dataSubject.next(data);
+        });
+}
+
+   UpdateCola(groupName:string, codigoUnidad:string) {
+    this.hubConnection.invoke('GetTicketLlamada', groupName,codigoUnidad)
+    .then(_ => console.log("Data Actualizada"));
+  }
+  
+
+   NotificationListener = (): void => {
+    this.hubConnection.on('Notification', (data): void => {
+      console.log(data);
+      this.showNotificationModal(data);
+    });
+  }
+
+   executeNotification = (groupname: string | null, notification: any): void => {
+    this.hubConnection.invoke('Notification', groupname,notification).catch(
+        err => console.log('Error de invocación:' + err)
+    );
+}
+
+ showNotificationModal(datos: any): void {
+  console.log(datos)
+  const ref = this.modalService.open(NotificacionModalComponent, { 
+    data: {notificacion: datos},
+    width: '50%', 
+    // height:'350px',
+    // header: 'Llamada'
+});
+
+this.synthesizeSpeechFromText(datos);
+
+setInterval(() => {
+  ref.close();
+}, 6000);
+
+  ref.onClose.subscribe((result: any) => {
+      console.log('Modal cerrado', result);
+  });
+}
+
+ synthesizeSpeechFromText(data:any){
+  const synth = window.speechSynthesis;
+  //console.log(this.recommendedVoices)
+  const utterThis = new SpeechSynthesisUtterance('Numero de ticket '+data.numeroTicket+"en el escritorio "+data.escritorio);
+  utterThis.lang = 'es-ES';
+  utterThis.voice=this.recommendedVoices[7];
+  synth.speak(utterThis);
+}
+
+   dataListener = () => {
     //this.initResumenData();
     console.log('Aqui');
     this.hubConnection.on('getTicketByUser', (data) => {
@@ -49,23 +117,12 @@ export class SrColaService {
     });
   }
 
-  public executeData = (groupName:string,usuario: ICredencial | null): void => {
+   executeData = (groupName:string,usuario: ICredencial | null): void => {
     this.hubConnection.invoke('getTicketByUser',groupName,usuario).catch(
       err => console.log('Error de invocación:' + err)
     );
   }
 
-  // private initResumenData(): void {
-  //   this.resumen = {
-  //     nuevos: 0,
-  //     resueltos: 0,
-  //     enPausa: 0,
-  //     enProceso: 0,
-  //     procesos: 0,
-  //     sinAsignar: 0,
-  //     total: 0
-  //   }
-  // }
 
   leerCookieJson(){
     const cookieName = 'cookie_tickets';
