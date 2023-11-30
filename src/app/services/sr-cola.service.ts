@@ -14,13 +14,17 @@ import { Observable, Subject } from 'rxjs';
 export class SrColaService  {
   public recommendedVoices?: any;
   public dataSubject: Subject<any> = new Subject<any>();
-
+  voices: SpeechSynthesisVoice[] = [];
   constructor(private cookieService:CookieService, private modalService:DialogService) {
     this.leerCookieJson();
-    setTimeout(() => {
-      const synth = window.speechSynthesis;
-        this.recommendedVoices = synth.getVoices();
-    }, 500);
+    
+    
+    // setTimeout(() => {
+    //   const synth = window.speechSynthesis;
+    //     this.recommendedVoices = synth.getVoices();
+    // }, 500);
+    // console.log("a a "+this.recommendedVoices);
+      this.loadVoices();
    }
   private miCookie:any;
   private data:any;
@@ -45,6 +49,23 @@ export class SrColaService  {
       err => console.log('Error de conexión al hub' + err)
     );
   }
+
+  loadVoices() {
+    const synth = window.speechSynthesis;
+
+    // Obtener las voces cuando la página se cargue
+    setTimeout(() => {
+      this.voices = synth.getVoices();
+      console.log(this.voices);
+    }, 1000); // Cambia el tiempo de espera si es necesario
+
+    // También puedes usar el evento 'voiceschanged' para actualizar las voces
+    synth.onvoiceschanged = () => {
+      this.voices = synth.getVoices();
+      console.log(this.voices);
+    };
+  }
+
 
   getDataUpdates(): Observable<any> {
     return this.dataSubject.asObservable();
@@ -75,34 +96,81 @@ export class SrColaService  {
     );
 }
 
- showNotificationModal(datos: any): void {
-  console.log(datos)
+showNotificationModal(datos: any): void {
+  console.log(datos);
   const ref = this.modalService.open(NotificacionModalComponent, { 
-    data: {notificacion: datos},
+    data: { notificacion: datos },
     width: '50%', 
     // height:'350px',
     // header: 'Llamada'
-});
+  });
 
-this.synthesizeSpeechFromText(datos);
+  this.loadVoicesAndSpeak(datos);
 
-setInterval(() => {
-  ref.close();
-}, 6000);
+  setInterval(() => {
+    ref.close();
+  }, 6000);
 
   ref.onClose.subscribe((result: any) => {
-      console.log('Modal cerrado', result);
+    console.log('Modal cerrado', result);
   });
 }
 
- synthesizeSpeechFromText(data:any){
+loadVoicesAndSpeak(data: any): void {
   const synth = window.speechSynthesis;
-  //console.log(this.recommendedVoices)
-  const utterThis = new SpeechSynthesisUtterance('Numero de ticket '+data.numeroTicket+"en el escritorio "+data.escritorio);
-  utterThis.lang = 'es-ES';
-  utterThis.voice=this.recommendedVoices[7];
-  synth.speak(utterThis);
+
+  const speakWhenVoicesReady = () => {
+    const recommendedVoices = synth.getVoices();
+    console.log(recommendedVoices);
+
+    const vozFemenina = recommendedVoices.find(voice => {
+      return voice.lang === 'es-ES' && voice.name.includes('Femenino');
+    });
+
+    const utterThis = new SpeechSynthesisUtterance('Número de ticket ' + data.numeroTicket + " en el escritorio " + data.escritorio);
+    utterThis.lang = 'es';
+    utterThis.rate = 0.7;
+    utterThis.voice = vozFemenina || null;
+
+    synth.speak(utterThis);
+  };
+
+  // Verificar si las voces ya están disponibles
+  if (synth.getVoices().length !== 0) {
+    speakWhenVoicesReady();
+  } else {
+    // Esperar al evento 'voiceschanged' para saber cuándo las voces están listas
+    synth.onvoiceschanged = speakWhenVoicesReady;
+  }
 }
+synthesizeSpeechFromText(data: any) {
+  const synth = window.speechSynthesis;
+
+  const speakWhenVoicesReady = () => {
+    const recommendedVoices = synth.getVoices();
+    console.log(recommendedVoices);
+
+    const vozFemenina = recommendedVoices.find(voice => {
+      return voice.lang === 'es-ES' && voice.name.includes('Femenino');
+    });
+
+    const utterThis = new SpeechSynthesisUtterance('Número de ticket ' + data.numeroTicket + " en el escritorio " + data.escritorio);
+    utterThis.lang = 'es';
+    // utterThis.rate = 0.6;
+    utterThis.voice = vozFemenina || null;
+    window.speechSynthesis.cancel();
+    synth.speak(utterThis);
+  };
+
+  // Verificar si las voces ya están disponibles
+  if (synth.getVoices().length !== 0) {
+    speakWhenVoicesReady();
+  } else {
+    // Esperar al evento 'voiceschanged' para saber cuándo las voces están listas
+    synth.onvoiceschanged = speakWhenVoicesReady;
+  }
+}
+
 
    dataListener = () => {
     //this.initResumenData();

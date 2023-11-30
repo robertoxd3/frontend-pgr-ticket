@@ -37,23 +37,8 @@ export class LlamadoComponent implements OnInit,OnDestroy{
   }
 
   ngOnInit() {
-    // this.signalRService.ngOnInit(this.miCookie.config.codigoPad);
-    // this.signalRService.getDataUpdates().subscribe(data => {
-    //       this.realTimeData = data;
-    //       this.turnoActual=data[0];
-    //       console.log(data);
-    // });
-    // this.signalRService.NotificationListener(); 
-    // setTimeout(() => {
-    //   this.signalRService.UpdateCola(this.miCookie.config.codigoPad);
-    // }, 600);
-    
-    // this.updateDateTime();
-    // setInterval(() => {
-    //   this.updateDateTime();
-    //   this.signalRService.UpdateCola(this.miCookie.config.codigoPad);
-    // }, 60000); 
     this.signalRColaService.startConnection();
+    // this.signalRColaService.setVideoElement(this.video.nativeElement);
     this.signalRColaService.getDataUpdates().subscribe(data => {
           this.realTimeData = data.response;
           this.turnoActual=data.response[0];

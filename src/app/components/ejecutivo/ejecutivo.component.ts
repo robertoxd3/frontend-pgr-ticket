@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { ColaService } from 'src/app/services/cola.service';
 import { DatePipe } from '@angular/common';
@@ -36,6 +36,8 @@ notificacion = {
   escritorio: ""
 }
 checked:boolean=false;
+@ViewChild('toggle') btnToggle!: ElementRef;
+botonRellamada:boolean=false;
 
 constructor(private auth:AuthGuard,private srCola:SrColaService, private fb:FormBuilder, private signalRService: ColaService,private ticketService:TicketService,private cookieService:CookieService,public datePipe: DatePipe,public messageService:MessageService) {
   this.leerCookieJson();
@@ -44,6 +46,8 @@ constructor(private auth:AuthGuard,private srCola:SrColaService, private fb:Form
   this.createForms();
   this.ticketService.obtenerEstadoEjecutivo(this.formProcedimiento.value).subscribe(res=>{
     this.checked=res
+
+    // this.btnToggle.nativeElement=true;
   });
   this.notificacion = {
     numeroTicket: "",
@@ -57,6 +61,12 @@ ngOnInit() {
   this.isloading=true;
   this.signalRService.getLastTicket().subscribe(data => {
     this.realTimeDataTurno = data;
+    //validar toggleButton 
+    if(this.realTimeDataTurno.length === 0){
+      this.botonRellamada=false;
+    } else{
+      this.botonRellamada=true;
+    }
   });
   this.signalRService.getTicketUpdates().subscribe(data => {
     this.realTimeData = data;
@@ -193,7 +203,9 @@ Llamada(id:any){
     try {
       this.notificacion.numeroTicket=numeroTicket;
       this.notificacion.escritorio=""+this.usuarioLogueado.idEscritorio;
+      // this.srCola.muteVideo();
       this.srCola.executeNotification(this.miCookie.config.codigoPad,this.notificacion);
+      // this.srCola.unmuteVideo();
     } catch (error) {
       //console.log(error);
       this.showAlert("No hay ticket atendiendo para llamar","Error","error");
