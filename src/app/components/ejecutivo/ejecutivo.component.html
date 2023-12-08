@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-light">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">
+    <a class="navbar-brand" href="/#/ejecutivo">
       <img src="/assets/logo.png" width="75"  />
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,17 +69,52 @@
              
                 <br>
                 <div class="d-flex justify-content-end ">
+                  <p-button [disabled]="!checked" icon="pi pi-arrow-right-arrow-left" class="me-2 p-button-secondary"  rounded="true" severity="help" (click)="openModalDocumentos(realTimeDataTurno)"></p-button>
                   <p-button [disabled]="!checked" icon="pi pi-megaphone" class="me-2"  rounded="true" severity="secondary" (click)="Llamada(3)"></p-button>
                 </div>
-                
                 <!-- <p-button icon="pi pi-times" rounded="true" severity="info"></p-button> -->
               </div>
           </p-card>
           
           </div>
           <div class="col-12 col-md-8">
-            <h4>En Cola</h4>
-            <p-dataView #dv [value]="realTimeData" selectionMode="single" [rows]="5" [paginator]="true">
+            <div class="row">
+              <div class="col-6">
+                <h4>En Cola</h4>
+                <p-dataView #dv [value]="realTimeData" selectionMode="single" [rows]="4" [paginator]="true">
+                  <ng-template let-data pTemplate="listItem">
+                    <div class="container">
+                      <div class="row">
+                          <div class="col-12">
+                              <div class="d-flex flex-column flex-xl-row align-items-start p-4 gap-4 custom-hover-effect">
+                                  <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center align-items-xl-start flex-grow-1 gap-4">
+                                      <div class="d-flex flex-column align-items-center align-items-sm-start gap-3">
+                                          <div class="h4 font-weight-bold text-900">{{ data.ticket.numeroTicket }}</div>
+                                          <div class="d-flex align-items-center gap-3">
+                                              <span class="d-flex align-items-center gap-2">
+                                                  <i class="pi pi-building"></i>
+                                                  <span class="font-weight-bold">{{ data.nombreSimple }}</span>
+                                              </span>
+                                              <span class="badge badge-danger">{{ data.estado }}</span>
+                                          </div>
+                                      </div>
+                                      <div class="d-flex flex-sm-column align-items-center align-items-sm-end gap-3 gap-sm-2">
+                                          <span class="h4 font-weight-bold">{{ datePipe.transform(data.ticket.fechaTicket, 'dd/MM/yyyy HH:mm') }}</span>
+                                          <!-- <button class="btn btn-primary ms-auto mb-2 rounded-circle">
+                                              <i class="pi pi-megaphone"></i>
+                                          </button> -->
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  </ng-template>
+              </p-dataView>
+              </div>
+              <div class="col-6">
+                <h4>Transferencias</h4>
+            <p-dataView #dv [value]="ticketsTransferidos" selectionMode="single" [rows]="4" [paginator]="true">
               <ng-template let-data pTemplate="listItem">
                 <div class="container">
                   <div class="row">
@@ -87,17 +122,16 @@
                           <div class="d-flex flex-column flex-xl-row align-items-start p-4 gap-4 custom-hover-effect">
                               <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center align-items-xl-start flex-grow-1 gap-4">
                                   <div class="d-flex flex-column align-items-center align-items-sm-start gap-3">
-                                      <div class="h2 font-weight-bold text-900">{{ data.ticket.numeroTicket }}</div>
+                                      <div class="h4 font-weight-bold text-900">{{ data.numeroTicket }}</div>
                                       <div class="d-flex align-items-center gap-3">
                                           <span class="d-flex align-items-center gap-2">
-                                              <i class="pi pi-building"></i>
-                                              <span class="font-weight-bold">{{ data.nombreSimple }}</span>
+                                              <i class="pi pi-arrow-right"></i>
+                                              <span class="font-weight-bold">{{ data.unidadRedirigir }}</span>
                                           </span>
-                                          <span class="badge badge-danger">{{ data.estado }}</span>
                                       </div>
                                   </div>
                                   <div class="d-flex flex-sm-column align-items-center align-items-sm-end gap-3 gap-sm-2">
-                                      <span class="h2 font-weight-bold">{{ datePipe.transform(data.ticket.fechaTicket, 'dd/MM/yyyy HH:mm') }}</span>
+                                      <span class="h4 font-weight-bold">{{ datePipe.transform(data.fechaLlamada, 'dd/MM/yyyy HH:mm') }}</span>
                                       <!-- <button class="btn btn-primary ms-auto mb-2 rounded-circle">
                                           <i class="pi pi-megaphone"></i>
                                       </button> -->
@@ -109,6 +143,9 @@
               </div>
               </ng-template>
           </p-dataView>
+              </div>
+            </div>
+            
           </div>
          </div>
       </p-tabPanel>

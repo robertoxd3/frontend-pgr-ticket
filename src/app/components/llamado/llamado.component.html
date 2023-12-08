@@ -33,6 +33,7 @@
               <div *ngIf="turnoActual" class="big">
                 {{ turnoActual.numeroTicket }}
               </div>
+          
               <div class="info">
                 <section>
                   <div class="title">Fecha</div>
@@ -64,6 +65,7 @@
         </div>
             <div class="esquina-inferior-derecha  mt-2">
               <span class="h5 font-weight-bold text-900 title-fecha">{{ datePipe.transform(currentDateTime, 'dd/MM/yyyy HH:mm')}}</span>
+              <p *ngIf="ultimoLlamado">{{ultimoLlamado.numeroTicket}}</p>
             </div>
       </div>
     </div>

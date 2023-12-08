@@ -65,4 +65,12 @@ export class TicketService {
   ObtenerTicketFinalizados(form: FormData): Observable<any> {
     return this.httpClient.post(this.colaUrl + 'ObtenerTicketFinalizados',form);
   }
+
+  TransferirTicket(form: FormData): Observable<any> {
+    return this.httpClient.post(this.colaUrl + 'TransferirTicket',form);
+  }
+
+  GetTransferidos(codigoUsuario: FormData): Observable<any> {
+    return this.httpClient.post(this.colaUrl + 'Transferir',codigoUsuario);
+  }
 }

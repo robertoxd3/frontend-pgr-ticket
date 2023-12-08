@@ -18,11 +18,7 @@ export class NotificacionModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
-    // this.notificationData = {
-    //   title:"Titulo",
-    //   escritorio:"X-198"
-    // }
+    
   }
 
   close(): void {

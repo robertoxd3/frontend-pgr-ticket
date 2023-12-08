@@ -31,6 +31,7 @@ export class LlamadoComponent implements OnInit,OnDestroy{
   turnoActual: any;
    dataSubscription: Subscription | undefined;
    currentDateTime!: any;
+  ultimoLlamado:any;
 
   constructor(private signalRService: ColaService,private signalRColaService: SrColaService,private cookieService: CookieService, private rd: Renderer2,public datePipe: DatePipe) {
     this.leerCookieJson();
@@ -38,13 +39,16 @@ export class LlamadoComponent implements OnInit,OnDestroy{
 
   ngOnInit() {
     this.signalRColaService.startConnection();
-    // this.signalRColaService.setVideoElement(this.video.nativeElement);
     this.signalRColaService.getDataUpdates().subscribe(data => {
           this.realTimeData = data.response;
           this.turnoActual=data.response[0];
-          //console.log(data.response);
     });
     this.signalRColaService.NotificationListener(); 
+    this.signalRColaService.notificationData.subscribe((data: any) => {
+      console.log(data);
+      //Actualizar el numero en pantalla de acuerdo al llamado
+      this.turnoActual=data;
+    });
     setTimeout(() => {
       this.signalRColaService.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
     }, 600);
@@ -106,30 +110,14 @@ videosLista: string[] = [
 //   'assets/VideoSIAPP/10.mp4',
 // ];
 
-
 ngOnDestroy(): void {
   this.signalRService.disconnect();
 }
-
-// sendData() {
-//     this.signalRService.sendMessage("PA12","PRUEBA");
-//        if (this.signalRService.isConnectionEstablished()) {
-//       this.signalRService.UpdateColaEjecutivo(this.miCookie.config.codigoPad);
-//   } else {
-//       console.error('La conexión SignalR no está establecida.');
-//   }
-// }
-
-  // showDialog() {
-  //   this.displayModal = true;
-  //   this.sendData();
-  // }
 
   updateDateTime() {
     this.currentDateTime = new Date();
   }
 
-  
   leerCookieJson(){
     const cookieName = 'cookie_tickets';
     if (this.cookieService.check(cookieName)) {

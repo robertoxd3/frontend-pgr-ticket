@@ -36,6 +36,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { NotificacionModalComponent } from './components/notificacion-modal/notificacion-modal.component';
 import { DialogService } from 'primeng/dynamicdialog';
 import {MatMenuModule} from '@angular/material/menu';
+import { TransferirComponent } from './components/ejecutivo/transferir/transferir.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import {MatMenuModule} from '@angular/material/menu';
     LlamadoComponent,
     EjecutivoComponent,
     LoginComponent,
-    NotificacionModalComponent
+    NotificacionModalComponent,
+    TransferirComponent
   ],
   imports: [
     BrowserModule,

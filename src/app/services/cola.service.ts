@@ -95,49 +95,49 @@ export class ColaService {
   }
 
 
-  public NotificationListener = (): void => {
-    this.connection.on('Notification', (data): void => {
-      console.log(data);
-      this.showNotificationModal(data);
-    });
-  }
+//   public NotificationListener = (): void => {
+//     this.connection.on('Notification', (data): void => {
+//       console.log(data);
+//       this.showNotificationModal(data);
+//     });
+//   }
 
-  public executeNotification = (groupname: string | null, notification: any): void => {
-    this.connection.invoke('Notification', groupname,notification).catch(
-        err => console.log('Error de invocación:' + err)
-    );
-}
+//   public executeNotification = (groupname: string | null, notification: any): void => {
+//     this.connection.invoke('Notification', groupname,notification).catch(
+//         err => console.log('Error de invocación:' + err)
+//     );
+// }
 
-private showNotificationModal(datos: any): void {
-  console.log(datos)
-  const ref = this.modalService.open(NotificacionModalComponent, { 
-    data: {notificacion: datos},
-    width: '50%', 
-    // height:'350px',
-    // header: 'Llamada'
-});
+// private showNotificationModal(datos: any): void {
+//   console.log(datos)
+//   const ref = this.modalService.open(NotificacionModalComponent, { 
+//     data: {notificacion: datos},
+//     width: '50%', 
+//     // height:'350px',
+//     // header: 'Llamada'
+// });
 
-this.synthesizeSpeechFromText(datos);
+// this.synthesizeSpeechFromText(datos);
 
-setInterval(() => {
-  ref.close();
-}, 6000);
+// setInterval(() => {
+//   ref.close();
+// }, 6000);
 
-  ref.onClose.subscribe((result: any) => {
-      console.log('Modal cerrado', result);
-  });
-}
+//   ref.onClose.subscribe((result: any) => {
+//       console.log('Modal cerrado', result);
+//   });
+// }
 
 
 
-private synthesizeSpeechFromText(data:any){
-      const synth = window.speechSynthesis;
-      //console.log(this.recommendedVoices)
-      const utterThis = new SpeechSynthesisUtterance('Numero de ticket '+data.numeroTicket+"en el escritorio "+data.escritorio);
-      utterThis.lang = 'es-ES';
-      utterThis.voice=this.recommendedVoices[7];
-      synth.speak(utterThis);
-	}
+// private synthesizeSpeechFromText(data:any){
+//       const synth = window.speechSynthesis;
+//       //console.log(this.recommendedVoices)
+//       const utterThis = new SpeechSynthesisUtterance('Numero de ticket '+data.numeroTicket+"en el escritorio "+data.escritorio);
+//       utterThis.lang = 'es-ES';
+//       utterThis.voice=this.recommendedVoices[7];
+//       synth.speak(utterThis);
+// 	}
 
 
     getDataUpdates(): Observable<any> {

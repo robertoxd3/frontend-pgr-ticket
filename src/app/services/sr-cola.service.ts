@@ -14,11 +14,11 @@ import { Observable, Subject } from 'rxjs';
 export class SrColaService  {
   public recommendedVoices?: any;
   public dataSubject: Subject<any> = new Subject<any>();
+  public notificationDataSubject = new Subject<any>();
+  notificationData=this.notificationDataSubject.asObservable();
   voices: SpeechSynthesisVoice[] = [];
   constructor(private cookieService:CookieService, private modalService:DialogService) {
     this.leerCookieJson();
-    
-    
     // setTimeout(() => {
     //   const synth = window.speechSynthesis;
     //     this.recommendedVoices = synth.getVoices();
@@ -87,10 +87,13 @@ export class SrColaService  {
     this.hubConnection.on('Notification', (data): void => {
       console.log(data);
       this.showNotificationModal(data);
+      // return data;
+      this.notificationDataSubject.next(data);
     });
   }
 
    executeNotification = (groupname: string | null, notification: any): void => {
+   
     this.hubConnection.invoke('Notification', groupname,notification).catch(
         err => console.log('Error de invocación:' + err)
     );
@@ -100,7 +103,7 @@ showNotificationModal(datos: any): void {
   console.log(datos);
   const ref = this.modalService.open(NotificacionModalComponent, { 
     data: { notificacion: datos },
-    width: '50%', 
+    width: '60%', 
     // height:'350px',
     // header: 'Llamada'
   });
@@ -127,7 +130,7 @@ loadVoicesAndSpeak(data: any): void {
       return voice.lang === 'es-ES' && voice.name.includes('Femenino');
     });
 
-    const utterThis = new SpeechSynthesisUtterance('Número de ticket ' + data.numeroTicket + " en el escritorio " + data.escritorio);
+    const utterThis = new SpeechSynthesisUtterance('Número de ticket ' + data.numeroTicket + " en el escritorio " + data.idEscritorio);
     utterThis.lang = 'es';
     utterThis.rate = 0.7;
     utterThis.voice = vozFemenina || null;
@@ -154,7 +157,7 @@ synthesizeSpeechFromText(data: any) {
       return voice.lang === 'es-ES' && voice.name.includes('Femenino');
     });
 
-    const utterThis = new SpeechSynthesisUtterance('Número de ticket ' + data.numeroTicket + " en el escritorio " + data.escritorio);
+    const utterThis = new SpeechSynthesisUtterance('Número de ticket ' + data.numeroTicket + " en el escritorio " + data.idEscritorio);
     utterThis.lang = 'es';
     // utterThis.rate = 0.6;
     utterThis.voice = vozFemenina || null;

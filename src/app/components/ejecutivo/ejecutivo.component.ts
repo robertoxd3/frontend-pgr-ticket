@@ -7,6 +7,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { MenuItem, MessageService } from 'primeng/api';
 import { AuthGuard } from 'src/app/auth.guard';
 import { SrColaService } from 'src/app/services/sr-cola.service';
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import { TransferirComponent } from './transferir/transferir.component';
 
 @Component({
   selector: 'app-ejecutivo',
@@ -17,7 +19,7 @@ import { SrColaService } from 'src/app/services/sr-cola.service';
 export class EjecutivoComponent {
   displayModal: boolean = false;
 selectedData: any;
-products!: any[];
+unidades!: any;
 isloading:boolean=false;
 selectedProduct!: any;
 miCookie:any;
@@ -33,13 +35,14 @@ loading:Boolean=false;
 itemsAvatar!: MenuItem[];
 notificacion = {
   numeroTicket: "",
-  escritorio: ""
+  idEscritorio: ""
 }
+ticketsTransferidos:any;
 checked:boolean=false;
 @ViewChild('toggle') btnToggle!: ElementRef;
 botonRellamada:boolean=false;
 
-constructor(private auth:AuthGuard,private srCola:SrColaService, private fb:FormBuilder, private signalRService: ColaService,private ticketService:TicketService,private cookieService:CookieService,public datePipe: DatePipe,public messageService:MessageService) {
+constructor(private auth:AuthGuard,private modalService:NgbModal,private srCola:SrColaService,private _ticketService:TicketService, private fb:FormBuilder, private signalRService: ColaService,private ticketService:TicketService,private cookieService:CookieService,public datePipe: DatePipe,public messageService:MessageService) {
   this.leerCookieJson();
   this.usuarioLogueado = JSON.parse(localStorage.getItem('user') || '{}');
   console.log(this.usuarioLogueado);
@@ -51,7 +54,7 @@ constructor(private auth:AuthGuard,private srCola:SrColaService, private fb:Form
   });
   this.notificacion = {
     numeroTicket: "",
-    escritorio: ""
+    idEscritorio: ""
   }
 
 }
@@ -76,25 +79,21 @@ ngOnInit() {
     this.TicketFinalizados = data;
   });
   this.signalRService.receiveLastTicket();
-
   this.srCola.getDataUpdates().subscribe(data => {
     console.log("SE CREO TICKET: "+data);
     this.signalRService.UpdateColaEjecutivo(this.usuarioLogueado.codigoUsuario);
     this.signalRService.UpdateUltimoTicket(this.usuarioLogueado.codigoUsuario);
   });
-
+  this.srCola.startConnection();
 
  setTimeout(() => {
   this.signalRService.UpdateColaEjecutivo(this.usuarioLogueado.codigoUsuario);
   this.signalRService.UpdateCola(this.usuarioLogueado.codigoUsuario);
   this.signalRService.UpdateUltimoTicket(this.usuarioLogueado.codigoUsuario);
 
- }, 600);
+ }, 800);
+ this.cargarTicketTransferidos();
   this.isloading=false;
-  this.srCola.startConnection();
- 
-  //this.srCola.NotificationListener();
-
 }
 
 ngOnDestroy(): void {
@@ -108,6 +107,20 @@ Logout(){
 onRowSelect(event: any) {
    this.selectedData=event.data;
    this.displayModal = true;
+}
+
+cargarTicketTransferidos(){
+  var formData = new FormData();
+    formData.append('codigoUsuario', this.usuarioLogueado.codigoUsuario);
+  this.ticketService.GetTransferidos(formData).subscribe({
+    next: (res) => {
+      console.log(res);
+      this.ticketsTransferidos=res;
+    },
+    error: (err) => {
+      console.log(err);
+    }, 
+  });
 }
 
 cambiarEstado(){
@@ -202,7 +215,8 @@ Llamada(id:any){
   call(numeroTicket:any){
     try {
       this.notificacion.numeroTicket=numeroTicket;
-      this.notificacion.escritorio=""+this.usuarioLogueado.idEscritorio;
+      this.notificacion.idEscritorio=""+this.usuarioLogueado.idEscritorio;
+      console.log(this.notificacion.idEscritorio);
       // this.srCola.muteVideo();
       this.srCola.executeNotification(this.miCookie.config.codigoPad,this.notificacion);
       // this.srCola.unmuteVideo();
@@ -226,6 +240,16 @@ Llamada(id:any){
       }
     }
   }
+
+  openModalDocumentos(turnoActual:any){
+    console.log(this.miCookie);
+    const dialogRefBs = this.modalService.open(TransferirComponent,
+      { ariaLabelledBy: "modal-basic-title", size: "xl", centered: true });
+      dialogRefBs.componentInstance.data = turnoActual[0];
+      dialogRefBs.componentInstance.usuario = this.miCookie;
+    
+  }
+
   
 
 }
