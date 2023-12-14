@@ -9,6 +9,7 @@ import { AuthGuard } from 'src/app/auth.guard';
 import { SrColaService } from 'src/app/services/sr-cola.service';
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import { TransferirComponent } from './transferir/transferir.component';
+import { DisponibilidadComponent } from './disponibilidad/disponibilidad.component';
 
 @Component({
   selector: 'app-ejecutivo',
@@ -37,6 +38,7 @@ notificacion = {
   numeroTicket: "",
   idEscritorio: ""
 }
+items!: MenuItem[];
 ticketsTransferidos:any;
 checked:boolean=false;
 @ViewChild('toggle') btnToggle!: ElementRef;
@@ -79,21 +81,54 @@ ngOnInit() {
     this.TicketFinalizados = data;
   });
   this.signalRService.receiveLastTicket();
+  this.srCola.startConnection();
+
+  this.signalRService.getTransferidosDataUpdates().subscribe(data => {
+    console.log(data);
+    this.ticketsTransferidos=data;
+  });
   this.srCola.getDataUpdates().subscribe(data => {
     console.log("SE CREO TICKET: "+data);
     this.signalRService.UpdateColaEjecutivo(this.usuarioLogueado.codigoUsuario);
     this.signalRService.UpdateUltimoTicket(this.usuarioLogueado.codigoUsuario);
   });
-  this.srCola.startConnection();
+  
 
  setTimeout(() => {
-  this.signalRService.UpdateColaEjecutivo(this.usuarioLogueado.codigoUsuario);
-  this.signalRService.UpdateCola(this.usuarioLogueado.codigoUsuario);
-  this.signalRService.UpdateUltimoTicket(this.usuarioLogueado.codigoUsuario);
-
+  // this.signalRService.UpdateColaEjecutivo(this.usuarioLogueado.codigoUsuario);
+  // this.signalRService.UpdateCola(this.usuarioLogueado.codigoUsuario);
+  // this.signalRService.UpdateUltimoTicket(this.usuarioLogueado.codigoUsuario);
+  this.update();
  }, 800);
- this.cargarTicketTransferidos();
+ //this.cargarTicketTransferidos();
   this.isloading=false;
+
+  this.items = [
+    {
+        tooltip: '15 minutos',
+        tooltipPosition: 'left',
+        icon: 'pi pi-pencil',
+        command: () => {
+            this.messageService.add({ severity: 'info', summary: 'Add', detail: 'Data Added' });
+        }
+    },
+    {
+        tooltip: '30 minutos',
+        icon: 'pi pi-refresh',
+        tooltipPosition: 'left',
+        command: () => {
+            this.messageService.add({ severity: 'success', summary: 'Update', detail: 'Data Updated' });
+        }
+    },
+    {
+        tooltip: '1 Hora',
+        icon: 'pi pi-trash',
+        tooltipPosition: 'left',
+        command: () => {
+            this.messageService.add({ severity: 'error', summary: 'Delete', detail: 'Data Deleted' });
+        }
+    },
+];
 }
 
 ngOnDestroy(): void {
@@ -151,9 +186,27 @@ update(){
       this.ticketService.ObtenerTicketFinalizados(this.formProcedimiento.value).subscribe(data => {
         this.TicketFinalizados = data;
       });
+      this.signalRService.UpdateTransferidos(this.usuarioLogueado.codigoUsuario,this.usuarioLogueado.codigoUnidad);
+
       this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
   } else {
-      console.error('La conexión SignalR no está establecida.');
+      this.signalRService.getLastTicket().subscribe(data => {
+    this.realTimeDataTurno = data;
+    //validar toggleButton 
+    if(this.realTimeDataTurno.length === 0){
+      this.botonRellamada=false;
+    } else{
+      this.botonRellamada=true;
+    }
+  });
+  this.signalRService.getTicketUpdates().subscribe(data => {
+    this.realTimeData = data;
+    console.log(data);
+  });
+  this.ticketService.ObtenerTicketFinalizados(this.formProcedimiento.value).subscribe(data => {
+    this.TicketFinalizados = data;
+  });
+      console.error('La conexión SignalR no está establecida..');
   }
 }
 
@@ -241,13 +294,19 @@ Llamada(id:any){
     }
   }
 
-  openModalDocumentos(turnoActual:any){
+  openModalTransferir(turnoActual:any){
     console.log(this.miCookie);
     const dialogRefBs = this.modalService.open(TransferirComponent,
       { ariaLabelledBy: "modal-basic-title", size: "xl", centered: true });
       dialogRefBs.componentInstance.data = turnoActual[0];
       dialogRefBs.componentInstance.usuario = this.miCookie;
-    
+  }
+
+  indisponibilidad(){
+    console.log(this.miCookie);
+    const dialogRefBs = this.modalService.open(DisponibilidadComponent,
+      { ariaLabelledBy: "modal-basic-title", size: "xl", centered: true });
+      dialogRefBs.componentInstance.usuario = this.miCookie;
   }
 
   

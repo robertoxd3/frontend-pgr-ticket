@@ -20,6 +20,7 @@ export class ColaService {
   public dataSubject: Subject<any> = new Subject<any>();
   public dataSubjectTicket: Subject<any> = new Subject<any>();
   public dataUltimoTicket: Subject<any> = new Subject<any>();
+  public transferidosDataSubject: Subject<any> = new Subject<any>();
   public httpClient = inject(HttpClient);
   colaUrl?: string;
   colaWebSocket?: string;
@@ -45,6 +46,7 @@ export class ColaService {
         skipNegotiation: true,
           transport: signalR.HttpTransportType.WebSockets
       })
+      .withAutomaticReconnect()
       .build();
 
      this.connection.on("NewUser", message => this.newUser(message));
@@ -53,7 +55,6 @@ export class ColaService {
      const synth = window.speechSynthesis;
      this.recommendedVoices = synth.getVoices();
   }
-
 
 
   ngOnInit(groupName:string){
@@ -75,6 +76,7 @@ export class ColaService {
       this.receiveInitialData();
       this.receiveTicket();
       this.receiveLastTicket();
+      this.receiveTicketTransferencias();
       this.join(groupName);
     }).catch(error => {
       return console.error(error);
@@ -154,7 +156,7 @@ export class ColaService {
 
     public UpdateCola(groupName:string) {
       this.connection.invoke('Conectando', groupName,this.usuario.codigoUsuario)
-      .then(_ => console.log("Data Actualizada"));
+      .then(_ => console.log("Data Actualizada Cola"));
     }
     
 
@@ -220,6 +222,75 @@ export class ColaService {
       message: message
     });
   }
+
+  
+  getTransferidosDataUpdates(): Observable<any> {
+    return this.transferidosDataSubject.asObservable();
+  }
+
+  receiveTicketTransferencias() {
+    this.connection.on('getTicketTransferencias',(data)=>{
+          this.transferidosDataSubject.next(data);
+        });
+  }
+
+   UpdateTransferidos(groupName:string, codigoUnidad:string) {
+    this.connection.invoke('GetTicketTransferencias', groupName,codigoUnidad)
+    .then(_ => console.log("Data Trasnferidos Actualizada"));
+  }
+  
+
+  
+  // private startConnection(groupName:string) {
+  //   this.connection = new signalR.HubConnectionBuilder()
+  //     .withUrl(environment.colaWebSocket,{
+  //       skipNegotiation: true,
+  //         transport: signalR.HttpTransportType.WebSockets
+  //     })
+  //     .withAutomaticReconnect()
+  //     .build();
+
+
+  //   this.connection.start()
+  //     .then(() => {
+  //       console.log('Connection Started');
+      
+  //       //this.subscribeToDataUpdates();
+  //       this.receiveInitialData();
+  //       this.receiveTicket();
+  //       this.receiveLastTicket();
+  //       this.join(groupName);
+  //     })
+  //     .catch(err => {
+  //       console.error('Error while starting connection: ' + err);
+  //     });
+
+  //   // Handle reconnection
+  //   this.connection.onclose(() => {
+  //     console.log('Connection closed, attempting to reconnect...');
+  //     // You can add your reconnection logic here, like attempting to start the connection again.
+  //     this.startConnection(groupName);
+  //   });
+  // }
+
+ 
+
+
+  // startConnection(groupName:string){
+
+  //   this.connection.start()
+  //   .then(_ => {
+  //     console.log('Connection Started');
+      
+  //     //this.subscribeToDataUpdates();
+  //     this.receiveInitialData();
+  //     this.receiveTicket();
+  //     this.receiveLastTicket();
+  //     this.join(groupName);
+  //   }).catch(error => {
+  //     return console.error(error);
+  //   });
+  // }
 }
 
 

@@ -37,6 +37,9 @@ import { NotificacionModalComponent } from './components/notificacion-modal/noti
 import { DialogService } from 'primeng/dynamicdialog';
 import {MatMenuModule} from '@angular/material/menu';
 import { TransferirComponent } from './components/ejecutivo/transferir/transferir.component';
+import { DisponibilidadComponent } from './components/ejecutivo/disponibilidad/disponibilidad.component';
+import {CalendarModule} from 'primeng/calendar';
+import {InputNumberModule} from 'primeng/inputnumber';
 
 @NgModule({
   declarations: [
@@ -48,7 +51,8 @@ import { TransferirComponent } from './components/ejecutivo/transferir/transferi
     EjecutivoComponent,
     LoginComponent,
     NotificacionModalComponent,
-    TransferirComponent
+    TransferirComponent,
+    DisponibilidadComponent
   ],
   imports: [
     BrowserModule,
@@ -79,7 +83,9 @@ import { TransferirComponent } from './components/ejecutivo/transferir/transferi
     TagModule,
     SplitButtonModule,
     AvatarModule,
-    MatMenuModule
+    MatMenuModule,
+    CalendarModule,
+    InputNumberModule
   ],
   providers: [DialogService],
   bootstrap: [AppComponent]

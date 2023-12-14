@@ -73,4 +73,8 @@ export class TicketService {
   GetTransferidos(codigoUsuario: FormData): Observable<any> {
     return this.httpClient.post(this.colaUrl + 'Transferir',codigoUsuario);
   }
+
+  ProgramarDisponibilidad(data: FormData): Observable<any> {
+    return this.httpClient.post(this.baseUrl + 'ProgramarDisponibilidad',data);
+  }
 }

@@ -14,6 +14,7 @@ import { Observable, Subject } from 'rxjs';
 export class SrColaService  {
   public recommendedVoices?: any;
   public dataSubject: Subject<any> = new Subject<any>();
+  public transferidosDataSubject: Subject<any> = new Subject<any>();
   public notificationDataSubject = new Subject<any>();
   notificationData=this.notificationDataSubject.asObservable();
   voices: SpeechSynthesisVoice[] = [];
@@ -44,7 +45,7 @@ export class SrColaService  {
       );
 
       this.receiveInitialData();
-      
+      //this.getTicketTransferencias();
     }).catch(
       err => console.log('Error de conexión al hub' + err)
     );
@@ -56,13 +57,13 @@ export class SrColaService  {
     // Obtener las voces cuando la página se cargue
     setTimeout(() => {
       this.voices = synth.getVoices();
-      console.log(this.voices);
+     // console.log(this.voices);
     }, 1000); // Cambia el tiempo de espera si es necesario
 
     // También puedes usar el evento 'voiceschanged' para actualizar las voces
     synth.onvoiceschanged = () => {
       this.voices = synth.getVoices();
-      console.log(this.voices);
+      //console.log(this.voices);
     };
   }
 
@@ -81,6 +82,21 @@ export class SrColaService  {
     this.hubConnection.invoke('GetTicketLlamada', groupName,codigoUnidad)
     .then(_ => console.log("Data Actualizada"));
   }
+
+  // getTransferidosDataUpdates(): Observable<any> {
+  //   return this.transferidosDataSubject.asObservable();
+  // }
+
+  // getTicketTransferencias() {
+  //   this.hubConnection.on('getTicketTransferencias',(data)=>{
+  //         this.transferidosDataSubject.next(data);
+  //       });
+  // }
+
+  //  UpdateTransferidos(groupName:string, codigoUnidad:string) {
+  //   this.hubConnection.invoke('GetTicketTransferencias', groupName,codigoUnidad)
+  //   .then(_ => console.log("Data Trasnferidos Actualizada"));
+  // }
   
 
    NotificationListener = (): void => {

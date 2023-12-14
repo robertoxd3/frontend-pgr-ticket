@@ -9,7 +9,8 @@ export class SignalrClass {
         authorization: `Bearer ${ token }`
       },
       skipNegotiation: true,
+      
       transport: SignalR.HttpTransportType.WebSockets
-    }).build();
+    }).withAutomaticReconnect().build();
   }
 }

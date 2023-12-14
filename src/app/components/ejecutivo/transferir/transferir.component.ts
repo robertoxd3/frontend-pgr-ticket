@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { MessageService } from 'primeng/api';
 import { ColaService } from 'src/app/services/cola.service';
+import { SrColaService } from 'src/app/services/sr-cola.service';
 import { TicketService } from 'src/app/services/ticket.service';
 
 @Component({
@@ -22,7 +23,7 @@ loading:boolean=false;
 @Input() usuario: any;
 @Input() data:any;
 
-  constructor( public activeModal: NgbActiveModal,private signalRService:ColaService , private messageService:MessageService, public datePipe:DatePipe, private ticketService:TicketService, private fb:FormBuilder){
+  constructor( public activeModal: NgbActiveModal,private srCola:SrColaService,private signalRService:ColaService , private messageService:MessageService, public datePipe:DatePipe, private ticketService:TicketService, private fb:FormBuilder){
   //   this.cities = [
   //     {name: 'New York', code: 'NY'},
   //     {name: 'Rome', code: 'RM'},
@@ -93,6 +94,7 @@ loading:boolean=false;
             next: (res) => {
               console.log(res);
               this.signalRService.UpdateUltimoTicket(this.usuarioLogueado.codigoUsuario);
+              this.signalRService.UpdateTransferidos(this.usuarioLogueado.codigoUsuario, this.usuarioLogueado.codigoUnidad);
               if(res)
                 this.close();
               else

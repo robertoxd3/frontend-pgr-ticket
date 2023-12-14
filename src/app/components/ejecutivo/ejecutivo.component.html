@@ -38,7 +38,11 @@
   <div class="card">
     <div class="d-flex justify-content-between align-items-center">
       <div class="d-flex justify-content-start align-items-start">
-        <p-toggleButton #toggle [disabled]="botonRellamada"  [(ngModel)]="checked" (onChange)="cambiarEstado()" onLabel="Disponible" class="ms-2" offLabel="No Disponible" onIcon='pi pi-check' offIcon="pi pi-ban" [style]="{ width: '11em' }"></p-toggleButton>
+        <p-button [disabled]="!checked" type="button" icon="pi pi-ban" severity="info" class="ms-2 me-2" label="Programar" (click)="indisponibilidad()"></p-button>
+        <p-toggleButton #toggle [disabled]="botonRellamada"  [(ngModel)]="checked" (onChange)="cambiarEstado()" onLabel="Disponible" class="ms-2" offLabel="No Disponible" onIcon='pi pi-check' offIcon="pi pi-ban" [style]="{ width: 'auto' }"></p-toggleButton>
+        <div style="position: relative;" class="speeddial-tooltip-demo">
+        <!-- <p-speedDial [model]="items" direction="right"></p-speedDial> -->
+        </div>
       </div>
       <div class="py-3 w-100">
         <div class="d-flex justify-content-end align-items-end">
@@ -69,7 +73,7 @@
              
                 <br>
                 <div class="d-flex justify-content-end ">
-                  <p-button [disabled]="!checked" icon="pi pi-arrow-right-arrow-left" class="me-2 p-button-secondary"  rounded="true" severity="help" (click)="openModalDocumentos(realTimeDataTurno)"></p-button>
+                  <p-button [disabled]="!checked" icon="pi pi-arrow-right-arrow-left" class="me-2 p-button-secondary"  rounded="true" severity="help" (click)="openModalTransferir(realTimeDataTurno)"></p-button>
                   <p-button [disabled]="!checked" icon="pi pi-megaphone" class="me-2"  rounded="true" severity="secondary" (click)="Llamada(3)"></p-button>
                 </div>
                 <!-- <p-button icon="pi pi-times" rounded="true" severity="info"></p-button> -->
