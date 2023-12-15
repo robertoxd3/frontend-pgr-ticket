@@ -6,6 +6,13 @@ import { MessageService } from 'primeng/api';
 
 import { TicketService } from 'src/app/services/ticket.service';
 
+export interface IDisponibilidad {
+  IdEscritorio?: number;
+  FechaInicio?: string;
+  HorasNoDisponible?: number;
+}
+
+
 @Component({
   selector: 'app-disponibilidad',
   templateUrl: './disponibilidad.component.html',
@@ -13,23 +20,31 @@ import { TicketService } from 'src/app/services/ticket.service';
   providers:[MessageService,DatePipe]
 })
 export class DisponibilidadComponent implements OnInit{
-  disponibilidadForm: FormGroup;
+  disponibilidadForm!: FormGroup;
   loading:boolean=false;
+  usuarioLogueado:any;
   constructor( public activeModal: NgbActiveModal,private messageService:MessageService, public datePipe:DatePipe, private ticketService:TicketService, private fb:FormBuilder){
-      this.disponibilidadForm = this.fb.group({
-        IdEscritorio: [''],
-        FechaInicio: ['', [Validators.required]],
-        HorasNoDisponible: ['',[Validators.required]],
-      });
+    this.usuarioLogueado = JSON.parse(localStorage.getItem('user') || '{}');
+    
+     
     }
 
-  ngOnInit(): void {
-    
+  ngOnInit(){
+    this.disponibilidadForm = this.fb.group({
+      IdEscritorio: this.usuarioLogueado.idEscritorio,
+      FechaInicio:[''],
+      HorasNoDisponible: [''],
+    });
   }
 
   onSubmit(){
     this.loading=true;
-    this.ticketService.ProgramarDisponibilidad(this.disponibilidadForm.value).subscribe({
+    const body: IDisponibilidad = {
+      IdEscritorio: this.usuarioLogueado.idEscritorio,
+      FechaInicio: this.disponibilidadForm.value.FechaInicio,
+      HorasNoDisponible: this.disponibilidadForm.value.HorasNoDisponible,
+    }
+    this.ticketService.ProgramarDisponibilidad(body).subscribe({
       next: (res) => {
         console.log(res.response);
       
@@ -37,7 +52,7 @@ export class DisponibilidadComponent implements OnInit{
         this.loading = false;
       },
       error: (err) => {
-        console.log("Error: "+err);
+        console.log(err);
         this.loading = false;
         //this.showAlert("Credenciales Invalidas","Error de autenticación","error")
       }, 

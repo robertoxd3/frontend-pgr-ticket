@@ -3,6 +3,8 @@ import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
+import { FormBuilder } from '@angular/forms';
+import { IDisponibilidad } from '../components/ejecutivo/disponibilidad/disponibilidad.component';
 
 @Injectable({
   providedIn: 'root'
@@ -74,7 +76,8 @@ export class TicketService {
     return this.httpClient.post(this.colaUrl + 'Transferir',codigoUsuario);
   }
 
-  ProgramarDisponibilidad(data: FormData): Observable<any> {
+  ProgramarDisponibilidad(data: IDisponibilidad): Observable<any> {
+    console.log(data);
     return this.httpClient.post(this.baseUrl + 'ProgramarDisponibilidad',data);
   }
 }
