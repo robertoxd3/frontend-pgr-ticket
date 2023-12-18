@@ -80,4 +80,12 @@ export class TicketService {
     console.log(data);
     return this.httpClient.post(this.baseUrl + 'ProgramarDisponibilidad',data);
   }
+
+  ObtenerProgramados(data: IDisponibilidad): Observable<any> {
+    return this.httpClient.post(this.baseUrl + 'ObtenerProgramados',data);
+  }
+
+  BorrarProgramado(data: IDisponibilidad): Observable<any> {
+    return this.httpClient.post(this.baseUrl + 'BorrarProgramados',data);
+  }
 }

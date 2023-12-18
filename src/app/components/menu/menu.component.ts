@@ -158,17 +158,23 @@ ActualizarTicketPantallas(){
       this._ticketService.guardarTicket(this.formGroup.value,this.miCookie).subscribe({
         next: (res) => {
           console.log(res);
-          PrintReceipt(res.numeroTicket,res.fechaTicket,res.nombreSimple,res.departamento);
+          if(res.status==400){          
+            //this.showAlert(res.message,"Error",'error');
+          }else{
+            PrintReceipt(res.numeroTicket,res.fechaTicket,res.nombreSimple,res.departamento);
+          }
+         
           //this.actualizarTicketEjecutivo();
           this.ActualizarTicketPantallas();
           setTimeout(() => {
             this.loading=false;
-            if(res){
+            if(res.status==400){          
+              this.showAlert(res.message,"Error",'error');
+            }
+            else{
               this.showAlert("Ticket Creado Correctamente","Exito",'success');
               this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
             }
-            else
-            this.showAlert("Problema al generar el ticket","Error",'error');
           }, 2500);
         },
         error: (err) => {

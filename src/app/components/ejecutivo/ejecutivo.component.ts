@@ -10,6 +10,7 @@ import { SrColaService } from 'src/app/services/sr-cola.service';
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import { TransferirComponent } from './transferir/transferir.component';
 import { DisponibilidadComponent } from './disponibilidad/disponibilidad.component';
+import { SrTransferirService } from 'src/app/services/sr-transferir.service';
 
 @Component({
   selector: 'app-ejecutivo',
@@ -44,7 +45,7 @@ checked:boolean=false;
 @ViewChild('toggle') btnToggle!: ElementRef;
 botonRellamada:boolean=false;
 
-constructor(private auth:AuthGuard,private modalService:NgbModal,private srCola:SrColaService,private _ticketService:TicketService, private fb:FormBuilder, private signalRService: ColaService,private ticketService:TicketService,private cookieService:CookieService,public datePipe: DatePipe,public messageService:MessageService) {
+constructor(private auth:AuthGuard,private modalService:NgbModal,private srCola:SrColaService,private srTransferido:SrTransferirService,private _ticketService:TicketService, private fb:FormBuilder, private signalRService: ColaService,private ticketService:TicketService,private cookieService:CookieService,public datePipe: DatePipe,public messageService:MessageService) {
   this.leerCookieJson();
   this.usuarioLogueado = JSON.parse(localStorage.getItem('user') || '{}');
   console.log(this.usuarioLogueado);
@@ -84,6 +85,12 @@ ngOnInit() {
   this.srCola.startConnection();
 
   this.signalRService.getTransferidosDataUpdates().subscribe(data => {
+   // console.log(data);
+   // this.ticketsTransferidos=data;
+  });
+
+  this.srTransferido.startConnection(this.usuarioLogueado.codigoUnidad);
+  this.srTransferido.getTransferidosDataUpdates().subscribe(data => {
     console.log(data);
     this.ticketsTransferidos=data;
   });
@@ -91,6 +98,8 @@ ngOnInit() {
     console.log("SE CREO TICKET: "+data);
     this.signalRService.UpdateColaEjecutivo(this.usuarioLogueado.codigoUsuario);
     this.signalRService.UpdateUltimoTicket(this.usuarioLogueado.codigoUsuario);
+    
+    this.srTransferido.UpdateTransferidos(this.usuarioLogueado.codigoUnidad,this.usuarioLogueado.codigoUnidad);
   });
   
 
@@ -187,7 +196,7 @@ update(){
         this.TicketFinalizados = data;
       });
       this.signalRService.UpdateTransferidos(this.usuarioLogueado.codigoUsuario,this.usuarioLogueado.codigoUnidad);
-
+      this.srTransferido.UpdateTransferidos(this.usuarioLogueado.codigoUnidad,this.usuarioLogueado.codigoUnidad);
       this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
   } else {
       this.signalRService.getLastTicket().subscribe(data => {

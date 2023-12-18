@@ -83,6 +83,11 @@ export class SrColaService  {
     .then(_ => console.log("Data Actualizada"));
   }
 
+  UpdateTransferidos(groupName:string, codigoUnidad:string) {
+    this.hubConnection.invoke('GetTicketLlamada', groupName,codigoUnidad)
+    .then(_ => console.log("Data Actualizadaaa"));
+  }
+
   // getTransferidosDataUpdates(): Observable<any> {
   //   return this.transferidosDataSubject.asObservable();
   // }

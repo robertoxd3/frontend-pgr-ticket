@@ -5,6 +5,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { MessageService } from 'primeng/api';
 import { ColaService } from 'src/app/services/cola.service';
 import { SrColaService } from 'src/app/services/sr-cola.service';
+import { SrTransferirService } from 'src/app/services/sr-transferir.service';
 import { TicketService } from 'src/app/services/ticket.service';
 
 @Component({
@@ -23,14 +24,8 @@ loading:boolean=false;
 @Input() usuario: any;
 @Input() data:any;
 
-  constructor( public activeModal: NgbActiveModal,private srCola:SrColaService,private signalRService:ColaService , private messageService:MessageService, public datePipe:DatePipe, private ticketService:TicketService, private fb:FormBuilder){
-  //   this.cities = [
-  //     {name: 'New York', code: 'NY'},
-  //     {name: 'Rome', code: 'RM'},
-  //     {name: 'London', code: 'LDN'},
-  //     {name: 'Istanbul', code: 'IST'},
-  //     {name: 'Paris', code: 'PRS'}
-  // ];
+  constructor( public activeModal: NgbActiveModal,private srTransferir:SrTransferirService,private srCola:SrColaService,private signalRService:ColaService , private messageService:MessageService, public datePipe:DatePipe, private ticketService:TicketService, private fb:FormBuilder){
+
   }
 
   close(): void {
@@ -93,8 +88,9 @@ loading:boolean=false;
           this.ticketService.TransferirTicket(this.formTrasnferencia.value).subscribe({
             next: (res) => {
               console.log(res);
+              console.log(this.usuario.config.codigoPad+ this.usuarioLogueado.codigoUnidad);
               this.signalRService.UpdateUltimoTicket(this.usuarioLogueado.codigoUsuario);
-              this.signalRService.UpdateTransferidos(this.usuarioLogueado.codigoUsuario, this.usuarioLogueado.codigoUnidad);
+              this.srTransferir.UpdateTransferidos(this.selectedUnidad, this.selectedUnidad);
               if(res)
                 this.close();
               else

@@ -13,4 +13,7 @@ export class SignalrClass {
       transport: SignalR.HttpTransportType.WebSockets
     }).withAutomaticReconnect().build();
   }
+
+  
 }
+
