@@ -19,19 +19,18 @@ export class SrTransferirService {
   private data:any;
   private hubConnection!: signalR.HubConnection;
 
-  public startConnection = (codigoUnidad:any): void => {
+  public startConnection() {
     const usuario: ICredencial = JSON.parse(localStorage.getItem('user')|| '{}');
     const url: string =  environment.colaWebSocket3;
     
     this.hubConnection = SignalrClass.buildConnection(url, usuario);
 
     this.hubConnection.start().then((): void => {
-      this.hubConnection.invoke('join', codigoUnidad).catch(
+      this.hubConnection.invoke('JoinGroup', usuario.codigoUnidad).catch(
         err => console.log('Error de conexión:' + err)
       );
-
       this.receiveTicketTransferencias();
-      //this.getTicketTransferencias();
+     
     }).catch(
       err => console.log('Error de conexión al hub' + err)
     );
@@ -42,6 +41,7 @@ export class SrTransferirService {
   getTransferidosDataUpdates(): Observable<any> {
     return this.transferidosDataSubject.asObservable();
   }
+  
 
   receiveTicketTransferencias() {
     this.hubConnection.on('getTicketTransferencias',(data)=>{
@@ -51,7 +51,7 @@ export class SrTransferirService {
 
    UpdateTransferidos(groupName:string, codigoUnidad:string) {
     this.hubConnection.invoke('GetTicketTransferencias', groupName,codigoUnidad)
-    .then(_ => console.log("Data Trasnferidos Actualizada"));
+    .then(_ => console.log("Data Transferidos A "));
   }
   
 }

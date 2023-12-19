@@ -64,6 +64,7 @@ constructor(private auth:AuthGuard,private modalService:NgbModal,private srCola:
 
 ngOnInit() {
   this.signalRService.ngOnInit(this.usuarioLogueado.codigoUsuario);
+  this.srTransferido.startConnection();
   this.isloading=true;
   this.signalRService.getLastTicket().subscribe(data => {
     this.realTimeDataTurno = data;
@@ -84,22 +85,23 @@ ngOnInit() {
   this.signalRService.receiveLastTicket();
   this.srCola.startConnection();
 
-  this.signalRService.getTransferidosDataUpdates().subscribe(data => {
-   // console.log(data);
-   // this.ticketsTransferidos=data;
-  });
+  // this.signalRService.getTransferidosDataUpdates().subscribe(data => {
+  //  // console.log(data);
+  //  // this.ticketsTransferidos=data;
+  // });
 
-  this.srTransferido.startConnection(this.usuarioLogueado.codigoUnidad);
   this.srTransferido.getTransferidosDataUpdates().subscribe(data => {
+    console.log('aquixd');
     console.log(data);
     this.ticketsTransferidos=data;
   });
+  
   this.srCola.getDataUpdates().subscribe(data => {
     console.log("SE CREO TICKET: "+data);
     this.signalRService.UpdateColaEjecutivo(this.usuarioLogueado.codigoUsuario);
     this.signalRService.UpdateUltimoTicket(this.usuarioLogueado.codigoUsuario);
     
-    this.srTransferido.UpdateTransferidos(this.usuarioLogueado.codigoUnidad,this.usuarioLogueado.codigoUnidad);
+    
   });
   
 
@@ -195,7 +197,7 @@ update(){
       this.ticketService.ObtenerTicketFinalizados(this.formProcedimiento.value).subscribe(data => {
         this.TicketFinalizados = data;
       });
-      this.signalRService.UpdateTransferidos(this.usuarioLogueado.codigoUsuario,this.usuarioLogueado.codigoUnidad);
+     // this.signalRService.UpdateTransferidos(this.usuarioLogueado.codigoUsuario,this.usuarioLogueado.codigoUnidad);
       this.srTransferido.UpdateTransferidos(this.usuarioLogueado.codigoUnidad,this.usuarioLogueado.codigoUnidad);
       this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
   } else {
