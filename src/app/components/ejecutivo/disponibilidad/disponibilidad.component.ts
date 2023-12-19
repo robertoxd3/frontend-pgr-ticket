@@ -102,12 +102,13 @@ export class DisponibilidadComponent implements OnInit{
     //console.log(body);
     this.ticketService.BorrarProgramado(body).subscribe({
       next: (res) => {
-        console.log(res.response);
+        console.log(res);
         this.obtenerProgramados();
       },
       error: (err) => {
         console.log(err);
-        this.showAlert("Error al conectarse","Error","error");
+        this.obtenerProgramados();
+        //this.showAlert("Error al conectarse","Error","error");
       }, 
     });
   }

@@ -38,9 +38,9 @@
   <div class="card">
     <div class="d-flex justify-content-between align-items-center">
       <div class="d-flex justify-content-start align-items-start">
-        <p-button [disabled]="!checked" type="button" icon="pi pi-ban" severity="info" class="ms-2 me-2" label="Programar" (click)="indisponibilidad()"></p-button>
+        <p-button [disabled]="!checked" type="button" icon="pi pi-ban" severity="info" styleClass="p-button-secondary" class="ms-2 me-2" label="Programar" (click)="indisponibilidad()"></p-button>
         <p-toggleButton #toggle [disabled]="botonRellamada"  [(ngModel)]="checked" (onChange)="cambiarEstado()" onLabel="Disponible" class="ms-2" offLabel="No Disponible" onIcon='pi pi-check' offIcon="pi pi-ban" [style]="{ width: 'auto' }"></p-toggleButton>
-        <app-floating-button></app-floating-button>
+   
         <div style="position: relative;" class="speeddial-tooltip-demo">
         <!-- <p-speedDial [model]="items" direction="right"></p-speedDial> -->
         </div>

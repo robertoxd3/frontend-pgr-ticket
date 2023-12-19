@@ -81,7 +81,7 @@
     <ng-template pTemplate="body" let-data>
       <tr [pSelectableRow]="data">
         <td>{{ data.idProgramarIndiponibilidad }}</td>
-         <td>{{ datePipe.transform(data.fechaInicio, 'dd/MM/yyyy HH:mm') }}</td> 
+         <td>{{ datePipe.transform(data.fechaInicio, 'dd/MM/yyyy') }}</td> 
          <td>{{data.horasNoDisponible}}</td> 
          <td>
           <p-button icon="pi pi-trash" styleClass="p-button-text p-button-danger" severity="danger" (click)="borrarProgramado(data)"></p-button>
