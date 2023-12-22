@@ -6,6 +6,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { ColaService } from 'src/app/services/cola.service';
 import { Subscription } from 'rxjs';
 import { SrColaService } from 'src/app/services/sr-cola.service';
+import { formatDate } from '@angular/common';
 
 declare var PrintReceipt:any;
 declare var PrintInfoDenucia:any;
@@ -172,10 +173,16 @@ ActualizarTicketPantallas(){
               this.showAlert(res.message,"Error",'error');
             }
             else{
-              this.showAlert("Ticket Creado Correctamente","Exito",'success');
-              this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
+              if(res.statusDescription!='OK'){
+
+                this.showAlert("Ticket Creado Correctamente, Se estima que el unico encargado regrese a las "+res.statusDescription,"Exito",'success');
+                this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
+              }else{
+                this.showAlert("Ticket Creado Correctamente","Exito",'success');
+                this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
+              }
             }
-          }, 2500);
+          }, 3000);
         },
         error: (err) => {
           console.log(err);

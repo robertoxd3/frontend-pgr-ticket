@@ -11,10 +11,7 @@ export class SrTransferirService {
 
   public transferidosDataSubject: Subject<any> = new Subject<any>();
   
-  //notificationData=this.notificationDataSubject.asObservable();
-  constructor() {
-
-   }
+  constructor() {}
   private miCookie:any;
   private data:any;
   private hubConnection!: signalR.HubConnection;
@@ -34,6 +31,22 @@ export class SrTransferirService {
     }).catch(
       err => console.log('Error de conexión al hub' + err)
     );
+
+    this.hubConnection.onreconnecting((error) => {
+     this.receiveTicketTransferencias();
+      console.log('reconnectandos');
+      this.hubConnection.invoke('JoinGroup', usuario.codigoUnidad).catch(
+        err => console.log('Error de conexión:' + err)
+      );
+  });
+  
+  this.hubConnection.onreconnected((connectionId) => {
+   this.receiveTicketTransferencias();
+    console.log('reconnectandoxdxd');
+    this.hubConnection.invoke('JoinGroup', usuario.codigoUnidad).catch(
+      err => console.log('Error de conexión:' + err)
+    );
+  });
   }
 
   

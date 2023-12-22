@@ -2,6 +2,7 @@ import {ICredencial} from "../../model/credencial.interface";
 import * as SignalR from "@microsoft/signalr";
 
 export class SignalrClass {
+
   public static buildConnection(url: string, usuario: ICredencial): SignalR.HubConnection {
     const token: string = usuario?.token;
     return new SignalR.HubConnectionBuilder().withUrl(url, {
@@ -11,8 +12,10 @@ export class SignalrClass {
       skipNegotiation: true,
       
       transport: SignalR.HttpTransportType.WebSockets
-    }).withAutomaticReconnect().build();
+    }).withAutomaticReconnect().configureLogging(SignalR.LogLevel.Information).build();
   }
+
+  
 
   
 }

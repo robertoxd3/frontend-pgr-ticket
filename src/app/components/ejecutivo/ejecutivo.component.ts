@@ -65,6 +65,8 @@ constructor(private auth:AuthGuard,private modalService:NgbModal,private srCola:
 ngOnInit() {
   this.signalRService.ngOnInit(this.usuarioLogueado.codigoUsuario);
   this.srTransferido.startConnection();
+  this.srCola.startConnection();
+
   this.isloading=true;
   this.signalRService.getLastTicket().subscribe(data => {
     this.realTimeDataTurno = data;
@@ -82,64 +84,50 @@ ngOnInit() {
   this.ticketService.ObtenerTicketFinalizados(this.formProcedimiento.value).subscribe(data => {
     this.TicketFinalizados = data;
   });
-  this.signalRService.receiveLastTicket();
-  this.srCola.startConnection();
-
-  // this.signalRService.getTransferidosDataUpdates().subscribe(data => {
-  //  // console.log(data);
-  //  // this.ticketsTransferidos=data;
-  // });
-
+  
   this.srTransferido.getTransferidosDataUpdates().subscribe(data => {
-    console.log('aquixd');
+    //console.log('aquixd');
     console.log(data);
     this.ticketsTransferidos=data;
   });
   
   this.srCola.getDataUpdates().subscribe(data => {
-    console.log("SE CREO TICKET: "+data);
-    this.signalRService.UpdateColaEjecutivo(this.usuarioLogueado.codigoUsuario);
-    this.signalRService.UpdateUltimoTicket(this.usuarioLogueado.codigoUsuario);
-    
-    
+    console.log("SE CREO TICKET: ");
+    console.log(data);
+    // this.signalRService.UpdateColaEjecutivo(this.usuarioLogueado.codigoUsuario);
+    // this.signalRService.UpdateUltimoTicket(this.usuarioLogueado.codigoUsuario);
   });
   
-
  setTimeout(() => {
-  // this.signalRService.UpdateColaEjecutivo(this.usuarioLogueado.codigoUsuario);
-  // this.signalRService.UpdateCola(this.usuarioLogueado.codigoUsuario);
-  // this.signalRService.UpdateUltimoTicket(this.usuarioLogueado.codigoUsuario);
   this.update();
  }, 800);
- //this.cargarTicketTransferidos();
   this.isloading=false;
-
-  this.items = [
-    {
-        tooltip: '15 minutos',
-        tooltipPosition: 'left',
-        icon: 'pi pi-pencil',
-        command: () => {
-            this.messageService.add({ severity: 'info', summary: 'Add', detail: 'Data Added' });
-        }
-    },
-    {
-        tooltip: '30 minutos',
-        icon: 'pi pi-refresh',
-        tooltipPosition: 'left',
-        command: () => {
-            this.messageService.add({ severity: 'success', summary: 'Update', detail: 'Data Updated' });
-        }
-    },
-    {
-        tooltip: '1 Hora',
-        icon: 'pi pi-trash',
-        tooltipPosition: 'left',
-        command: () => {
-            this.messageService.add({ severity: 'error', summary: 'Delete', detail: 'Data Deleted' });
-        }
-    },
-];
+//   this.items = [
+//     {
+//         tooltip: '15 minutos',
+//         tooltipPosition: 'left',
+//         icon: 'pi pi-pencil',
+//         command: () => {
+//             this.messageService.add({ severity: 'info', summary: 'Add', detail: 'Data Added' });
+//         }
+//     },
+//     {
+//         tooltip: '30 minutos',
+//         icon: 'pi pi-refresh',
+//         tooltipPosition: 'left',
+//         command: () => {
+//             this.messageService.add({ severity: 'success', summary: 'Update', detail: 'Data Updated' });
+//         }
+//     },
+//     {
+//         tooltip: '1 Hora',
+//         icon: 'pi pi-trash',
+//         tooltipPosition: 'left',
+//         command: () => {
+//             this.messageService.add({ severity: 'error', summary: 'Delete', detail: 'Data Deleted' });
+//         }
+//     },
+// ];
 }
 
 ngOnDestroy(): void {
@@ -171,7 +159,6 @@ cargarTicketTransferidos(){
 
 cambiarEstado(){
   console.log(this.checked);
-  // if(this.checked==true && this.realTimeDataTurno[0]){
   this.formCambiarEstado.value.estado=this.checked;
     this.ticketService.cambiarEstadoEjecutivo(this.formCambiarEstado.value).subscribe({
       next: (res) => {
@@ -182,17 +169,15 @@ cambiarEstado(){
         console.log(err);
       }, 
     })
-  // }else{
-  //   console.log('Paso');
-  //   this.checked=!this.checked;
-  //   this.showAlert('Debe de finalizar el turno actual','Error','error');
-  // }
+
 }
 
 update(){
        if (this.signalRService.isConnectionEstablished()) {
+        //Actualizar ColaEjecutivo.
       this.signalRService.UpdateColaEjecutivo(this.usuarioLogueado.codigoUsuario);
-      this.signalRService.UpdateCola(this.usuarioLogueado.codigoUsuario);
+      //Actualizar Cola de llamada.
+      //this.signalRService.UpdateCola(this.usuarioLogueado.codigoUsuario);
       this.signalRService.UpdateUltimoTicket(this.usuarioLogueado.codigoUsuario);
       this.ticketService.ObtenerTicketFinalizados(this.formProcedimiento.value).subscribe(data => {
         this.TicketFinalizados = data;
@@ -200,25 +185,27 @@ update(){
      // this.signalRService.UpdateTransferidos(this.usuarioLogueado.codigoUsuario,this.usuarioLogueado.codigoUnidad);
       this.srTransferido.UpdateTransferidos(this.usuarioLogueado.codigoUnidad,this.usuarioLogueado.codigoUnidad);
       this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
-  } else {
-      this.signalRService.getLastTicket().subscribe(data => {
-    this.realTimeDataTurno = data;
-    //validar toggleButton 
-    if(this.realTimeDataTurno.length === 0){
-      this.botonRellamada=false;
-    } else{
-      this.botonRellamada=true;
-    }
-  });
-  this.signalRService.getTicketUpdates().subscribe(data => {
-    this.realTimeData = data;
-    console.log(data);
-  });
-  this.ticketService.ObtenerTicketFinalizados(this.formProcedimiento.value).subscribe(data => {
-    this.TicketFinalizados = data;
-  });
-      console.error('La conexión SignalR no está establecida..');
-  }
+  } 
+//   else {
+//     this.signalRService.getLastTicket().subscribe(data => {
+//   this.realTimeDataTurno = data;
+//   //validar toggleButton 
+//   if(this.realTimeDataTurno.length === 0){
+//     this.botonRellamada=false;
+//   } else{
+//     this.botonRellamada=true;
+//   }
+// });
+// this.signalRService.getTicketUpdates().subscribe(data => {
+//   this.realTimeData = data;
+//   console.log(data);
+// });
+// this.ticketService.ObtenerTicketFinalizados(this.formProcedimiento.value).subscribe(data => {
+//   this.TicketFinalizados = data;
+// });
+//     console.error('La conexión SignalR no está establecida..');
+// }
+  
 }
 
 createForms() {

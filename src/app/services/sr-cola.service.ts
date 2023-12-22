@@ -32,24 +32,50 @@ export class SrColaService  {
   private hubConnection!: SignalR.HubConnection;
 
   public startConnection = (): void => {
-    const usuario: ICredencial = JSON.parse(localStorage.getItem('user')|| '{}');
-    const url: string =  environment.colaWebSocket2;
-    
-    this.hubConnection = SignalrClass.buildConnection(url, usuario);
-
-    this.hubConnection.start().then((): void => {
-      //const group = 'svl' + usuario.usercodigo;
+    try {
       const group = this.miCookie.config.codigoPad;
-      this.hubConnection.invoke('join', group).catch(
-        err => console.log('Error de conexión:' + err)
+      const usuario: ICredencial = JSON.parse(localStorage.getItem('user')|| '{}');
+      const url: string =  environment.colaWebSocket2;
+      
+      this.hubConnection = SignalrClass.buildConnection(url, usuario);
+  
+      this.hubConnection.start().then((): void => {
+        this.hubConnection.invoke('join', group).catch(
+          err => console.log('Error de conexión:' + err+'\nReconnectado)')
+        );
+  
+        this.receiveInitialData();
+        //this.getTicketTransferencias();
+      }).catch(
+        err => console.log('Error de conexión al hub' + err)
       );
 
+      this.hubConnection.onreconnecting((error) => {
+        this.receiveInitialData();
+        console.log('reconnectandoxd');
+        this.hubConnection.invoke('join', group).catch(
+          err => console.log('Error de conexión:' + err+'\nReconnectado)')
+        );
+    });
+    
+    this.hubConnection.onreconnected((connectionId) => {
       this.receiveInitialData();
-      //this.getTicketTransferencias();
-    }).catch(
-      err => console.log('Error de conexión al hub' + err)
-    );
+      console.log('reconnectandoxdxd');
+      this.hubConnection.invoke('join', group).catch(
+        err => console.log('Error de conexión:' + err+'\nReconnectado)')
+      );
+    });
+
+    
+
+    } catch (error) {
+      console.log('errrorr');
+    }
   }
+
+
+
+  
 
   loadVoices() {
     const synth = window.speechSynthesis;

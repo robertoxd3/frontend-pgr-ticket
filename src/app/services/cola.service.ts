@@ -81,6 +81,25 @@ export class ColaService {
     }).catch(error => {
       return console.error(error);
     });
+
+    this.connection.onreconnecting((error) => {
+      this.receiveInitialData();
+      this.receiveTicket();
+      this.receiveLastTicket();
+      this.receiveTicketTransferencias();
+      this.join(groupName);
+    
+  });
+  
+  this.connection.onreconnected((connectionId) => {
+    this.receiveInitialData();
+    this.receiveTicket();
+    this.receiveLastTicket();
+    this.receiveTicketTransferencias();
+    this.join(groupName);
+ 
+  });
+    
   }
 
   

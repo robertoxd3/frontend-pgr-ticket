@@ -38,8 +38,8 @@
   <div class="card">
     <div class="d-flex justify-content-between align-items-center">
       <div class="d-flex justify-content-start align-items-start">
-        <p-button [disabled]="!checked" type="button" icon="pi pi-ban" severity="info" styleClass="p-button-secondary" class="ms-2 me-2" label="Programar" (click)="indisponibilidad()"></p-button>
-        <p-toggleButton #toggle [disabled]="botonRellamada"  [(ngModel)]="checked" (onChange)="cambiarEstado()" onLabel="Disponible" class="ms-2" offLabel="No Disponible" onIcon='pi pi-check' offIcon="pi pi-ban" [style]="{ width: 'auto' }"></p-toggleButton>
+        <p-button [disabled]="!checked" type="button" icon="pi pi-ban" class="auto" severity="info" styleClass="p-button-secondary auto" class="ms-2 me-2" label="Programar Disponibilidad" (click)="indisponibilidad()"></p-button>
+        <!-- <p-toggleButton #toggle [disabled]="botonRellamada"  [(ngModel)]="checked" (onChange)="cambiarEstado()" onLabel="Disponible" class="ms-2" offLabel="No Disponible" onIcon='pi pi-check' offIcon="pi pi-ban" [style]="{ width: 'auto' }"></p-toggleButton> -->
    
         <div style="position: relative;" class="speeddial-tooltip-demo">
         <!-- <p-speedDial [model]="items" direction="right"></p-speedDial> -->
@@ -191,15 +191,6 @@
         </p-table>
         <!-- Tab En COLA -->
       </p-tabPanel>
-      <!-- <p-tabPanel header="Header II">
-        <ng-template pTemplate="header">
-          <i class="pi pi-check-circle me-2"></i>
-          <span>Historial</span>
-        </ng-template>
-        <p>
-          Tabla finalizada
-        </p>
-      </p-tabPanel> -->
       
     </p-tabView>
   </div>

@@ -344,7 +344,8 @@ td.text-right {
 }
 
 .titulo-tabla{
-  font-size: 2rem
+  font-size: 3rem;
+  font-weight: bold;
 }
 
 
@@ -384,11 +385,34 @@ td.text-right {
   .titulo-tabla{
     font-size: 5rem
   }
+
+  .stub {
+    background: #121427;
+    height: 350px;
+    width: 300px;
+    color: white;
+    padding: 20px;
+    position: relative;
+  }
+
+  .stub .number {
+    text-align: center;
+    font-size: 100px;
+  }
   .stub .title {
     font-size: 40px;
     font-weight: 300;
     line-height: .8em;
     color: white;
+  }
+
+  .check {
+    background: #fff;
+    height: 350px;
+    width: 450px;
+    padding: 40px;
+    position: relative;
+   
   }
   .check .title {
     font-size: 40px;

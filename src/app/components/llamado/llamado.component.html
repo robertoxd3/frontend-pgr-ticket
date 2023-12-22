@@ -46,17 +46,17 @@
             <p-table [value]="realTimeData" [rows]="4" [paginator]="true">
               <ng-template pTemplate="header">
                 <tr>
-                  <th  class="titulo-tabla text-center">Escritorio</th>
                   <th  class="titulo-tabla text-center">Turno</th>
+                  <th  class="titulo-tabla text-center">Escritorio</th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-realTimeData>
                 <tr>
                   <td  class="titulo-tabla text-center">
-                    {{ realTimeData.idEscritorio }}
+                    {{ realTimeData.numeroTicket }}
                   </td>
                   <td  class="titulo-tabla text-center">
-                    {{ realTimeData.numeroTicket }}
+                    {{ realTimeData.idEscritorio }}
                   </td>
                 </tr>
               </ng-template>

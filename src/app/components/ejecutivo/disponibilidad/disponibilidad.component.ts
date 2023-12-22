@@ -26,14 +26,20 @@ export class DisponibilidadComponent implements OnInit{
   usuarioLogueado:any;
   Programados!:any[];
   selectedProgramados!: any;
+  minDate!:Date;
+  banderaAccion: number=0;
+  activeIndex:number=0;
   constructor( public activeModal: NgbActiveModal,private messageService:MessageService, public datePipe:DatePipe, private ticketService:TicketService, private fb:FormBuilder){
     this.usuarioLogueado = JSON.parse(localStorage.getItem('user') || '{}');
     
     this.disponibilidadForm = this.fb.group({
+      IdProgramarIndiponibilidad: null,
       IdEscritorio: this.usuarioLogueado.idEscritorio,
       FechaInicio: ['',[Validators.required]],
-      HorasNoDisponible: ['',[Validators.required]],
+      HorasNoDisponible: [null,[Validators.required]],
     });
+    this.minDate = new Date();
+    
     }
 
   ngOnInit(){
@@ -55,24 +61,30 @@ export class DisponibilidadComponent implements OnInit{
       FechaInicio: this.disponibilidadForm.value.FechaInicio,
       HorasNoDisponible: this.disponibilidadForm.value.HorasNoDisponible,
     }
-    this.ticketService.ProgramarDisponibilidad(body).subscribe({
-      next: (res) => {
-        console.log(res.response);
-        if(res.response){
-          this.showAlert("Se programo la indisponibilidad con exito.","Exito","success");
-          this.close();
-        }else{
-          this.showAlert("No se pudo programar la indisponibilidad","Error","error");
-        }
-        //this.close();
-        this.loading = false;
-      },
-      error: (err) => {
-        console.log(err);
-        this.loading = false;
-        this.showAlert("Error al conectarse","Error","error");
-      }, 
-    });
+    if(this.banderaAccion==0){
+     
+      this.ticketService.ProgramarDisponibilidad(body).subscribe({
+        next: (res) => {
+          console.log(res.response);
+          if(res.response){
+            this.showAlert("Se programo la indisponibilidad con exito.","Exito","success");
+            this.close();
+          }else{
+            this.showAlert("No se pudo programar la indisponibilidad","Error","error");
+          }
+          //this.close();
+          this.loading = false;
+        },
+        error: (err) => {
+          console.log(err);
+          this.loading = false;
+          this.showAlert("Error al conectarse","Error","error");
+        }, 
+      });
+    }else{
+      this.updateProgramado()
+    }
+   
   }
 
   obtenerProgramados(){
@@ -108,6 +120,47 @@ export class DisponibilidadComponent implements OnInit{
       error: (err) => {
         console.log(err);
         this.obtenerProgramados();
+        //this.showAlert("Error al conectarse","Error","error");
+      }, 
+    });
+  }
+
+  modificarProgramado(model:any){
+   this.activeIndex=0;
+   this.disponibilidadForm.value.IdProgramarIndiponibilidad=model.idProgramarIndiponibilidad;
+   var fechaprueba= new Date(model.fechaInicio);
+   this.disponibilidadForm.get('IdProgramarIndiponibilidad')?.setValue(model.idProgramarIndiponibilidad);
+   this.disponibilidadForm.get('IdEscritorio')?.setValue(model.idEscritorio);
+   this.disponibilidadForm.get('FechaInicio')?.setValue(fechaprueba);
+   this.disponibilidadForm.get('HorasNoDisponible')?.setValue(model.horasNoDisponible);
+   this.banderaAccion=1;
+  }
+
+  crearNuevo(){
+    this.disponibilidadForm.reset();
+    this.banderaAccion=0;
+  }
+
+  updateProgramado(){
+    const body: IDisponibilidad = {
+      IdProgramarIndiponibilidad: this.disponibilidadForm.value.IdProgramarIndiponibilidad,
+      IdEscritorio: this.usuarioLogueado.idEscritorio,
+      FechaInicio: this.disponibilidadForm.value.FechaInicio,
+      HorasNoDisponible: this.disponibilidadForm.value.HorasNoDisponible
+    }
+   // console.log('MOdificando');
+    this.ticketService.ModificarProgramado(body).subscribe({
+      next: (res) => {
+        console.log(res);
+        this.obtenerProgramados();
+        this.crearNuevo();
+        this.loading = false;
+      },
+      error: (err) => {
+        console.log(err);
+        this.obtenerProgramados();
+        this.crearNuevo();
+        this.loading = false;
         //this.showAlert("Error al conectarse","Error","error");
       }, 
     });

@@ -4,15 +4,19 @@
   <button pButton pRipple type="button" icon="pi pi-times" (click)="close()" class="p-button-rounded p-button-secondary p-button-text"></button>
 </div>
 <div class="modal-body">
-<p-tabView>
+<p-tabView [(activeIndex)]="activeIndex">
   <p-tabPanel header="Programar">
+    <div class="d-flex align-items-end justify-content-end my-2">
+      <button pButton pRipple type="button" icon="pi pi-plus" label="Programar Nuevo" (click)="crearNuevo()" class="p-button-rounded p-button-secondary p-button-text"></button>
+    </div>
     <section class="container-fluid">
+      
       <div class="row">
           <div class="col-12">
               <form [formGroup]="disponibilidadForm" (ngSubmit)="onSubmit()">
                 <div class="mb-3">
-                  <label for="fecha">Fecha Inicio</label>
-                    <p-calendar id="fecha" styleClass="w-100" [showIcon]="true" formControlName="FechaInicio"></p-calendar>
+                  <label for="fecha">Fecha Inicio:</label><br>
+                    <p-calendar id="fecha" styleClass="w-100" [minDate]="minDate" [showIcon]="true" formControlName="FechaInicio"></p-calendar>
                 </div>
                   <div
                     *ngIf="
@@ -27,7 +31,7 @@
                     </div>
                   </div>
                   
-                  <label for="hora">Hora No Disponible</label><br>
+                  <label for="hora">Hora No Disponible:</label><br>
                   <p-inputNumber id="hora" styleClass="w-100"  class="w-100" mode="decimal" formControlName="HorasNoDisponible">
                   </p-inputNumber>
 
@@ -48,7 +52,7 @@
                   >
                   <button
                     pButton
-                    label="Programar"
+                    label="{{banderaAccion==0?'Programar Nuevo':'Modificar Actual'}}"
                     class="w-100 btn btn-primary"
                     [disabled]="disponibilidadForm.invalid"
                     [loading]="loading"
@@ -84,7 +88,8 @@
          <td>{{ datePipe.transform(data.fechaInicio, 'dd/MM/yyyy') }}</td> 
          <td>{{data.horasNoDisponible}}</td> 
          <td>
-          <p-button icon="pi pi-trash" styleClass="p-button-text p-button-danger" severity="danger" (click)="borrarProgramado(data)"></p-button>
+          <!-- <p-button icon="pi pi-trash" styleClass="p-button-text p-button-danger" severity="danger" (click)="borrarProgramado(data)"></p-button> -->
+          <p-button icon="pi pi-pencil" styleClass="p-button-text p-button-info" (click)="modificarProgramado(data)"></p-button>
          </td> 
       </tr>
     </ng-template>

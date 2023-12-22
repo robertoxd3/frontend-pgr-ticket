@@ -88,4 +88,8 @@ export class TicketService {
   BorrarProgramado(data: IDisponibilidad): Observable<any> {
     return this.httpClient.post(this.baseUrl + 'BorrarProgramados',data);
   }
+  
+  ModificarProgramado(data: IDisponibilidad): Observable<any> {
+    return this.httpClient.post(this.baseUrl + 'ModificarProgramados',data);
+  }
 }
