@@ -106,12 +106,12 @@ export class SrColaService  {
 
    UpdateCola(groupName:string, codigoUnidad:string) {
     this.hubConnection.invoke('GetTicketLlamada', groupName,codigoUnidad)
-    .then(_ => console.log("Data Actualizada"));
+    .then(_ => console.log("Data Actualizada UpdateCola llamado"));
   }
 
   UpdateTransferidos(groupName:string, codigoUnidad:string) {
     this.hubConnection.invoke('GetTicketLlamada', groupName,codigoUnidad)
-    .then(_ => console.log("Data Actualizadaaa"));
+    .then(_ => console.log("Data Actualizada Transferidos"));
   }
 
   // getTransferidosDataUpdates(): Observable<any> {
@@ -150,7 +150,8 @@ showNotificationModal(datos: any): void {
   console.log(datos);
   const ref = this.modalService.open(NotificacionModalComponent, { 
     data: { notificacion: datos },
-    width: '60%', 
+    width: '60%',
+    style: { opacity: '0.75' },
     // height:'350px',
     // header: 'Llamada'
   });

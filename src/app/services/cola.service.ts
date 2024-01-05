@@ -83,10 +83,10 @@ export class ColaService {
     });
 
     this.connection.onreconnecting((error) => {
-      this.receiveInitialData();
-      this.receiveTicket();
-      this.receiveLastTicket();
-      this.receiveTicketTransferencias();
+      // this.receiveInitialData();
+      // this.receiveTicket();
+      // this.receiveLastTicket();
+      // this.receiveTicketTransferencias();
       this.join(groupName);
     
   });

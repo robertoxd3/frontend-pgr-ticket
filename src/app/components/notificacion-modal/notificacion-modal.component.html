@@ -1,16 +1,16 @@
 
-<div class="ticket w-100">
-    <div class="stub">
-      <div class="title top mt-2">Atendiendo</div>
-      <div *ngIf="notificationData.idEscritorio" class="number">
-        {{ notificationData.idEscritorio }}
+  <div class="ticket w-100 ">
+      <div class="stub">
+        <div class="title top mt-2">Atendiendo</div>
+        <div *ngIf="notificationData.idEscritorio" class="number">
+          {{ notificationData.idEscritorio }}
+        </div>
+        <div class="title text-center">Escritorio</div>
       </div>
-      <div class="title text-center">Escritorio</div>
-    </div>
-    <div class="check w-100 align-items-center">
-      <div class="title mb-2">Turno</div>
-      <div *ngIf="notificationData.numeroTicket" class="big">
-        {{ notificationData.numeroTicket }}
+      <div class="check w-100 align-items-center">
+        <div class="title mb-2">Turno</div>
+        <div *ngIf="notificationData.numeroTicket" class="big">
+          {{ notificationData.numeroTicket }}
+        </div>
       </div>
     </div>
-  </div>

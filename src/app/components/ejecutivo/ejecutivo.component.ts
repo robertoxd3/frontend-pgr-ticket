@@ -81,26 +81,26 @@ ngOnInit() {
     this.realTimeData = data;
     console.log(data);
   });
-  this.ticketService.ObtenerTicketFinalizados(this.formProcedimiento.value).subscribe(data => {
-    this.TicketFinalizados = data;
-  });
+  // this.ticketService.ObtenerTicketFinalizados(this.formProcedimiento.value).subscribe(data => {
+  //   this.TicketFinalizados = data;
+  // });
   
   this.srTransferido.getTransferidosDataUpdates().subscribe(data => {
-    //console.log('aquixd');
     console.log(data);
     this.ticketsTransferidos=data;
   });
-  
+  // this.update();
   this.srCola.getDataUpdates().subscribe(data => {
-    console.log("SE CREO TICKET: ");
+    console.log("Obtener Creación de ticket");
     console.log(data);
-    // this.signalRService.UpdateColaEjecutivo(this.usuarioLogueado.codigoUsuario);
-    // this.signalRService.UpdateUltimoTicket(this.usuarioLogueado.codigoUsuario);
+    this.signalRService.UpdateColaEjecutivo(this.usuarioLogueado.codigoUsuario);
+    //this.signalRService.UpdateUltimoTicket(this.usuarioLogueado.codigoUsuario);
   });
   
  setTimeout(() => {
   this.update();
  }, 800);
+
   this.isloading=false;
 //   this.items = [
 //     {
@@ -128,6 +128,13 @@ ngOnInit() {
 //         }
 //     },
 // ];
+}
+
+obtenerHistorial(){
+  console.log('act');
+  this.ticketService.ObtenerTicketFinalizados(this.formProcedimiento.value).subscribe(data => {
+    this.TicketFinalizados = data;
+  });
 }
 
 ngOnDestroy(): void {
@@ -176,14 +183,11 @@ update(){
        if (this.signalRService.isConnectionEstablished()) {
         //Actualizar ColaEjecutivo.
       this.signalRService.UpdateColaEjecutivo(this.usuarioLogueado.codigoUsuario);
-      //Actualizar Cola de llamada.
-      //this.signalRService.UpdateCola(this.usuarioLogueado.codigoUsuario);
+      //Actualizar Ultimo Ticket ejecutivo.
       this.signalRService.UpdateUltimoTicket(this.usuarioLogueado.codigoUsuario);
-      this.ticketService.ObtenerTicketFinalizados(this.formProcedimiento.value).subscribe(data => {
-        this.TicketFinalizados = data;
-      });
-     // this.signalRService.UpdateTransferidos(this.usuarioLogueado.codigoUsuario,this.usuarioLogueado.codigoUnidad);
+      //Actualizar Transferidos
       this.srTransferido.UpdateTransferidos(this.usuarioLogueado.codigoUnidad,this.usuarioLogueado.codigoUnidad);
+      //Actualizar Pantalla de llamado
       this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
   } 
 //   else {
@@ -222,7 +226,7 @@ createForms() {
 
 Llamada(id:any){
   this.loading=true;
-  console.log(id);
+  //console.log(id);
   this.formProcedimiento.value.idTipo=id;
 
  if (this.usuarioLogueado) {
@@ -266,8 +270,8 @@ Llamada(id:any){
   call(numeroTicket:any){
     try {
       this.notificacion.numeroTicket=numeroTicket;
-      this.notificacion.idEscritorio=""+this.usuarioLogueado.idEscritorio;
-      console.log(this.notificacion.idEscritorio);
+      this.notificacion.idEscritorio=""+this.usuarioLogueado.noEscritorio;
+      //console.log(this.notificacion.idEscritorio);
       // this.srCola.muteVideo();
       this.srCola.executeNotification(this.miCookie.config.codigoPad,this.notificacion);
       // this.srCola.unmuteVideo();

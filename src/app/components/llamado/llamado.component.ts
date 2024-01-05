@@ -6,6 +6,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Subscription,of,takeUntil } from 'rxjs';
 import { ColaService } from 'src/app/services/cola.service';
 import { SrColaService } from 'src/app/services/sr-cola.service';
+import { VideocacheService } from 'src/app/services/videocache.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -32,14 +33,17 @@ export class LlamadoComponent implements OnInit,OnDestroy{
    dataSubscription: Subscription | undefined;
    currentDateTime!: any;
   ultimoLlamado:any;
+  videosLista!: string[];
 
-  constructor(private signalRService: ColaService,private signalRColaService: SrColaService,private cookieService: CookieService, private rd: Renderer2,public datePipe: DatePipe) {
+  constructor(private videoCacheService:VideocacheService,private signalRService: ColaService,private signalRColaService: SrColaService,private cookieService: CookieService, private rd: Renderer2,public datePipe: DatePipe) {
     this.leerCookieJson();
+    this.validarConfigVideo();
   }
 
   ngOnInit() {
     this.signalRColaService.startConnection();
     this.signalRColaService.getDataUpdates().subscribe(data => {
+      console.log(data);
           this.realTimeData = data.response;
           this.turnoActual=data.response[0];
     });
@@ -56,8 +60,11 @@ export class LlamadoComponent implements OnInit,OnDestroy{
     this.updateDateTime();
     setInterval(() => {
       this.updateDateTime();
-      this.signalRColaService.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
+      //this.signalRColaService.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
     }, 60000); 
+    //this.videoCacheService.addToCache(this.videosLista[0]);
+
+  
 }
 
  currentVideoIndex = 0;
@@ -83,32 +90,10 @@ export class LlamadoComponent implements OnInit,OnDestroy{
    return this.videosLista[this.currentVideoIndex];
  }
 
-videosLista: string[] = [
-  environment.rutaVideos+'/Resources/VideoSIAPP/1.mp4',
-  environment.rutaVideos+'/Resources/VideoSIAPP/2.mp4',
-  environment.rutaVideos+'/Resources/VideoSIAPP/3.mp4',
-  environment.rutaVideos+'/Resources/VideoSIAPP/4.mp4',
-  environment.rutaVideos+'/Resources/VideoSIAPP/5.mp4',
-  environment.rutaVideos+'/Resources/VideoSIAPP/6.mp4',
-  environment.rutaVideos+'/Resources/VideoSIAPP/7.mp4',
-  environment.rutaVideos+'/Resources/VideoSIAPP/8.mp4',
-  environment.rutaVideos+'/Resources/VideoSIAPP/9.mp4',
-  environment.rutaVideos+'/Resources/VideoSIAPP/10.mp4',
-];
 
 
-// videosLista: string[] = [
-//   'assets/VideoSIAPP/1.mp4',
-//   'assets/VideoSIAPP/2.mp4',
-//   'assets/VideoSIAPP/3.mp4',
-//   'assets/VideoSIAPP/4.mp4',
-//   'assets/VideoSIAPP/5.mp4',
-//   'assets/VideoSIAPP/6.mp4',
-//   'assets/VideoSIAPP/7.mp4',
-//   'assets/VideoSIAPP/8.mp4',
-//   'assets/VideoSIAPP/9.mp4',
-//   'assets/VideoSIAPP/10.mp4',
-// ];
+
+
 
 ngOnDestroy(): void {
   this.signalRService.disconnect();
@@ -116,6 +101,36 @@ ngOnDestroy(): void {
 
   updateDateTime() {
     this.currentDateTime = new Date();
+  }
+
+  validarConfigVideo(){
+    if(this.miCookie.VideoLocal){
+      this.videosLista= [
+        'assets/VideoSIAPP/1.mp4',
+        'assets/VideoSIAPP/2.mp4',
+        'assets/VideoSIAPP/3.mp4',
+        'assets/VideoSIAPP/4.mp4',
+        'assets/VideoSIAPP/5.mp4',
+        'assets/VideoSIAPP/6.mp4',
+        'assets/VideoSIAPP/7.mp4',
+        'assets/VideoSIAPP/8.mp4',
+        'assets/VideoSIAPP/9.mp4',
+        'assets/VideoSIAPP/10.mp4',
+      ];
+    }else{
+      this.videosLista = [
+        environment.rutaVideos+'/Resources/VideoSIAPP/1.mp4',
+        environment.rutaVideos+'/Resources/VideoSIAPP/2.mp4',
+        environment.rutaVideos+'/Resources/VideoSIAPP/3.mp4',
+        environment.rutaVideos+'/Resources/VideoSIAPP/4.mp4',
+        environment.rutaVideos+'/Resources/VideoSIAPP/5.mp4',
+        environment.rutaVideos+'/Resources/VideoSIAPP/6.mp4',
+        environment.rutaVideos+'/Resources/VideoSIAPP/7.mp4',
+        environment.rutaVideos+'/Resources/VideoSIAPP/8.mp4',
+        environment.rutaVideos+'/Resources/VideoSIAPP/9.mp4',
+        environment.rutaVideos+'/Resources/VideoSIAPP/10.mp4',
+      ];
+    }
   }
 
   leerCookieJson(){

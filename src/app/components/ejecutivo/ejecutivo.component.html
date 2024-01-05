@@ -37,8 +37,8 @@
     <p-toast></p-toast>
   <div class="card">
     <div class="d-flex justify-content-between align-items-center">
-      <div class="d-flex justify-content-start align-items-start">
-        <p-button [disabled]="!checked" type="button" icon="pi pi-ban" class="auto" severity="info" styleClass="p-button-secondary auto" class="ms-2 me-2" label="Programar Disponibilidad" (click)="indisponibilidad()"></p-button>
+      <div class="d-flex justify-content-start align-items-start w-100">
+        <p-button [disabled]="!checked" type="button" icon="pi pi-ban" class="" severity="info" styleClass="p-button-secondary w" class="ms-2 me-2" label="Programar Disponibilidad" (click)="indisponibilidad()"></p-button>
         <!-- <p-toggleButton #toggle [disabled]="botonRellamada"  [(ngModel)]="checked" (onChange)="cambiarEstado()" onLabel="Disponible" class="ms-2" offLabel="No Disponible" onIcon='pi pi-check' offIcon="pi pi-ban" [style]="{ width: 'auto' }"></p-toggleButton> -->
    
         <div style="position: relative;" class="speeddial-tooltip-demo">
@@ -156,9 +156,11 @@
       </p-tabPanel>
 
       <p-tabPanel>
-        <ng-template pTemplate="header">
-          <i class="pi pi-ticket me-2"></i>
-          <span>Historial</span>
+        <ng-template pTemplate="header" >
+          <div (click)="obtenerHistorial()">
+            <i class="pi pi-ticket me-2"></i>
+            <span>Historial</span>
+          </div>
         </ng-template>
         <!-- Tab En COLA -->
         <p-table
