@@ -9,6 +9,8 @@ import { SrColaService } from 'src/app/services/sr-cola.service';
 import { formatDate } from '@angular/common';
 
 declare var PrintReceipt:any;
+declare var PrintVerificar:any;
+declare var VerificarPrint:any;
 declare var PrintInfoDenucia:any;
 declare var PrintInfoContacto:any;
 declare var verificarConexion:any;
@@ -33,6 +35,7 @@ export class MenuComponent implements OnInit,OnDestroy {
   miCookie: any;
   isFinishedLoading:boolean=false;
   sidebarVisible:boolean=false;
+  banderaBixolon!:boolean;
   sidebarVisibleDenuncia:boolean=false;
   localConexion:any;
   private dataSubscription: Subscription | undefined;
@@ -48,7 +51,7 @@ export class MenuComponent implements OnInit,OnDestroy {
     this.getTipoFilas();
     console.log(this.infoButton);
     this.srCola.startConnection(this.miCookie.config.codigoPad);
-  
+    this.banderaBixolon=true;
     
   }
   ngOnDestroy(): void {
@@ -149,47 +152,61 @@ ActualizarTicketPantallas(){
     }
   }
   
-  //Envia al backend el formGroup que Incluye el codigoUnidad + el idFila y en el backend ejecuta el procedimiento almacenado.
+
   almacenarTicket(){
     this.loading=true;
     if(this.miCookie){
-      /*verificarConexion();
-      this.localConexion = localStorage.getItem('conexion');
-      console.log("menu: "+ this.localConexion)*/
-      this._ticketService.guardarTicket(this.formGroup.value,this.miCookie).subscribe({
-        next: (res) => {
-          console.log(res);
-          if(res.status==400){          
-            //this.showAlert(res.message,"Error",'error');
-          }else{
-            PrintReceipt(res.numeroTicket,res.fechaTicket,res.nombreSimple,res.departamento);
-          }
-         
-          //this.actualizarTicketEjecutivo();
-          this.ActualizarTicketPantallas();
-          setTimeout(() => {
-            this.loading=false;
-            if(res.status==400){          
-              this.showAlert(res.message,"Error",'error');
-            }
-            else{
-              if(res.statusDescription!='OK'){
+      // PrintVerificar();
+      // var conexionBixolon = localStorage.getItem('conexion');
+      // console.log(conexionBixolon);
+      // VerificarPrint();
+      //   var conexionBixolon= JSON.parse(localStorage.getItem('conexion') || '{}');
+      //   console.log(conexionBixolon);
+      //   if(conexionBixolon?.includes('error')){
+      //     console.log('errorPrint');
+      //     this.banderaBixolon=false;
+      //   }
+      //   console.log(this.banderaBixolon);
+      //   if(!conexionBixolon?.includes('error')){
 
-                this.showAlert("Ticket Creado Correctamente, Se estima que el unico encargado regrese a las "+res.statusDescription,"Exito",'success');
-                this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
+          this._ticketService.guardarTicket(this.formGroup.value,this.miCookie).subscribe({
+            next: (res) => {
+              console.log(res);
+              if(res.status==400){          
+                //this.showAlert(res.message,"Error",'error');
               }else{
-                this.showAlert("Ticket Creado Correctamente","Exito",'success');
-                this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
+                PrintReceipt(res.response.numeroTicket,res.response.fechaTicket,res.response.nombreSimple,res.response.departamento);
               }
-            }
-          }, 3000);
-        },
-        error: (err) => {
-          console.log(err);
-          this.loading = false;
-          this.showAlert("Error al conectar al servidor","Error",'error');
-        },
-      });
+             
+              //this.actualizarTicketEjecutivo();
+              this.ActualizarTicketPantallas();
+         
+                this.loading=false;
+                if(res.status==400){          
+                  this.showAlert(res.message,"Error",'error');
+                }
+                else{
+                  if(res.statusDescription!='OK'){
+    
+                    this.showAlert("Ticket Creado Correctamente, Se estima que el unico encargado regrese a las "+res.statusDescription,"Exito",'success');
+                    this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
+                  }else{
+                    this.showAlert("Ticket Creado Correctamente","Exito",'success');
+                    this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
+                  }
+                }
+            },
+            error: (err) => {
+              console.log(err);
+              this.loading = false;
+              this.showAlert("Error al conectar al servidor","Error",'error');
+            },
+          });
+        // }
+        // else{
+        //   this.showAlert('Impresora No conectada, no se pudo crear el ticket','error','error');
+        //   this.loading=false;
+        // }
     }
   }
 

@@ -172,7 +172,7 @@ showNotificationModal(datos: NotificacionRe): void {
 
 fetchVoices() {
   this.voices = window.speechSynthesis.getVoices();
-  console.log(this.voices);
+ // console.log(this.voices);
   //localStorage.setItem('voices', JSON.stringify(this.voices));
 }
 

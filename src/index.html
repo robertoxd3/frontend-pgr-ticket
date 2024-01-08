@@ -19,11 +19,39 @@
 
 <script>
   var issueID = 1;
+  var issueID2 = 1;
   function viewResult(result) {
-    localStorage.setItem("conexion", result);
+    localStorage.setItem("conexion", JSON.stringify(result));
 		console.log(result);
     return result;
 	}
+
+  function PrintVerificar(){
+    fetch('http://127.0.0.1:18080/WebPrintSDK/Printer1/checkStatus',)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('La solicitud falló');
+    }
+    return response.json(); 
+  })
+  .then(data => {
+    console.log('Datos recibidos:', data);
+    localStorage.setItem("conexion", JSON.stringify(data));
+  })
+  }
+
+  function VerificarPrint(){
+    setPosId(issueID2);
+
+    setCharacterset(1252);
+		printText("\n", 0, 0, false, false, false, 0, 1);
+		cutPaper(1);
+		var strSubmit = getPosData();
+		console.log(strSubmit);
+		issueID2++;
+		requestPrint("Printer1", strSubmit, viewResult);
+		return true;
+  }
 
   function PrintReceipt(numTicket,fecha,unidad,deparmento) {
 		setPosId(issueID);
