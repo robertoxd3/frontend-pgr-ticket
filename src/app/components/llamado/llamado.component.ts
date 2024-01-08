@@ -5,7 +5,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Subscription,of,takeUntil } from 'rxjs';
 import { ColaService } from 'src/app/services/cola.service';
-import { SrColaService } from 'src/app/services/sr-cola.service';
+import { NotificacionRe, SrColaService } from 'src/app/services/sr-cola.service';
 import { VideocacheService } from 'src/app/services/videocache.service';
 import { environment } from 'src/environments/environment';
 
@@ -41,14 +41,14 @@ export class LlamadoComponent implements OnInit,OnDestroy{
   }
 
   ngOnInit() {
-    this.signalRColaService.startConnection();
+    this.signalRColaService.startConnection(this.miCookie.config.codigoPad);
     this.signalRColaService.getDataUpdates().subscribe(data => {
       console.log(data);
           this.realTimeData = data.response;
           this.turnoActual=data.response[0];
     });
     this.signalRColaService.NotificationListener(); 
-    this.signalRColaService.notificationData.subscribe((data: any) => {
+    this.signalRColaService.notificationData.subscribe((data) => {
       console.log(data);
       //Actualizar el numero en pantalla de acuerdo al llamado
       this.turnoActual=data;

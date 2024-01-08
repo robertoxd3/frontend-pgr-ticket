@@ -47,7 +47,7 @@ export class MenuComponent implements OnInit,OnDestroy {
     this.obtenerUnidades();
     this.getTipoFilas();
     console.log(this.infoButton);
-    this.srCola.startConnection();
+    this.srCola.startConnection(this.miCookie.config.codigoPad);
   
     
   }

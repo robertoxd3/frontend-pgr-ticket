@@ -13,7 +13,7 @@ export class NotificacionModalComponent implements OnInit {
 
 
   constructor(public dialogRef: DynamicDialogRef,public config: DynamicDialogConfig) { 
-    console.log(JSON.stringify(config.data.notificacion));
+    console.log(config.data);
     this.notificationData=config.data.notificacion;
   }
 

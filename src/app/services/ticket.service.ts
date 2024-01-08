@@ -30,6 +30,11 @@ export class TicketService {
 
     return this.httpClient.post(this.baseUrl + 'getUnidades', null, { headers });
   }
+
+  
+  getUnidadesUser(data: FormData): Observable<any> {
+    return this.httpClient.post(this.baseUrl + 'getUnidadesUser',data);
+  }
   
   getTipoFila(): Observable<any> {
     return this.httpClient.get(this.baseUrl + 'getTipoFilas');

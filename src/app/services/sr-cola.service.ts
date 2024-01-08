@@ -8,37 +8,43 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { NotificacionModalComponent } from '../components/notificacion-modal/notificacion-modal.component';
 import { Observable, Subject } from 'rxjs';
 
+export interface NotificacionRe {
+  numeroTicket: string;
+  noEscritorio: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
+
 export class SrColaService  {
   public recommendedVoices?: any;
   public dataSubject: Subject<any> = new Subject<any>();
   public transferidosDataSubject: Subject<any> = new Subject<any>();
-  public notificationDataSubject = new Subject<any>();
+  public notificationDataSubject = new Subject<NotificacionRe>();
   notificationData=this.notificationDataSubject.asObservable();
-  voices: SpeechSynthesisVoice[] = [];
+  public voices: SpeechSynthesisVoice[] = [];
+  synthesis = window.speechSynthesis;
+
   constructor(private cookieService:CookieService, private modalService:DialogService) {
     this.leerCookieJson();
-    // setTimeout(() => {
-    //   const synth = window.speechSynthesis;
-    //     this.recommendedVoices = synth.getVoices();
-    // }, 500);
-    // console.log("a a "+this.recommendedVoices);
-      this.loadVoices();
+    setTimeout(() => {
+      this.fetchVoices();
+    }, 500);
+    //  this.fetchVoices();
    }
   private miCookie:any;
   private data:any;
   private hubConnection!: SignalR.HubConnection;
 
-  public startConnection = (): void => {
+  public startConnection(group:string) {
     try {
-      const group = this.miCookie.config.codigoPad;
+      //const group = this.miCookie.config.codigoPad;
       const usuario: ICredencial = JSON.parse(localStorage.getItem('user')|| '{}');
       const url: string =  environment.colaWebSocket2;
       
       this.hubConnection = SignalrClass.buildConnection(url, usuario);
-  
+      console.log('Grupo a UNIRSE:'+group);
       this.hubConnection.start().then((): void => {
         this.hubConnection.invoke('join', group).catch(
           err => console.log('Error de conexión:' + err+'\nReconnectado)')
@@ -66,8 +72,6 @@ export class SrColaService  {
       );
     });
 
-    
-
     } catch (error) {
       console.log('errrorr');
     }
@@ -77,22 +81,23 @@ export class SrColaService  {
 
   
 
-  loadVoices() {
-    const synth = window.speechSynthesis;
+  // loadVoices() {
+  //   const synth = window.speechSynthesis;
 
-    // Obtener las voces cuando la página se cargue
-    setTimeout(() => {
-      this.voices = synth.getVoices();
-     // console.log(this.voices);
-    }, 1000); // Cambia el tiempo de espera si es necesario
+  //   // Obtener las voces cuando la página se cargue
+  //   setTimeout(() => {
+  //     this.voices = synth.getVoices();
+  //    // console.log(this.voices);
+  //   }, 1000); // Cambia el tiempo de espera si es necesario
 
-    // También puedes usar el evento 'voiceschanged' para actualizar las voces
-    synth.onvoiceschanged = () => {
-      this.voices = synth.getVoices();
-      //console.log(this.voices);
-    };
-  }
+  //   // También puedes usar el evento 'voiceschanged' para actualizar las voces
+  //   synth.onvoiceschanged = () => {
+  //     this.voices = synth.getVoices();
+  //     //console.log(this.voices);
+  //   };
+  // }
 
+ 
 
   getDataUpdates(): Observable<any> {
     return this.dataSubject.asObservable();
@@ -130,35 +135,33 @@ export class SrColaService  {
   // }
   
 
-   NotificationListener = (): void => {
-    this.hubConnection.on('Notification', (data): void => {
-      console.log(data);
+   NotificationListener(){
+    this.hubConnection.on('Notification', (data)=>{
       this.showNotificationModal(data);
       // return data;
       this.notificationDataSubject.next(data);
     });
   }
 
-   executeNotification = (groupname: string | null, notification: any): void => {
-   
+   executeNotification(groupname: string | null, notification: NotificacionRe) {
     this.hubConnection.invoke('Notification', groupname,notification).catch(
         err => console.log('Error de invocación:' + err)
     );
-}
+  }
 
-showNotificationModal(datos: any): void {
+showNotificationModal(datos: NotificacionRe): void {
   console.log(datos);
+  //  this.loadVoicesAndSpeak(datos);
+  this.speak(datos);
   const ref = this.modalService.open(NotificacionModalComponent, { 
     data: { notificacion: datos },
     width: '60%',
-    style: { opacity: '0.75' },
+    style: { opacity: '1' },
     // height:'350px',
     // header: 'Llamada'
   });
-
-  this.loadVoicesAndSpeak(datos);
-
   setInterval(() => {
+    
     ref.close();
   }, 6000);
 
@@ -167,70 +170,88 @@ showNotificationModal(datos: any): void {
   });
 }
 
-loadVoicesAndSpeak(data: any): void {
-  const synth = window.speechSynthesis;
-
-  const speakWhenVoicesReady = () => {
-    const recommendedVoices = synth.getVoices();
-    console.log(recommendedVoices);
-
-    const vozFemenina = recommendedVoices.find(voice => {
-      return voice.lang === 'es-ES' && voice.name.includes('Femenino');
-    });
-
-    const utterThis = new SpeechSynthesisUtterance('Número de ticket ' + data.numeroTicket + " en el escritorio " + data.idEscritorio);
-    utterThis.lang = 'es';
-    utterThis.rate = 0.7;
-    utterThis.voice = vozFemenina || null;
-
-    synth.speak(utterThis);
-  };
-
-  // Verificar si las voces ya están disponibles
-  if (synth.getVoices().length !== 0) {
-    speakWhenVoicesReady();
-  } else {
-    // Esperar al evento 'voiceschanged' para saber cuándo las voces están listas
-    synth.onvoiceschanged = speakWhenVoicesReady;
-  }
+fetchVoices() {
+  this.voices = window.speechSynthesis.getVoices();
+  console.log(this.voices);
+  //localStorage.setItem('voices', JSON.stringify(this.voices));
 }
-synthesizeSpeechFromText(data: any) {
-  const synth = window.speechSynthesis;
 
-  const speakWhenVoicesReady = () => {
-    const recommendedVoices = synth.getVoices();
-    console.log(recommendedVoices);
-
-    const vozFemenina = recommendedVoices.find(voice => {
-      return voice.lang === 'es-ES' && voice.name.includes('Femenino');
-    });
-
-    const utterThis = new SpeechSynthesisUtterance('Número de ticket ' + data.numeroTicket + " en el escritorio " + data.idEscritorio);
-    utterThis.lang = 'es';
-    // utterThis.rate = 0.6;
-    utterThis.voice = vozFemenina || null;
-    window.speechSynthesis.cancel();
-    synth.speak(utterThis);
-  };
-
-  // Verificar si las voces ya están disponibles
-  if (synth.getVoices().length !== 0) {
-    speakWhenVoicesReady();
-  } else {
-    // Esperar al evento 'voiceschanged' para saber cuándo las voces están listas
-    synth.onvoiceschanged = speakWhenVoicesReady;
+  speak(data: any) {
+    const selectedVoice = this.voices.find(voice => voice.lang === 'es-ES');
+    console.log('Speaking..');
+    console.log(selectedVoice);
+    const utterance = new SpeechSynthesisUtterance('Número de ticket ' + data.numeroTicket + " en el escritorio " + data.noEscritorio);
+    if (selectedVoice) {
+     // const selectedVoice: SpeechSynthesisVoice = JSON.parse(selectedVoiceString);
+      utterance.voice = selectedVoice;
+      utterance.lang = 'es-Es';
+      utterance.rate = 0.7;
+    }
+    this.synthesis.speak(utterance);
   }
-}
+
+
+// loadVoicesAndSpeak(data: any): void {
+//   const synth = window.speechSynthesis;
+
+//   const speakWhenVoicesReady = () => {
+//     const recommendedVoices = synth.getVoices();
+//     console.log(recommendedVoices);
+
+//     const vozFemenina = recommendedVoices.find(voice => {
+//       return voice.lang === 'es-ES' && voice.name.includes('Femenino');
+//     });
+
+//     const utterThis = new SpeechSynthesisUtterance('Número de ticket ' + data.numeroTicket + " en el escritorio " + data.idEscritorio);
+//     utterThis.lang = 'es';
+//     utterThis.rate = 0.7;
+//     utterThis.voice = vozFemenina || null;
+
+//     synth.speak(utterThis);
+//   };
+
+//   // Verificar si las voces ya están disponibles
+//   if (synth.getVoices().length !== 0) {
+//     speakWhenVoicesReady();
+//   } else {
+//     // Esperar al evento 'voiceschanged' para saber cuándo las voces están listas
+//     synth.onvoiceschanged = speakWhenVoicesReady;
+//   }
+// }
+// synthesizeSpeechFromText(data: any) {
+//   const synth = window.speechSynthesis;
+
+//   const speakWhenVoicesReady = () => {
+//     const recommendedVoices = synth.getVoices();
+//     console.log(recommendedVoices);
+
+//     const vozFemenina = recommendedVoices.find(voice => {
+//       return voice.lang === 'es-ES' && voice.name.includes('Femenino');
+//     });
+
+//     const utterThis = new SpeechSynthesisUtterance('Número de ticket ' + data.numeroTicket + " en el escritorio " + data.noEscritorio);
+//     utterThis.lang = 'es';
+//     // utterThis.rate = 0.6;
+//     utterThis.voice = vozFemenina || null;
+//     window.speechSynthesis.cancel();
+//     synth.speak(utterThis);
+//   };
+
+//   // Verificar si las voces ya están disponibles
+//   if (synth.getVoices().length !== 0) {
+//     speakWhenVoicesReady();
+//   } else {
+//     // Esperar al evento 'voiceschanged' para saber cuándo las voces están listas
+//     synth.onvoiceschanged = speakWhenVoicesReady;
+//   }
+// }
 
 
    dataListener = () => {
-    //this.initResumenData();
     console.log('Aqui');
     this.hubConnection.on('getTicketByUser', (data) => {
       this.data.length = 0;
-      // if (data.statusCode === 200) {
-      //   this.data = data.response;
-      // }
+
       this.data = data.response;
       console.log(data, 'Aqui');
     });
@@ -249,7 +270,7 @@ synthesizeSpeechFromText(data: any) {
       const cookieValue = this.cookieService.get(cookieName);
       try {
         this.miCookie = JSON.parse(cookieValue);
-        console.log('Valor de la cookie:aa ', this.miCookie.config.codigoPad);
+        console.log('Valor de la cookie:aa ', this.miCookie.config.codigoPad+"a");
       } catch (error) {
         console.error('Error al analizar la cookie JSON:', error);
       }

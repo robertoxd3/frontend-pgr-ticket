@@ -38,7 +38,7 @@ export class DisponibilidadComponent implements OnInit{
       FechaInicio: ['',[Validators.required]],
       HorasNoDisponible: [null,[Validators.required]],
     });
-    this.minDate = new Date();
+    //this.minDate = new Date();
     
     }
 

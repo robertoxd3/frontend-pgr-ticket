@@ -43,7 +43,7 @@ loading:boolean=false;
 
   obtenerUnidades() {
     if(this.usuario!=null){
-      this.ticketService.getUnidades(this.usuario).subscribe({
+      this.ticketService.getUnidadesUser(this.usuario).subscribe({
         next: (res) => {
           console.log(res);
           this.unidades = res;
@@ -88,7 +88,7 @@ loading:boolean=false;
           this.ticketService.TransferirTicket(this.formTrasnferencia.value).subscribe({
             next: (res) => {
               console.log(res);
-              console.log(this.usuario.config.codigoPad+ this.usuarioLogueado.codigoUnidad);
+              console.log(this.usuario.codigoPad+ this.usuarioLogueado.codigoUnidad);
               this.signalRService.UpdateUltimoTicket(this.usuarioLogueado.codigoUsuario);
               this.srTransferir.UpdateTransferidos(this.selectedUnidad, this.selectedUnidad);
               if(res)
