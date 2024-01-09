@@ -6,7 +6,6 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Subscription,of,takeUntil } from 'rxjs';
 import { ColaService } from 'src/app/services/cola.service';
 import { NotificacionRe, SrColaService } from 'src/app/services/sr-cola.service';
-import { VideocacheService } from 'src/app/services/videocache.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -35,7 +34,7 @@ export class LlamadoComponent implements OnInit,OnDestroy{
   ultimoLlamado:any;
   videosLista!: string[];
 
-  constructor(private videoCacheService:VideocacheService,private signalRService: ColaService,private signalRColaService: SrColaService,private cookieService: CookieService, private rd: Renderer2,public datePipe: DatePipe) {
+  constructor(private signalRService: ColaService,private signalRColaService: SrColaService,private cookieService: CookieService, private rd: Renderer2,public datePipe: DatePipe) {
     this.leerCookieJson();
     this.validarConfigVideo();
   }
@@ -62,7 +61,7 @@ export class LlamadoComponent implements OnInit,OnDestroy{
       this.updateDateTime();
       //this.signalRColaService.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
     }, 60000); 
-    //this.videoCacheService.addToCache(this.videosLista[0]);
+
 
   
 }
