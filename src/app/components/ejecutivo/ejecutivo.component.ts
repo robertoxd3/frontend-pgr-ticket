@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { ColaService } from 'src/app/services/cola.service';
 import { DatePipe } from '@angular/common';
@@ -22,7 +22,7 @@ export interface NotificacionRe {
   styleUrls: ['./ejecutivo.component.css'],
   providers:[DatePipe,MessageService]
 })
-export class EjecutivoComponent {
+export class EjecutivoComponent implements OnInit,OnDestroy{
   displayModal: boolean = false;
 selectedData: any;
 unidades!: any;
@@ -61,6 +61,11 @@ constructor(private auth:AuthGuard,private modalService:NgbModal,private srCola:
   });
 
 
+}
+
+
+ngOnDestroy(): void {
+  this.signalRService.disconnect();
 }
 
 ngOnInit() {
@@ -113,9 +118,6 @@ obtenerHistorial(){
   });
 }
 
-ngOnDestroy(): void {
-  this.signalRService.disconnect();
-}
 
 Logout(){
   this.auth.logout();

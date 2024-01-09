@@ -96,3 +96,12 @@
   font-size: 1.2rem;
   margin-bottom: 10px;
 }
+
+:host ::ng-deep .p-toast{
+  width: 500px;
+  height: 500px;
+  }
+  
+ ::ng-deep .p-toast{
+    width: 500px;
+    }

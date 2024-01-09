@@ -9,7 +9,7 @@
     ></p-progressSpinner>
   </div>
   <!-- Alertas -->
-  <p-toast></p-toast>
+  <p-toast [life]="15000"  styleClass="custom-toast"  [showTransformOptions]="'translateY(100%)'" [showTransitionOptions]="'1000ms'" [hideTransitionOptions]="'1000ms'" [showTransformOptions]="'translateX(100%)'"></p-toast>
 
   <div class="contenido">
   <section class="service-section">
