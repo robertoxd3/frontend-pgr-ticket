@@ -50,6 +50,7 @@ checked:boolean=false;
 botonRellamada:boolean=false;
 
 constructor(private auth:AuthGuard,private modalService:NgbModal,private srCola:SrColaService,private srTransferido:SrTransferirService,private _ticketService:TicketService, private fb:FormBuilder, private signalRService: ColaService,private ticketService:TicketService,private cookieService:CookieService,public datePipe: DatePipe,public messageService:MessageService) {
+  
   this.leerCookieJson();
   this.usuarioLogueado = JSON.parse(localStorage.getItem('user') || '{}');
   console.log(this.usuarioLogueado);
@@ -67,6 +68,8 @@ constructor(private auth:AuthGuard,private modalService:NgbModal,private srCola:
 ngOnDestroy(): void {
   this.signalRService.disconnect();
 }
+
+
 
 ngOnInit() {
   this.signalRService.ngOnInit(this.usuarioLogueado.codigoUsuario);
@@ -108,6 +111,17 @@ ngOnInit() {
  }, 800);
 
   this.isloading=false;
+
+  setInterval(() => {
+    if (this.signalRService.isConnectionEstablished()){
+      console.log('connectado WebSocket...');
+    }else{
+      console.log('Connexion Perdida');
+      window.location.reload();
+    }
+    
+  }, 60000*1);
+
 
 }
 
@@ -168,26 +182,6 @@ update(){
       //Actualizar Pantalla de llamado
       this.srCola.UpdateCola(this.usuarioLogueado.codigoPad,this.usuarioLogueado.idPad);
   } 
-//   else {
-//     this.signalRService.getLastTicket().subscribe(data => {
-//   this.realTimeDataTurno = data;
-//   //validar toggleButton 
-//   if(this.realTimeDataTurno.length === 0){
-//     this.botonRellamada=false;
-//   } else{
-//     this.botonRellamada=true;
-//   }
-// });
-// this.signalRService.getTicketUpdates().subscribe(data => {
-//   this.realTimeData = data;
-//   console.log(data);
-// });
-// this.ticketService.ObtenerTicketFinalizados(this.formProcedimiento.value).subscribe(data => {
-//   this.TicketFinalizados = data;
-// });
-//     console.error('La conexión SignalR no está establecida..');
-// }
-  
 }
 
 createForms() {

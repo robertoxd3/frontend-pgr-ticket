@@ -33,7 +33,11 @@
               "node_modules/animate.css/animate.min.css"
             ],
             "scripts": [  
-               "node_modules/bootstrap/dist/js/bootstrap.min.js"
+               "node_modules/bootstrap/dist/js/bootstrap.min.js",
+               "src/assets/js/bxlcommon.js",
+               "src/assets/js/bxllabel.js",
+               "src/assets/js/bxlpos.js"
+
             ]
           },
           "configurations": {

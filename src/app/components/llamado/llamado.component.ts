@@ -62,7 +62,16 @@ export class LlamadoComponent implements OnInit,OnDestroy{
       //this.signalRColaService.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
     }, 60000); 
 
+    
 
+    setInterval(() => {
+      if (this.signalRColaService.isConnectionEstablished()){
+        console.log('connectado WebSocket...');
+      }else{
+        console.log('Connexion Perdida');
+        window.location.reload();
+      }
+    }, 60000*1);
   
 }
 
@@ -90,7 +99,9 @@ export class LlamadoComponent implements OnInit,OnDestroy{
  }
 
 
-
+actualizarConexion(){
+  window.location.reload();
+}
 
 
 

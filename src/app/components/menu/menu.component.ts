@@ -8,12 +8,20 @@ import { Subscription } from 'rxjs';
 import { SrColaService } from 'src/app/services/sr-cola.service';
 import { formatDate } from '@angular/common';
 
-declare var PrintReceipt:any;
-declare var PrintVerificar:any;
-declare var VerificarPrint:any;
+
+//declare var VerificarPrint:any;
 declare var PrintInfoDenucia:any;
 declare var PrintInfoContacto:any;
-declare var verificarConexion:any;
+declare var PrintReceipt:any;
+
+//
+declare var setPosId:any;
+declare var setCharacterset:any;
+declare var printText:any;
+declare var cutPaper:any;
+declare var getPosData:any;
+declare var requestPrint:any;
+
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
@@ -38,9 +46,10 @@ export class MenuComponent implements OnInit,OnDestroy {
   banderaBixolon!:boolean;
   sidebarVisibleDenuncia:boolean=false;
   localConexion:any;
+  conexionBixolon:any;
   private dataSubscription: Subscription | undefined;
   constructor(private _ticketService: TicketService,private srCola:SrColaService,private signalRService: ColaService, private fb: FormBuilder, private messageService: MessageService,private cookieService: CookieService) {
-    
+    this.conexionBixolon=null;
   }
 
   ngOnInit(): void {
@@ -52,6 +61,15 @@ export class MenuComponent implements OnInit,OnDestroy {
     console.log(this.infoButton);
     this.srCola.startConnection(this.miCookie.config.codigoPad);
     this.banderaBixolon=true;
+
+    setInterval(() => {
+      if (this.srCola.isConnectionEstablished()){
+        console.log('connectado WebSocket...');
+      }else{
+        console.log('Connexion Perdida');
+        window.location.reload();
+      }
+    }, 60000*1);
     
   }
   ngOnDestroy(): void {
@@ -59,6 +77,29 @@ export class MenuComponent implements OnInit,OnDestroy {
   }
 ActualizarTicketPantallas(){
   this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
+}
+
+
+VerificarPrint(){
+  console.log('Pasando por verificarPrint');
+  var issueID2 = 1;
+  setPosId(issueID2);
+
+  setCharacterset(1252);
+  printText("\n", 0, 0, false, false, false, 0, 1);
+  cutPaper(1);
+  var strSubmit = getPosData();
+  console.log(strSubmit);
+  issueID2++;
+  requestPrint("Printer1", strSubmit, this.viewResult);
+  return true;
+}
+
+ viewResult(result:any) {
+  localStorage.setItem("conexion", JSON.stringify(result));
+
+  console.log(result);
+  return result;
 }
   
 
@@ -78,6 +119,7 @@ ActualizarTicketPantallas(){
       }
     }
   }
+  
 
   //Obtiene las unidades consumiendo la api y las asigna a la variable unidades que se muestra en pantalla
    obtenerUnidades() {
@@ -151,23 +193,26 @@ ActualizarTicketPantallas(){
      
     }
   }
-  
 
+  
   almacenarTicket(){
+    
     this.loading=true;
     if(this.miCookie){
-      // PrintVerificar();
-      // var conexionBixolon = localStorage.getItem('conexion');
-      // console.log(conexionBixolon);
-      // VerificarPrint();
-      //   var conexionBixolon= JSON.parse(localStorage.getItem('conexion') || '{}');
-      //   console.log(conexionBixolon);
-      //   if(conexionBixolon?.includes('error')){
+ 
+      //  this.VerificarPrint();
+      //  // var conexionBixolon= localStorage.getItem('conexion') || '{}';
+      //  // console.log(conexionBixolon);
+      //   if(this.conexionBixolon?.includes('error')){
       //     console.log('errorPrint');
       //     this.banderaBixolon=false;
       //   }
-      //   console.log(this.banderaBixolon);
-      //   if(!conexionBixolon?.includes('error')){
+      //   console.log(this.conexionBixolon);
+        
+      //   // if(!conexionBixolon?.includes('error')){
+      //   //   console.log('error Buenoxd');
+      //   // }
+      //   this.loading=false;
 
           this._ticketService.guardarTicket(this.formGroup.value,this.miCookie).subscribe({
             next: (res) => {

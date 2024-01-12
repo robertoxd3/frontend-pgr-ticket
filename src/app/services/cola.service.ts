@@ -5,7 +5,7 @@ import * as signalR from "@microsoft/signalr";
 import { environment } from 'src/environments/environment';
 import { CookieService } from 'ngx-cookie-service';
 import { DialogService } from 'primeng/dynamicdialog';
-import { NotificacionModalComponent } from '../components/notificacion-modal/notificacion-modal.component';
+import { NotificacionModalComponent } from '../components/llamado/notificacion-modal/notificacion-modal.component';
 
 interface NewMessage {
   message: string;
@@ -29,13 +29,9 @@ export class ColaService {
   //isConnectionEstablished = false;
   public selectedVoice?: any;
   voz:any=[];
-  public messageToSend = '';
   public joined = false;
   public recommendedVoices?: any;
   private usuario:any='{}';
-   public conversation: NewMessage[] = [{
-    message: 'Bienvenido',
-  }];
   private connection: signalR.HubConnection;
 
   constructor(private cookieService:CookieService, private modalService:DialogService) {
@@ -49,12 +45,24 @@ export class ColaService {
       .withAutomaticReconnect()
       .build();
 
-     this.connection.on("NewUser", message => this.newUser(message));
-     this.connection.on("NewMessage", message => this.newMessage(message));
-     this.connection.on("LeftUser", message => this.leftUser(message));
+    this.connection.onclose(async (e) => {
+        //await tryReconnect(this.connection)
+      console.log('Desconectado del websocket');
+    })
+    
+    // async function tryReconnect(connection:signalR.HubConnection) {
+    //     try {
+    //         let started = await connection.start()
+    //         return started;
+    //     } catch (e) {
+    //         await new Promise(resolve => setTimeout(resolve, 60000));
+    //         return await tryReconnect(connection)
+    //     }
+    // }
      const synth = window.speechSynthesis;
      this.recommendedVoices = synth.getVoices();
   }
+
 
 
   ngOnInit(groupName:string){
@@ -99,7 +107,6 @@ export class ColaService {
     this.join(groupName);
  
   });
-    
   }
 
   
@@ -109,57 +116,6 @@ export class ColaService {
         this.joined = true;
       });
   }
-
-  public sendMessage(groupName:string,message:string) {
-    this.connection.invoke('SendToGroup', groupName,message)
-    .then(_ => this.messageToSend = '');
-  }
-
-
-//   public NotificationListener = (): void => {
-//     this.connection.on('Notification', (data): void => {
-//       console.log(data);
-//       this.showNotificationModal(data);
-//     });
-//   }
-
-//   public executeNotification = (groupname: string | null, notification: any): void => {
-//     this.connection.invoke('Notification', groupname,notification).catch(
-//         err => console.log('Error de invocación:' + err)
-//     );
-// }
-
-// private showNotificationModal(datos: any): void {
-//   console.log(datos)
-//   const ref = this.modalService.open(NotificacionModalComponent, { 
-//     data: {notificacion: datos},
-//     width: '50%', 
-//     // height:'350px',
-//     // header: 'Llamada'
-// });
-
-// this.synthesizeSpeechFromText(datos);
-
-// setInterval(() => {
-//   ref.close();
-// }, 6000);
-
-//   ref.onClose.subscribe((result: any) => {
-//       console.log('Modal cerrado', result);
-//   });
-// }
-
-
-
-// private synthesizeSpeechFromText(data:any){
-//       const synth = window.speechSynthesis;
-//       //console.log(this.recommendedVoices)
-//       const utterThis = new SpeechSynthesisUtterance('Numero de ticket '+data.numeroTicket+"en el escritorio "+data.escritorio);
-//       utterThis.lang = 'es-ES';
-//       utterThis.voice=this.recommendedVoices[7];
-//       synth.speak(utterThis);
-// 	}
-
 
     getDataUpdates(): Observable<any> {
       return this.dataSubject.asObservable();
@@ -213,9 +169,6 @@ export class ColaService {
           this.connection.stop();
         }
 
-     
-
-
     isConnectionEstablished() {
             return this.connection.state === signalR.HubConnectionState.Connected;
         }
@@ -224,24 +177,6 @@ export class ColaService {
     this.connection.invoke('LeaveGroup',groupName)
       .then(_ => this.joined = false);
   }
-  private newMessage(message: NewMessage) {
-    console.log(message);
-    this.conversation.push(message);
-  }
-  private newUser(message: string) {
-    console.log(message);
-    this.conversation.push({
-      message: message
-    });
-  }
-
-  private leftUser(message: string) {
-    console.log(message);
-    this.conversation.push({
-      message: message
-    });
-  }
-
   
   getTransferidosDataUpdates(): Observable<any> {
     return this.transferidosDataSubject.asObservable();
@@ -258,58 +193,6 @@ export class ColaService {
     .then(_ => console.log("Data Trasnferidos Actualizada"));
   }
   
-
-  
-  // private startConnection(groupName:string) {
-  //   this.connection = new signalR.HubConnectionBuilder()
-  //     .withUrl(environment.colaWebSocket,{
-  //       skipNegotiation: true,
-  //         transport: signalR.HttpTransportType.WebSockets
-  //     })
-  //     .withAutomaticReconnect()
-  //     .build();
-
-
-  //   this.connection.start()
-  //     .then(() => {
-  //       console.log('Connection Started');
-      
-  //       //this.subscribeToDataUpdates();
-  //       this.receiveInitialData();
-  //       this.receiveTicket();
-  //       this.receiveLastTicket();
-  //       this.join(groupName);
-  //     })
-  //     .catch(err => {
-  //       console.error('Error while starting connection: ' + err);
-  //     });
-
-  //   // Handle reconnection
-  //   this.connection.onclose(() => {
-  //     console.log('Connection closed, attempting to reconnect...');
-  //     // You can add your reconnection logic here, like attempting to start the connection again.
-  //     this.startConnection(groupName);
-  //   });
-  // }
-
- 
-
-
-  // startConnection(groupName:string){
-
-  //   this.connection.start()
-  //   .then(_ => {
-  //     console.log('Connection Started');
-      
-  //     //this.subscribeToDataUpdates();
-  //     this.receiveInitialData();
-  //     this.receiveTicket();
-  //     this.receiveLastTicket();
-  //     this.join(groupName);
-  //   }).catch(error => {
-  //     return console.error(error);
-  //   });
-  // }
 }
 
 

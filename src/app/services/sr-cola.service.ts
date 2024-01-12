@@ -5,7 +5,7 @@ import { environment } from 'src/environments/environment';
 import { SignalrClass } from './Functions/SingalRclass';
 import { CookieService } from 'ngx-cookie-service';
 import { DialogService } from 'primeng/dynamicdialog';
-import { NotificacionModalComponent } from '../components/notificacion-modal/notificacion-modal.component';
+import { NotificacionModalComponent } from '../components/llamado/notificacion-modal/notificacion-modal.component';
 import { Observable, Subject } from 'rxjs';
 
 export interface NotificacionRe {
@@ -79,25 +79,9 @@ export class SrColaService  {
 
 
 
-  
-
-  // loadVoices() {
-  //   const synth = window.speechSynthesis;
-
-  //   // Obtener las voces cuando la página se cargue
-  //   setTimeout(() => {
-  //     this.voices = synth.getVoices();
-  //    // console.log(this.voices);
-  //   }, 1000); // Cambia el tiempo de espera si es necesario
-
-  //   // También puedes usar el evento 'voiceschanged' para actualizar las voces
-  //   synth.onvoiceschanged = () => {
-  //     this.voices = synth.getVoices();
-  //     //console.log(this.voices);
-  //   };
-  // }
-
- 
+  isConnectionEstablished() {
+    return this.hubConnection.state === SignalR.HubConnectionState.Connected;
+}
 
   getDataUpdates(): Observable<any> {
     return this.dataSubject.asObservable();
@@ -118,22 +102,6 @@ export class SrColaService  {
     this.hubConnection.invoke('GetTicketLlamada', groupName,codigoUnidad)
     .then(_ => console.log("Data Actualizada Transferidos"));
   }
-
-  // getTransferidosDataUpdates(): Observable<any> {
-  //   return this.transferidosDataSubject.asObservable();
-  // }
-
-  // getTicketTransferencias() {
-  //   this.hubConnection.on('getTicketTransferencias',(data)=>{
-  //         this.transferidosDataSubject.next(data);
-  //       });
-  // }
-
-  //  UpdateTransferidos(groupName:string, codigoUnidad:string) {
-  //   this.hubConnection.invoke('GetTicketTransferencias', groupName,codigoUnidad)
-  //   .then(_ => console.log("Data Trasnferidos Actualizada"));
-  // }
-  
 
    NotificationListener(){
     this.hubConnection.on('Notification', (data)=>{
@@ -189,63 +157,6 @@ fetchVoices() {
     }
     this.synthesis.speak(utterance);
   }
-
-
-// loadVoicesAndSpeak(data: any): void {
-//   const synth = window.speechSynthesis;
-
-//   const speakWhenVoicesReady = () => {
-//     const recommendedVoices = synth.getVoices();
-//     console.log(recommendedVoices);
-
-//     const vozFemenina = recommendedVoices.find(voice => {
-//       return voice.lang === 'es-ES' && voice.name.includes('Femenino');
-//     });
-
-//     const utterThis = new SpeechSynthesisUtterance('Número de ticket ' + data.numeroTicket + " en el escritorio " + data.idEscritorio);
-//     utterThis.lang = 'es';
-//     utterThis.rate = 0.7;
-//     utterThis.voice = vozFemenina || null;
-
-//     synth.speak(utterThis);
-//   };
-
-//   // Verificar si las voces ya están disponibles
-//   if (synth.getVoices().length !== 0) {
-//     speakWhenVoicesReady();
-//   } else {
-//     // Esperar al evento 'voiceschanged' para saber cuándo las voces están listas
-//     synth.onvoiceschanged = speakWhenVoicesReady;
-//   }
-// }
-// synthesizeSpeechFromText(data: any) {
-//   const synth = window.speechSynthesis;
-
-//   const speakWhenVoicesReady = () => {
-//     const recommendedVoices = synth.getVoices();
-//     console.log(recommendedVoices);
-
-//     const vozFemenina = recommendedVoices.find(voice => {
-//       return voice.lang === 'es-ES' && voice.name.includes('Femenino');
-//     });
-
-//     const utterThis = new SpeechSynthesisUtterance('Número de ticket ' + data.numeroTicket + " en el escritorio " + data.noEscritorio);
-//     utterThis.lang = 'es';
-//     // utterThis.rate = 0.6;
-//     utterThis.voice = vozFemenina || null;
-//     window.speechSynthesis.cancel();
-//     synth.speak(utterThis);
-//   };
-
-//   // Verificar si las voces ya están disponibles
-//   if (synth.getVoices().length !== 0) {
-//     speakWhenVoicesReady();
-//   } else {
-//     // Esperar al evento 'voiceschanged' para saber cuándo las voces están listas
-//     synth.onvoiceschanged = speakWhenVoicesReady;
-//   }
-// }
-
 
    dataListener = () => {
     console.log('Aqui');

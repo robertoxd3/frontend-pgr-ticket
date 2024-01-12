@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -10,9 +10,10 @@ import { LoginService } from 'src/app/services/login.service';
   styleUrls: ['./login.component.css'],
   providers: [MessageService],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit{
   loading:boolean=false;
   loginForm: FormGroup;
+  usuarioLogueado:any;
 
   constructor(private messageService:MessageService,private formBuilder: FormBuilder, private loginService: LoginService, private router: Router) {
     this.loginForm = this.formBuilder.group({
@@ -22,6 +23,14 @@ export class LoginComponent {
       PerfilUsuario: [''],
     });
   }
+
+  ngOnInit(){
+    this.usuarioLogueado = JSON.parse(localStorage.getItem('user') || '{}');
+    if(this.usuarioLogueado.codigoUsuario!=null){
+      this.router.navigate(['ejecutivo']);
+    }
+  }
+  
   onSubmit(){
     this.loading=true;
     this.loginService.authenticate(this.loginForm.value).subscribe({

@@ -49,8 +49,6 @@ export class SrTransferirService {
   });
   }
 
-  
-
   getTransferidosDataUpdates(): Observable<any> {
     return this.transferidosDataSubject.asObservable();
   }
