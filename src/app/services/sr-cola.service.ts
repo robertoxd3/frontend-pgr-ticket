@@ -153,7 +153,7 @@ fetchVoices() {
      // const selectedVoice: SpeechSynthesisVoice = JSON.parse(selectedVoiceString);
       utterance.voice = selectedVoice;
       utterance.lang = 'es-Es';
-      utterance.rate = 0.7;
+      utterance.rate = 0.6;
     }
     this.synthesis.speak(utterance);
   }

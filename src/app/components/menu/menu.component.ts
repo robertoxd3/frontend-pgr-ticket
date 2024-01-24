@@ -1,12 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup,FormControl,Validators } from '@angular/forms';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { TicketService } from 'src/app/services/ticket.service';
 import { CookieService } from 'ngx-cookie-service';
 import { ColaService } from 'src/app/services/cola.service';
 import { Subscription } from 'rxjs';
 import { SrColaService } from 'src/app/services/sr-cola.service';
 import { formatDate } from '@angular/common';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 
 //declare var VerificarPrint:any;
@@ -47,8 +48,10 @@ export class MenuComponent implements OnInit,OnDestroy {
   sidebarVisibleDenuncia:boolean=false;
   localConexion:any;
   conexionBixolon:any;
+  items: MenuItem[] | undefined;
+  activeIndex: number = 0;
   private dataSubscription: Subscription | undefined;
-  constructor(private _ticketService: TicketService,private srCola:SrColaService,private signalRService: ColaService, private fb: FormBuilder, private messageService: MessageService,private cookieService: CookieService) {
+  constructor(private _ticketService: TicketService,private srCola:SrColaService,private modalService:NgbModal,private signalRService: ColaService, private fb: FormBuilder, private messageService: MessageService,private cookieService: CookieService) {
     this.conexionBixolon=null;
   }
 
@@ -69,7 +72,7 @@ export class MenuComponent implements OnInit,OnDestroy {
         console.log('Connexion Perdida');
         window.location.reload();
       }
-    }, 60000*1);
+    }, 30000*1);
     
   }
   ngOnDestroy(): void {
@@ -177,15 +180,17 @@ VerificarPrint(){
   }
 
   mostrarDialog(codigoUnidad: string, nombreSimple: string){
+    this.showDialog();
     this.selectedNombreSimple=nombreSimple;
     this.selectedCodigoUnidad=codigoUnidad.trim();
     this.formGroup.patchValue({codigoUnidad: this.selectedCodigoUnidad});
     if(this.mostrarTipoFila){
-      this.showDialog();
-      console.log("codUnidad:"+ codigoUnidad.trim());
+      //this.showDialog();
+      console.log("if Mostrar codUnidad:"+ codigoUnidad.trim());
     }else{
       //api de crear ticket en lugar que el json configurado tenga false el mostrar el tipo de fila aca de un 
       //solo genera el ticket con idfila 2 de no aplica
+      
       console.log("codUnidad:"+ codigoUnidad.trim());
       this.formGroup.value.codigoUnidad= this.selectedCodigoUnidad;
       this.formGroup.value.idFila= 2;
@@ -194,26 +199,32 @@ VerificarPrint(){
     }
   }
 
+  // openSteps(){
+  //   const dialogRefBs = this.modalService.open(StepsComponent,
+  //     { ariaLabelledBy: "modal-basic-title", size: "xl", centered: true });
+  //     dialogRefBs.componentInstance.data = this.miCookie;
+  // }
+
+
+  onActiveIndexChange(event: number) {
+      this.activeIndex = event;
+  }
+
   
   almacenarTicket(){
     
     this.loading=true;
     if(this.miCookie){
  
-      //  this.VerificarPrint();
-      //  // var conexionBixolon= localStorage.getItem('conexion') || '{}';
-      //  // console.log(conexionBixolon);
-      //   if(this.conexionBixolon?.includes('error')){
-      //     console.log('errorPrint');
-      //     this.banderaBixolon=false;
-      //   }
-      //   console.log(this.conexionBixolon);
-        
-      //   // if(!conexionBixolon?.includes('error')){
-      //   //   console.log('error Buenoxd');
-      //   // }
-      //   this.loading=false;
+       this.VerificarPrint();
 
+       setTimeout(() => {
+        var conexionBixolon= localStorage.getItem('conexion') || '{}';
+        console.log(conexionBixolon);
+        if(conexionBixolon?.includes('error')){
+         this.showAlert('Verifique la conexion con la impresora bixolon','Error','error')
+         }else{
+          console.log('Paso a imprimir');
           this._ticketService.guardarTicket(this.formGroup.value,this.miCookie).subscribe({
             next: (res) => {
               console.log(res);
@@ -247,13 +258,18 @@ VerificarPrint(){
               this.showAlert("Error al conectar al servidor","Error",'error');
             },
           });
-        // }
-        // else{
-        //   this.showAlert('Impresora No conectada, no se pudo crear el ticket','error','error');
-        //   this.loading=false;
-        // }
+         }
+       }, 500);
     }
   }
+
+  // firstFormGroup = this.fb.group({
+  //   firstCtrl: ['', Validators.required],
+  // });
+  // secondFormGroup = this.fb.group({
+  //   secondCtrl: ['', Validators.required],
+  // });
+  // isLinear = false;
 
   createForm() {
     this.formGroup = this.fb.group({
@@ -264,7 +280,7 @@ VerificarPrint(){
 
   showDialog() {
     this.visible = true;
-}
+  }
   openLink(link: string){
     window.open(link, '_blank');
   }

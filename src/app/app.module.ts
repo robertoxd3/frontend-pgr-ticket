@@ -40,6 +40,11 @@ import { TransferirComponent } from './components/ejecutivo/transferir/transferi
 import { DisponibilidadComponent } from './components/ejecutivo/disponibilidad/disponibilidad.component';
 import {CalendarModule} from 'primeng/calendar';
 import {InputNumberModule} from 'primeng/inputnumber';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatStepperModule} from '@angular/material/stepper';
+import {MatButtonModule} from '@angular/material/button';
+
 
 @NgModule({
   declarations: [
@@ -52,7 +57,8 @@ import {InputNumberModule} from 'primeng/inputnumber';
     LoginComponent,
     NotificacionModalComponent,
     TransferirComponent,
-    DisponibilidadComponent
+    DisponibilidadComponent,
+    
   ],
   imports: [
     BrowserModule,
@@ -85,7 +91,11 @@ import {InputNumberModule} from 'primeng/inputnumber';
     AvatarModule,
     MatMenuModule,
     CalendarModule,
-    InputNumberModule
+    InputNumberModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatStepperModule,
+    MatButtonModule
   ],
   providers: [DialogService],
   bootstrap: [AppComponent]

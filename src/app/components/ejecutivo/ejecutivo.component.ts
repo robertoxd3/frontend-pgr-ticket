@@ -23,12 +23,13 @@ export interface NotificacionRe {
   providers:[DatePipe,MessageService]
 })
 export class EjecutivoComponent implements OnInit,OnDestroy{
-  displayModal: boolean = false;
+
+displayModal: boolean = false;
 selectedData: any;
 unidades!: any;
 isloading:boolean=false;
 selectedProduct!: any;
-miCookie:any;
+//miCookie:any;
 realTimeData: any;
 realTimeDataTurno:any;
 TicketFinalizados:any;
@@ -49,16 +50,14 @@ checked:boolean=false;
 @ViewChild('toggle') btnToggle!: ElementRef;
 botonRellamada:boolean=false;
 
-constructor(private auth:AuthGuard,private modalService:NgbModal,private srCola:SrColaService,private srTransferido:SrTransferirService,private _ticketService:TicketService, private fb:FormBuilder, private signalRService: ColaService,private ticketService:TicketService,private cookieService:CookieService,public datePipe: DatePipe,public messageService:MessageService) {
+constructor(private auth:AuthGuard,private modalService:NgbModal,private srCola:SrColaService,private srTransferido:SrTransferirService,private _ticketService:TicketService, private fb:FormBuilder, private signalRService: ColaService,private ticketService:TicketService,public datePipe: DatePipe,public messageService:MessageService) {
   
-  this.leerCookieJson();
+  //this.leerCookieJson();
   this.usuarioLogueado = JSON.parse(localStorage.getItem('user') || '{}');
   console.log(this.usuarioLogueado);
   this.createForms();
   this.ticketService.obtenerEstadoEjecutivo(this.formProcedimiento.value).subscribe(res=>{
     this.checked=res
-
-    // this.btnToggle.nativeElement=true;
   });
 
 
@@ -256,18 +255,18 @@ Llamada(id:any){
    
   }
 
-  leerCookieJson(){
-    const cookieName = 'cookie_tickets';
-    if (this.cookieService.check(cookieName)) {
-      const cookieValue = this.cookieService.get(cookieName);
-      try {
-        this.miCookie = JSON.parse(cookieValue);
-       // console.log('Valor de la cookie:aa ', this.miCookie.config.codigoPad);
-      } catch (error) {
-        //console.error('Error al analizar la cookie JSON:', error);
-      }
-    }
-  }
+  // leerCookieJson(){
+  //   const cookieName = 'cookie_tickets';
+  //   if (this.cookieService.check(cookieName)) {
+  //     const cookieValue = this.cookieService.get(cookieName);
+  //     try {
+  //       this.miCookie = JSON.parse(cookieValue);
+  //      // console.log('Valor de la cookie:aa ', this.miCookie.config.codigoPad);
+  //     } catch (error) {
+  //       //console.error('Error al analizar la cookie JSON:', error);
+  //     }
+  //   }
+  // }
 
   openModalTransferir(turnoActual:any){
     const dialogRefBs = this.modalService.open(TransferirComponent,
@@ -279,7 +278,7 @@ Llamada(id:any){
   indisponibilidad(){
     const dialogRefBs = this.modalService.open(DisponibilidadComponent,
       { ariaLabelledBy: "modal-basic-title", size: "xl", centered: true });
-      //dialogRefBs.componentInstance.usuario = this.usuarioLogueado;
+
   }
 
   

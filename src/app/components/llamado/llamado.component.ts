@@ -33,6 +33,8 @@ export class LlamadoComponent implements OnInit,OnDestroy{
    currentDateTime!: any;
   ultimoLlamado:any;
   videosLista!: string[];
+  voices: SpeechSynthesisVoice[] = [];
+  synthesis = window.speechSynthesis;
 
   constructor(private signalRService: ColaService,private signalRColaService: SrColaService,private cookieService: CookieService, private rd: Renderer2,public datePipe: DatePipe) {
     this.leerCookieJson();
@@ -48,12 +50,14 @@ export class LlamadoComponent implements OnInit,OnDestroy{
     });
     this.signalRColaService.NotificationListener(); 
     this.signalRColaService.notificationData.subscribe((data) => {
-      console.log(data);
+      //this.speak(data);
+      //console.log(data);
       //Actualizar el numero en pantalla de acuerdo al llamado
       this.turnoActual=data;
     });
     setTimeout(() => {
       this.signalRColaService.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
+      this.fetchVoices();
     }, 600);
     
     this.updateDateTime();
@@ -71,8 +75,25 @@ export class LlamadoComponent implements OnInit,OnDestroy{
         console.log('Connexion Perdida');
         window.location.reload();
       }
-    }, 60000*1);
+    }, 30000*1);
   
+}
+
+fetchVoices() {
+  this.voices = window.speechSynthesis.getVoices();
+}
+
+speak(data: any) {
+  const selectedVoice = this.voices.find(voice => voice.lang === 'es-ES');
+  console.log('Speaking..');
+  console.log(selectedVoice);
+  const utterance = new SpeechSynthesisUtterance('Número de ticket ' + data.numeroTicket + " en el escritorio " + data.noEscritorio);
+  if (selectedVoice) {
+    utterance.voice = selectedVoice;
+    utterance.lang = 'es-Es';
+    utterance.rate = 0.7;
+  }
+  this.synthesis.speak(utterance);
 }
 
  currentVideoIndex = 0;
