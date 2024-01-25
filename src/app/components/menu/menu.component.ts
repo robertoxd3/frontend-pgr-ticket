@@ -180,12 +180,12 @@ VerificarPrint(){
   }
 
   mostrarDialog(codigoUnidad: string, nombreSimple: string){
-    this.showDialog();
+
     this.selectedNombreSimple=nombreSimple;
     this.selectedCodigoUnidad=codigoUnidad.trim();
     this.formGroup.patchValue({codigoUnidad: this.selectedCodigoUnidad});
     if(this.mostrarTipoFila){
-      //this.showDialog();
+      this.showDialog();
       console.log("if Mostrar codUnidad:"+ codigoUnidad.trim());
     }else{
       //api de crear ticket en lugar que el json configurado tenga false el mostrar el tipo de fila aca de un 
