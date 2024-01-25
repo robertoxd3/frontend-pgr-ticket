@@ -222,7 +222,9 @@ VerificarPrint(){
         var conexionBixolon= localStorage.getItem('conexion') || '{}';
         console.log(conexionBixolon);
         if(conexionBixolon?.includes('error')){
-         this.showAlert('Verifique la conexion con la impresora bixolon','Error','error')
+
+         this.showAlert('Verifique la conexion con la impresora bixolon','Error','error');
+         this.loading=false;
          }else{
           console.log('Paso a imprimir');
           this._ticketService.guardarTicket(this.formGroup.value,this.miCookie).subscribe({
@@ -230,8 +232,10 @@ VerificarPrint(){
               console.log(res);
               if(res.status==400){          
                 //this.showAlert(res.message,"Error",'error');
+                this.loading=false;
               }else{
                 PrintReceipt(res.response.numeroTicket,res.response.fechaTicket,res.response.nombreSimple,res.response.departamento);
+                this.loading=false;
               }
              
               //this.actualizarTicketEjecutivo();
