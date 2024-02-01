@@ -50,6 +50,11 @@ export class TicketService {
   
   }
 
+  validarDisponibilidad(codigoUnidad: any): Observable<any> {
+    return this.httpClient.get(this.baseUrl + 'ValidarDisponibilidad/'+codigoUnidad);
+  }
+  
+
   obtenerEstadoEjecutivo(data: FormData): Observable<any> {
     return this.httpClient.post(this.baseUrl + 'obtenerEstadoEjecutivo',data);
   }

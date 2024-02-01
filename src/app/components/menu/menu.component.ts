@@ -213,67 +213,78 @@ VerificarPrint(){
   
   almacenarTicket(){
     
-    this.loading=true;
-    if(this.miCookie){
+    // this.loading=true;
+
+    // if(this.miCookie){
  
-       this.VerificarPrint();
+    //    this.VerificarPrint();
 
-       setTimeout(() => {
-        var conexionBixolon= localStorage.getItem('conexion') || '{}';
-        console.log(conexionBixolon);
-        if(conexionBixolon?.includes('error')){
+    //    setTimeout(() => {
+    //     var conexionBixolon= localStorage.getItem('conexion') || '{}';
+    //     console.log(conexionBixolon);
+    //     if(conexionBixolon?.includes('error')){
 
-         this.showAlert('Verifique la conexion con la impresora bixolon','Error','error');
-         this.loading=false;
-         }else{
-          console.log('Paso a imprimir');
-          this._ticketService.guardarTicket(this.formGroup.value,this.miCookie).subscribe({
-            next: (res) => {
-              console.log(res);
-              if(res.status==400){          
-                //this.showAlert(res.message,"Error",'error');
-                this.loading=false;
-              }else{
-                PrintReceipt(res.response.numeroTicket,res.response.fechaTicket,res.response.nombreSimple,res.response.departamento);
-                this.loading=false;
-              }
+    //      this.showAlert('Verifique la conexion con la impresora bixolon','Error','error');
+    //      this.loading=false;
+    //      }else{
+    //       console.log('Paso a imprimir');
+
+
+    //       this._ticketService.guardarTicket(this.formGroup.value,this.miCookie).subscribe({
+    //         next: (res) => {
+    //           console.log(res);
+    //           if(res.status==400){          
+    //             //this.showAlert(res.message,"Error",'error');
+    //             this.loading=false;
+    //           }else{
+    //             PrintReceipt(res.response.numeroTicket,res.response.fechaTicket,res.response.nombreSimple,res.response.departamento);
+    //             this.loading=false;
+    //           }
              
-              //this.actualizarTicketEjecutivo();
-              this.ActualizarTicketPantallas();
+    //           //this.actualizarTicketEjecutivo();
+    //           this.ActualizarTicketPantallas();
          
-                this.loading=false;
-                if(res.status==400){          
-                  this.showAlert(res.message,"Error",'error');
-                }
-                else{
-                  if(res.statusDescription!='OK'){
+    //             this.loading=false;
+    //             if(res.status==400){          
+    //               this.showAlert(res.message,"Error",'error');
+    //             }
+    //             else{
+    //               if(res.statusDescription!='OK'){
     
-                    this.showAlert("Ticket Creado Correctamente, Se estima que el unico encargado regrese a las "+res.statusDescription,"Exito",'success');
-                    this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
-                  }else{
-                    this.showAlert("Ticket Creado Correctamente","Exito",'success');
-                    this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
-                  }
-                }
-            },
-            error: (err) => {
-              console.log(err);
-              this.loading = false;
-              this.showAlert("Error al conectar al servidor","Error",'error');
-            },
-          });
-         }
-       }, 500);
-    }
+    //                 this.showAlert("Ticket Creado Correctamente, Se estima que el unico encargado regrese a las "+res.statusDescription,"Exito",'success');
+    //                 this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
+    //               }else{
+    //                 this.showAlert("Ticket Creado Correctamente","Exito",'success');
+    //                 this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
+    //               }
+    //             }
+    //         },
+    //         error: (err) => {
+    //           console.log(err);
+    //           this.loading = false;
+    //           this.showAlert("Error al conectar al servidor","Error",'error');
+    //         },
+    //       });
+    //      }
+    //    }, 500);
+    // }
+
+    this.validarDisponibilidad();
   }
 
-  // firstFormGroup = this.fb.group({
-  //   firstCtrl: ['', Validators.required],
-  // });
-  // secondFormGroup = this.fb.group({
-  //   secondCtrl: ['', Validators.required],
-  // });
-  // isLinear = false;
+ 
+  validarDisponibilidad() {
+    console.log(this.formGroup.value.codigoUnidad);
+      this._ticketService.validarDisponibilidad(this.formGroup.value.codigoUnidad).subscribe({
+        next: (res) => {
+          console.log(res);
+        },
+        error: (err) => {
+          console.log(err);
+          this.showAlert('No se pudo obtener validaciones','Error','error');
+        }, 
+      });
+  }
 
   createForm() {
     this.formGroup = this.fb.group({
