@@ -9,7 +9,7 @@
     ></p-progressSpinner>
   </div>
   <!-- Alertas -->
-  <p-toast [life]="15000"  styleClass="custom-toast"  [showTransformOptions]="'translateY(100%)'" [showTransitionOptions]="'1000ms'" [hideTransitionOptions]="'1000ms'" [showTransformOptions]="'translateX(100%)'"></p-toast>
+  <p-toast   styleClass="custom-toast"  [showTransformOptions]="'translateY(100%)'" [showTransitionOptions]="'1000ms'" [hideTransitionOptions]="'1000ms'" [showTransformOptions]="'translateX(100%)'"></p-toast>
 
   <div class="contenido">
   <section class="service-section">
@@ -125,6 +125,12 @@
   </div>
  <!-- <app-social-media></app-social-media>  -->
 </footer>
+
+
+<div class="card flex justify-content-center gap-2">
+  <p-confirmDialog [style]="{width: '50vw'}" acceptLabel="Si" rejectLabel="No" [dismissableMask]=true></p-confirmDialog>
+</div>
+
 
 
 

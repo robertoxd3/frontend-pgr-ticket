@@ -44,7 +44,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatStepperModule} from '@angular/material/stepper';
 import {MatButtonModule} from '@angular/material/button';
-
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @NgModule({
   declarations: [
@@ -58,6 +58,7 @@ import {MatButtonModule} from '@angular/material/button';
     NotificacionModalComponent,
     TransferirComponent,
     DisponibilidadComponent,
+
     
   ],
   imports: [
@@ -95,7 +96,8 @@ import {MatButtonModule} from '@angular/material/button';
     MatInputModule,
     MatFormFieldModule,
     MatStepperModule,
-    MatButtonModule
+    MatButtonModule,
+    ConfirmDialogModule
   ],
   providers: [DialogService],
   bootstrap: [AppComponent]
