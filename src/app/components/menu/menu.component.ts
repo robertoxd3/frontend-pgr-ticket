@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup,FormControl,Validators } from '@angular/forms';
-import { MenuItem, MessageService } from 'primeng/api';
+import { ConfirmEventType , ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { TicketService } from 'src/app/services/ticket.service';
 import { CookieService } from 'ngx-cookie-service';
 import { ColaService } from 'src/app/services/cola.service';
@@ -27,7 +27,7 @@ declare var requestPrint:any;
   selector: 'app-menu',
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.css'],
-  providers: [MessageService]
+  providers: [ConfirmationService,MessageService]
 })
 export class MenuComponent implements OnInit,OnDestroy {
   loading: boolean = false;
@@ -51,7 +51,7 @@ export class MenuComponent implements OnInit,OnDestroy {
   items: MenuItem[] | undefined;
   activeIndex: number = 0;
   private dataSubscription: Subscription | undefined;
-  constructor(private _ticketService: TicketService,private srCola:SrColaService,private modalService:NgbModal,private signalRService: ColaService, private fb: FormBuilder, private messageService: MessageService,private cookieService: CookieService) {
+  constructor(private _ticketService: TicketService,private confirmationService: ConfirmationService,private srCola:SrColaService,private modalService:NgbModal,private signalRService: ColaService, private fb: FormBuilder, private messageService: MessageService,private cookieService: CookieService) {
     this.conexionBixolon=null;
   }
 
@@ -172,7 +172,7 @@ VerificarPrint(){
   CrearTicketTipoFila(){
     if(this.formGroup.valid){
       console.log("Unidad: "+this.selectedCodigoUnidad+" idFila : "+this.formGroup.value.idFila);
-      this.almacenarTicket();
+      this.validarDisponibilidad();
       this.visible=false;
     } else{
       this.showAlert("Debe seleccionar un tipo de fila.","Validación",'error');
@@ -194,7 +194,7 @@ VerificarPrint(){
       console.log("codUnidad:"+ codigoUnidad.trim());
       this.formGroup.value.codigoUnidad= this.selectedCodigoUnidad;
       this.formGroup.value.idFila= 2;
-      this.almacenarTicket();
+      this.validarDisponibilidad();
      
     }
   }
@@ -213,63 +213,62 @@ VerificarPrint(){
   
   almacenarTicket(){
     
-    // this.loading=true;
+     this.loading=true;
 
-    // if(this.miCookie){
+    if(this.miCookie){
  
-    //    this.VerificarPrint();
+       this.VerificarPrint();
 
-    //    setTimeout(() => {
-    //     var conexionBixolon= localStorage.getItem('conexion') || '{}';
-    //     console.log(conexionBixolon);
-    //     if(conexionBixolon?.includes('error')){
+       setTimeout(() => {
+        var conexionBixolon= localStorage.getItem('conexion') || '{}';
+        console.log(conexionBixolon);
+        if(conexionBixolon?.includes('error')){
 
-    //      this.showAlert('Verifique la conexion con la impresora bixolon','Error','error');
-    //      this.loading=false;
-    //      }else{
-    //       console.log('Paso a imprimir');
+         this.showAlert('Verifique la conexion con la impresora bixolon','Error','error');
+         this.loading=false;
+         }else{
+          console.log('Paso a imprimir');
 
 
-    //       this._ticketService.guardarTicket(this.formGroup.value,this.miCookie).subscribe({
-    //         next: (res) => {
-    //           console.log(res);
-    //           if(res.status==400){          
-    //             //this.showAlert(res.message,"Error",'error');
-    //             this.loading=false;
-    //           }else{
-    //             PrintReceipt(res.response.numeroTicket,res.response.fechaTicket,res.response.nombreSimple,res.response.departamento);
-    //             this.loading=false;
-    //           }
+          this._ticketService.guardarTicket(this.formGroup.value,this.miCookie).subscribe({
+            next: (res) => {
+              console.log(res);
+              if(res.status==400){          
+                //this.showAlert(res.message,"Error",'error');
+                this.loading=false;
+              }else{
+                PrintReceipt(res.response.numeroTicket,res.response.fechaTicket,res.response.nombreSimple,res.response.departamento);
+                this.loading=false;
+              }
              
-    //           //this.actualizarTicketEjecutivo();
-    //           this.ActualizarTicketPantallas();
+              //this.actualizarTicketEjecutivo();
+              this.ActualizarTicketPantallas();
          
-    //             this.loading=false;
-    //             if(res.status==400){          
-    //               this.showAlert(res.message,"Error",'error');
-    //             }
-    //             else{
-    //               if(res.statusDescription!='OK'){
+                this.loading=false;
+                if(res.status==400){          
+                  this.showAlert(res.message,"Error",'error');
+                }
+                else{
+                  if(res.statusDescription!='OK'){
     
-    //                 this.showAlert("Ticket Creado Correctamente, Se estima que el unico encargado regrese a las "+res.statusDescription,"Exito",'success');
-    //                 this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
-    //               }else{
-    //                 this.showAlert("Ticket Creado Correctamente","Exito",'success');
-    //                 this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
-    //               }
-    //             }
-    //         },
-    //         error: (err) => {
-    //           console.log(err);
-    //           this.loading = false;
-    //           this.showAlert("Error al conectar al servidor","Error",'error');
-    //         },
-    //       });
-    //      }
-    //    }, 500);
-    // }
-
-    this.validarDisponibilidad();
+                    this.showAlert("Ticket Creado Correctamente, Se estima que el unico encargado regrese a las "+res.statusDescription,"Exito",'success');
+                    this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
+                  }else{
+                    this.showAlert("Ticket Creado Correctamente","Exito",'success');
+                    this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
+                  }
+                }
+            },
+            error: (err) => {
+              console.log(err);
+              this.loading = false;
+              this.showAlert("Error al conectar al servidor","Error",'error');
+            },
+          });
+         }
+       }, 500);
+    }
+    //console.log('Se imprimio');
   }
 
  
@@ -278,6 +277,12 @@ VerificarPrint(){
       this._ticketService.validarDisponibilidad(this.formGroup.value.codigoUnidad).subscribe({
         next: (res) => {
           console.log(res);
+          if(res.response[0]==="V"){
+            this.confirmDialog(res.response[1]);
+            console.log('Validado Hora');
+          }else{
+            this.almacenarTicket();
+          }
         },
         error: (err) => {
           console.log(err);
@@ -345,5 +350,28 @@ VerificarPrint(){
         console.log(error);
       }   
     }
+
+    confirmDialog(data:any) {
+      this.confirmationService.confirm({
+          message: '¿El ejecutivo no se encontrará disponible hasta las '+data+', desea crear el ticket para avanzar?',
+          header: 'Confirmación',
+          icon: 'pi pi-exclamation-triangle',
+          accept: () => {
+              //this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted' });
+              this.almacenarTicket();
+          },
+          reject: (type:ConfirmEventType) => {
+              switch (type) {
+                  case ConfirmEventType.REJECT:
+                      //this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
+                      break;
+                  case ConfirmEventType.CANCEL:
+                      //this.messageService.add({ severity: 'warn', summary: 'Cancelled', detail: 'You have cancelled' });
+                      break;
+              }
+          }
+      });
+  }
    
 }
+
