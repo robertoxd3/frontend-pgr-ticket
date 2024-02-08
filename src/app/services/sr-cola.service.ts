@@ -131,7 +131,7 @@ showNotificationModal(datos: NotificacionRe): void {
   setInterval(() => {
     
     ref.close();
-  }, 6000);
+  }, 5000);
 
   ref.onClose.subscribe((result: any) => {
     console.log('Modal cerrado', result);
@@ -140,8 +140,6 @@ showNotificationModal(datos: NotificacionRe): void {
 
 fetchVoices() {
   this.voices = window.speechSynthesis.getVoices();
- // console.log(this.voices);
-  //localStorage.setItem('voices', JSON.stringify(this.voices));
 }
 
   speak(data: any) {
@@ -153,7 +151,7 @@ fetchVoices() {
      // const selectedVoice: SpeechSynthesisVoice = JSON.parse(selectedVoiceString);
       utterance.voice = selectedVoice;
       utterance.lang = 'es-Es';
-      utterance.rate = 0.6;
+      utterance.rate = 0.7;
     }
     this.synthesis.speak(utterance);
   }
