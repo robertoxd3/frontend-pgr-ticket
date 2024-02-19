@@ -6,5 +6,5 @@ export const environment = {
     colaWebSocket3: 'http://192.168.19.37:4515/be/Transferidos',
     colaUrl: 'http://192.168.19.37:4515/be/api/Cola/',
     loginUrl: 'http://192.168.19.37:4515/be/api/Authenticate',
-    rutaVideos: 'http://192.168.30.21'
+    rutaVideos: 'http://192.168.30.23'
 };
