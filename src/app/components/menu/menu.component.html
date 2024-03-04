@@ -40,7 +40,7 @@
 
 <!-- Modal Filas -->
 <div class="card flex justify-content-center">
-  <p-dialog header="Header" [(visible)]="visible" [style]="{ width: '75vw',height: 'auto'}">
+  <p-dialog header="Header" [(visible)]="visible" styleClass="DialogCustom">
       <ng-template pTemplate="header">
           <span class="text-lg fw-bold">Tipo de Fila</span>
           <span>Unidad Seleccionada: <span class="text-lg fw-bold">{{selectedNombreSimple}}</span></span>
@@ -57,8 +57,6 @@
       
   </p-dialog>
  </div>
-<!-- Boton Flotante de virtual -->
-<!-- <app-floating-button></app-floating-button> -->
 
 <!-- Side Bar Virtual -->
 <p-sidebar [(visible)]="sidebarVisible"   position="right">
@@ -123,12 +121,11 @@
       </div>
     </div>
   </div>
- <!-- <app-social-media></app-social-media>  -->
 </footer>
 
 
 <div class="card flex justify-content-center gap-2">
-  <p-confirmDialog [style]="{width: '50vw'}" acceptLabel="Si" rejectLabel="No" [dismissableMask]=true></p-confirmDialog>
+  <p-confirmDialog styleClass="ConfirmDialog" acceptLabel="Si" rejectLabel="No" [dismissableMask]=true></p-confirmDialog>
 </div>
 
 

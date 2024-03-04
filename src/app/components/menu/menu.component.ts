@@ -137,7 +137,7 @@ VerificarPrint(){
         },
         error: (err) => {
           //console.log(err);
-          this.showAlert('No se pudo obtener configuración del JSON','Error','error');
+          this.showAlert('No se pudo obtener configuración del JSON','Error','error',4000);
           this.loading = false;
         }, 
       });
@@ -175,7 +175,7 @@ VerificarPrint(){
       this.validarDisponibilidad();
       this.visible=false;
     } else{
-      this.showAlert("Debe seleccionar un tipo de fila.","Validación",'error');
+      this.showAlert("Debe seleccionar un tipo de fila.","Validación",'error',3000);
     }
   }
 
@@ -224,7 +224,7 @@ VerificarPrint(){
         console.log(conexionBixolon);
         if(conexionBixolon?.includes('error')){
 
-         this.showAlert('Verifique la conexion con la impresora bixolon','Error','error');
+         this.showAlert('Verifique la conexion con la impresora bixolon','Error','error',3000);
          this.loading=false;
          }else{
           console.log('Paso a imprimir');
@@ -246,15 +246,15 @@ VerificarPrint(){
          
                 this.loading=false;
                 if(res.status==400){          
-                  this.showAlert(res.message,"Error",'error');
+                  this.showAlert(res.message,"Error",'error',10000);
                 }
                 else{
                   if(res.statusDescription!='OK'){
     
-                    this.showAlert("Ticket Creado Correctamente, Se estima que el unico encargado regrese a las "+res.statusDescription,"Exito",'success');
+                    this.showAlert("Ticket Creado Correctamente, Se estima que el personal encargado regrese a las "+res.statusDescription,"Exito",'success',5000);
                     this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
                   }else{
-                    this.showAlert("Ticket Creado Correctamente","Exito",'success');
+                    this.showAlert("Ticket Creado Correctamente","Exito",'success', 3000);
                     this.srCola.UpdateCola(this.miCookie.config.codigoPad,this.miCookie.config.idPad);
                   }
                 }
@@ -262,7 +262,7 @@ VerificarPrint(){
             error: (err) => {
               console.log(err);
               this.loading = false;
-              this.showAlert("Error al conectar al servidor","Error",'error');
+              this.showAlert("Error al conectar al servidor","Error",'error', 3000);
             },
           });
          }
@@ -286,7 +286,7 @@ VerificarPrint(){
         },
         error: (err) => {
           console.log(err);
-          this.showAlert('No se pudo obtener validaciones','Error','error');
+          this.showAlert('No se pudo obtener validaciones','Error','error', 3000);
         }, 
       });
   }
@@ -305,11 +305,12 @@ VerificarPrint(){
     window.open(link, '_blank');
   }
 
-  showAlert(mensaje: string, titulo:string, tipo: string) {
+  showAlert(mensaje: string, titulo:string, tipo: string, tiempo:number) {
     this.messageService.add({
       severity: tipo,
       summary: titulo,
       detail: mensaje,
+      life: tiempo
     });
   }
 
@@ -329,11 +330,11 @@ VerificarPrint(){
     imprimirInfo(){
     try {
       if(PrintInfoContacto())
-      this.showAlert("Ticket Creado Correctamente","Exito",'success');
+      this.showAlert("Ticket Creado Correctamente","Exito",'success', 3000);
       else
-      this.showAlert("Problema al generar el ticket","Error",'error');
+      this.showAlert("Problema al generar el ticket","Error",'error', 3000);
     } catch (error) {
-      this.showAlert("Problema al conectar con Impresora","Error",'error');
+      this.showAlert("Problema al conectar con Impresora","Error",'error', 3000);
       console.log(error);
     }   
     }
@@ -342,31 +343,28 @@ VerificarPrint(){
     imprimirInfoDenuncias(){
       try {
         if(PrintInfoDenucia())
-        this.showAlert("Ticket Creado Correctamente","Exito",'success');
+        this.showAlert("Ticket Creado Correctamente","Exito",'success', 3000);
         else
-        this.showAlert("Problema al generar el ticket","Error",'error');
+        this.showAlert("Problema al generar el ticket","Error",'error', 3000);
       } catch (error) {
-        this.showAlert("Problema al conectar con Impresora","Error",'error');
+        this.showAlert("Problema al conectar con Impresora","Error",'error', 3000);
         console.log(error);
       }   
     }
 
     confirmDialog(data:any) {
       this.confirmationService.confirm({
-          message: '¿El ejecutivo no se encontrará disponible hasta las '+data+', desea crear el ticket para avanzar?',
+          message: '¿El personal especializado no se encontrará disponible hasta las '+data+', desea crear el ticket para avanzar?',
           header: 'Confirmación',
           icon: 'pi pi-exclamation-triangle',
           accept: () => {
-              //this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted' });
               this.almacenarTicket();
           },
           reject: (type:ConfirmEventType) => {
               switch (type) {
                   case ConfirmEventType.REJECT:
-                      //this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
                       break;
                   case ConfirmEventType.CANCEL:
-                      //this.messageService.add({ severity: 'warn', summary: 'Cancelled', detail: 'You have cancelled' });
                       break;
               }
           }
